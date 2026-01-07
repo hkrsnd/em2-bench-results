@@ -437,6 +437,47 @@
         }
 
         /* Agent Logs */
+        /* Episode Switcher */
+        .episode-switcher {
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: var(--bg-surface);
+        }
+
+        .switcher-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .ep-btn {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            padding: 8px 14px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ep-btn:hover {
+            background: rgba(59,130,246,0.1);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .ep-btn.active {
+            background: rgba(59,130,246,0.15);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
         .agent-logs-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -661,21 +702,26 @@
             <div class="featured-demo">
                 <div class="header">
                     <h3>
-                        Live Preview: Episode Visualization
+                        Live Preview: Agent Animation
                         <span class="live-badge">● INTERACTIVE</span>
                     </h3>
-                    <a href="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/index.html"
+                    <a href="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html"
                         target="_blank">Open in new tab →</a>
                 </div>
+                <div class="episode-switcher">
+                    <span class="switcher-label">Load Episode:</span>
+                    <button class="ep-btn active" onclick="loadEpisode('Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html', this)">DeepSeek-R1 Crewmate</button>
+                    <button class="ep-btn" onclick="loadEpisode('Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/agent/imposter_player_5.html', this)">DeepSeek-R1 Impostor</button>
+                    <button class="ep-btn" onclick="loadEpisode('Minigrid/output/save/voting_acc_run_llama3.1_70b_action_assist_medium_node2/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html', this)">LLaMA-70B Crewmate</button>
+                    <button class="ep-btn" onclick="loadEpisode('Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/index.html', this)">Full Episode Index</button>
+                </div>
                 <div class="iframe-wrapper">
-                    <iframe
-                        src="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/index.html"
+                    <iframe id="demoFrame"
+                        src="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html"
                         loading="lazy"></iframe>
                 </div>
                 <div class="caption">
-                    <strong>Features:</strong> Animated minimap playback • Step-by-step action replay • Voting round
-                    breakdown with thoughts • Trust score timeseries • Task completion progress • Role assignments and
-                    outcomes
+                    <strong>Features:</strong> Animated minimap playback (click Play) • Step-by-step action replay • Agent reasoning/thoughts • Keyboard shortcuts: Space=play/pause, ←/→=step
                 </div>
             </div>
         </div>
@@ -1064,6 +1110,15 @@
     </footer>
 
     <script>
+        // Episode switcher function
+        function loadEpisode(url, btn) {
+            document.getElementById('demoFrame').src = url;
+            document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            // Update the "Open in new tab" link
+            btn.closest('.featured-demo').querySelector('.header a').href = url;
+        }
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
