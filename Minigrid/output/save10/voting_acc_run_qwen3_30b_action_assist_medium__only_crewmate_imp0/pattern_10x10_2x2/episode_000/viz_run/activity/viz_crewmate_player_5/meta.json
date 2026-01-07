@@ -1,0 +1,6 @@
+{
+  "log": "/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save10/voting_acc_run_qwen3_30b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/episode_000/crewmate_player_5.log",
+  "out_dir": "/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save10/voting_acc_run_qwen3_30b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/episode_000/viz_run/activity/viz_crewmate_player_5",
+  "turns": 120,
+  "has_timeline_png": true
+}

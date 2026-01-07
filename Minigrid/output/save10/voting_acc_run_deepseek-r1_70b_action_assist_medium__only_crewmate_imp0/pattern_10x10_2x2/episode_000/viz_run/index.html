@@ -1,0 +1,524 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LLM Run Report (activity + voting + trust)</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; color: #111; }
+    .muted { color: #666; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .box { border: 1px solid #ddd; border-radius: 12px; padding: 12px 14px; background: #fafafa; }
+    h2, h3 { margin: 0 0 10px 0; }
+    h3 { font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eee; text-align: left; padding: 6px 8px; font-size: 13px; vertical-align: top; }
+    th { background: #fbfbfb; position: sticky; top: 0; }
+    details { border: 1px solid #e2e2e2; border-radius: 12px; padding: 10px 12px; background: white; }
+    details[open] { border-color: #cfcfcf; box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
+    summary { cursor: pointer; font-weight: 650; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; background: #fff; }
+    .pill.imp { border-color: #fecaca; background: #fff1f2; }
+    .pill.crew { border-color: #bfdbfe; background: #eff6ff; }
+    canvas { width: 100%; height: auto; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+    .outcome { margin-top: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid #ddd; background: #fff; }
+    .outcome.crewwin { border-color: #bfdbfe; background: #eff6ff; }
+    .outcome.impwin { border-color: #fecaca; background: #fff1f2; }
+    .outcome.inconclusive { border-color: #fde68a; background: #fffbeb; }
+    .outcome.unknown { border-color: #e5e7eb; background: #f9fafb; }
+    .roster { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px; margin-top: 10px; }
+    .roster-item { padding: 8px 10px; border: 1px solid #eee; border-radius: 10px; background: #fff; }
+    .roster-item.dead { opacity: 0.55; text-decoration: line-through; }
+    .thoughtSmall { max-height: 120px; overflow: auto; white-space: pre-wrap; }
+    .progressWrap { margin-top: 10px; height: 12px; background: #eee; border-radius: 999px; overflow: hidden; border: 1px solid #e5e5e5; }
+    .progressBar { height: 100%; width: 0%; background: linear-gradient(90deg, #16a34a, #22c55e); }
+  </style>
+</head>
+<body>
+  <h2>LLM Run Report</h2>
+  <div class="muted">Run dir: <span class="mono">/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save10/voting_acc_run_deepseek-r1_70b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/episode_000</span></div>
+  <div class="outcome crewwin">
+    <div><b>Outcome: crewmates won</b></div>
+    <div class="muted">All imposters eliminated (inferred).</div>
+  </div>
+
+  <div class="row" style="margin-top: 14px;">
+    <div class="box" style="min-width: 320px;">
+      <h3>Roles</h3>
+      <div style="margin-bottom: 8px;">
+        <span class="pill crew">Crewmates: 7</span>
+        <span class="pill imp">Imposters: 0</span>
+      </div>
+      <table>
+        <thead><tr><th>agent</th><th>role</th></tr></thead>
+        <tbody>
+          <tr><td class='mono'>player_1</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_2</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_3</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_4</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_5</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_6</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_7</td><td>Crewmate</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Activity reports</h3>
+      <div class="muted">These are generated using the same parsing logic as <span class="mono">visualize_llm_log.py</span>.</div>
+      <ul>
+        <li><a href='agent/crewmate_player_1.html'>crewmate_player_1.log (turns=921)</a></li>
+<li><a href='agent/crewmate_player_2.html'>crewmate_player_2.log (turns=921)</a></li>
+<li><a href='agent/crewmate_player_3.html'>crewmate_player_3.log (turns=921)</a></li>
+<li><a href='agent/crewmate_player_4.html'>crewmate_player_4.log (turns=921)</a></li>
+<li><a href='agent/crewmate_player_5.html'>crewmate_player_5.log (turns=921)</a></li>
+<li><a href='agent/crewmate_player_6.html'>crewmate_player_6.log (turns=921)</a></li>
+<li><a href='agent/crewmate_player_7.html'>crewmate_player_7.log (turns=921)</a></li>
+      </ul>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Overall task completion</h3>
+      <div id="taskProgressSummary" class="muted">Loading task progress…</div>
+      <div class="progressWrap" aria-label="task completion progress">
+        <div id="taskProgressBar" class="progressBar"></div>
+      </div>
+      <div style="margin-top: 10px;">
+        <canvas id="plotTaskProgress" width="900" height="260"></canvas>
+      </div>
+      <div class="muted">
+        Computed from per-agent <span class="mono">parsed_turns.jsonl</span> using
+        <span class="mono">finished_tasks</span> / (<span class="mono">finished_tasks</span> + <span class="mono">tasks_to_complete</span>) at each step.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top: 14px;">
+    <div class="box">
+      <h3>Voting accuracy over rounds</h3>
+      <canvas id="plotVoteAcc" width="900" height="260"></canvas>
+      <div class="muted">
+        Crewmate accuracy = fraction of crewmates voting an imposter. Imposter accuracy = fraction of imposters voting a crewmate. Skip counts as incorrect.
+      </div>
+    </div>
+    <div class="box">
+      <h3>Trust (mean) over time</h3>
+      <canvas id="plotTrust" width="900" height="260"></canvas>
+      <div class="muted">
+        Uses <span class="mono">trust_scores/step_*_scores.json</span> if present (runner snapshots). Shows mean trust per target across raters.
+      </div>
+    </div>
+  </div>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Voting rounds (details)</summary>
+    <div class="muted" style="margin-top: 6px;">Click a round to expand per-voter info (thoughts included).</div>
+    <div id="voteRounds"></div>
+  </details>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Vote sessions (who voted whom · alive roster · elimination)</summary>
+    <div class="muted" style="margin-top: 6px;">
+      Pulled from run-level <span class="mono">vote_events.jsonl</span> (when available). This includes alive agents + true roles for context.
+    </div>
+    <div class='muted' style='margin-top: 10px;'>(no vote_events.jsonl sessions found for this episode)</div>
+  </details>
+
+  <script>
+    const voteRounds = [{"step": 40, "round_key": "40", "n_votes": 7, "tally": {"player_5": 4, "player_4": 2, "player_3": 1}, "predicted_eject": "player_5", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 has consistent movement and task behavior, earning high trust. Player_3 shows mixed actions, slightly suspicious but not enough to distrust. Player_4's erratic path raises some red flags. Player_5 was near a dead body without reporting it, which is concerning. Players_6 and 7 have no major red flags."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 has been moving erratically and stalling, which is suspicious. player_3 and player_5 have consistent task behavior, earning higher trust. Others show mixed signals or no clear evidence."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 showed erratic movement and didn't report tasks consistently, raising suspicion. player_5 stayedidle multiple times, which is unusual for a Crewmate. Other players have no clear signs of guilt."}, "player_4": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has consistent task behavior and movement without suspicious actions. Player_5 is idle in one spot, raising suspicion of avoiding tasks. Player_7 has repetitive door actions, which could indicate Imposter behavior. Voting for the most suspicious."}, "player_5": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 and Player_4 show suspicious movement patterns with repeated tasks and erratic turns, indicating possible impostor activity. Player_7's door actions seem repetitive but not definitively suspicious. Assigning trust scores based on observed behavior."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has been idle at R11(12,14), showing no movement or tasks. Player_3 was near a task area but didn't do it. Player_7 had strange door behavior. Others seem normal."}, "player_7": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 and Player_6 show consistent task behavior, earning high trust. Player_5 remains stationary, appearing suspicious. Players 1, 2, and 4 have erratic movements but no clear evidence. Voting for Player_5 due to inactivity."}}}, {"step": 80, "round_key": "80", "n_votes": 7, "tally": {"player_5": 5, "player_1": 1, "player_4": 1}, "predicted_eject": "player_5", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has been idle with repeated NOOP actions, raising suspicion. Player_7 shows repetitive door behavior, seems suspicious. Player_2 and Player_4 have consistent movements, appear trustworthy. Others have mixed activity."}, "player_2": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 has been idle with repeated NOOP actions, raising suspicion. player_7's consistent door opening/closing pattern seems genuine. player_3 and player_4 show task-related movement. player_1 and player_6 have varied actions but nothing conclusive. player_2 is myself, so I focus on others."}, "player_3": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 and Player_2 are highly suspicious due to repetitive actions without clear tasks, indicating possible imposters. Player_7 is oscillating between door actions which is a red flag. Voting for Player_5 as their inactivity seems more indicative of an imposter."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_100 showed suspicious movement near a dead body and didn't report it, which lowers their trust score significantly. Player_101 was seen doing visual tasks, increasing theirtrust. Others have mixed or no clear signals."}, "player_5": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 noticed player_1 and player_4 moving erratically and stalling, which lowers their trust scores. player_3 consistently did tasks but had some odd turns. player_2, player_6, and player_7 showed consistent behavior and aren't suspicious with medium to high trust."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has been idle with repeated NOOP actions, which is suspicious and indicates possible Imposter behavior. Player_7 is consistently toggling doors without other interactions, raising doubt. Other players show normal task-related movements."}, "player_7": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has been idle with repeated NOOP actions, showing no movement or task progression, which is suspicious and indicative of avoiding detection. Player_3 was seen near a door opening and closing, which could be hiding malicious activities. Player_2 and Player_6 have consistent but unverified movement patterns without clear visual tasks. Players 1,4 remain in the middle with mixed signals, so I'll vote for the most idle player, Player_5."}}}, {"step": 120, "round_key": "120", "n_votes": 7, "tally": {"player_2": 2, "player_5": 2, "player_1": 1, "player_3": 1, "player_6": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 has been repeatedly turning back, showing erratic movement. player_3 also has inconsistent direction changes. player_4 is moving forward but with no clear task. player_5 has moments of no action and odd movements. player_6 remains static. player_7 is stuck toggling doors."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 was completing tasks visibly, so high trust. Player_7 had consistent door actions, likely genuine. Players 1,3,4,6 moved erratically or stayed still, raising suspicion. Voting for player_1 due to repeated stillness and odd turns."}, "player_3": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 stayed at R11(12,14) for multiple steps without movement or task, showing suspicious behavior. Player_6 had consistent turning patterns but no tasks observed, raising some doubts. Players 1 and 2 showed repetitive actions without clear purpose. Players 4 and 7 were seen doing tasks, increasing their trust. Player_5's inactivity at a critical location is most concerning."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 was doing multiple tasks which seems genuine, so trust score high. Player_7 showed consistent door actions, likely crewmate. Players 1,2,3,6 had repetitive movements but no clear task completion visible. Their behavior is suspicious, hence lower scores."}, "player_5": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 is showing unusual behavior by consistently turning left, which might indicate impostor actions. Player_7 has a repetitive door pattern, raising concerns about their identity. Other players appear more consistent in their movements and tasks."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "No clear evidence of imposters found in observations. Players are moving without erratic behavior or near dead bodies. All actions appear normal."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 stayed still early and did tasks later, seems genuine. Player_3 and Player_6 moved erratically with repetitive actions. Player_2 had suspicious back-and-forth movement. Unsure about others."}}}, {"step": 160, "round_key": "160", "n_votes": 7, "tally": {"player_3": 2, "player_7": 2, "player_1": 1, "player_2": 1, "player_4": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 shows low trust due to movement stalling and no clear tasks. Player_5 seems suspicious with repeated door actions. Trusting others based on task consistency."}, "player_2": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7 is stuck in a repetitive loop of opening and closing doors without progress, appearing suspicious."}, "player_3": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 and player_4 show repetitive actions, acting similarly in multiple steps which might indicate Imposter behavior. player_5 stays near tasks but no visual confirmation. player_6's movement seems suspicious. player_7 repeatedly opening/closing door is a red flag."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 was seen moving erratically and looping without clear purpose, raising suspicion. Player_5 showed inconsistent task behavior, warranting low trust. Others have maintained steady actions."}, "player_5": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 has shown repetitive movement patterns and potential stalling behavior, which raises suspicion. Player_3's movements appear inconsistent with typical Crewmate tasks. I'll vote for the player with the lowest trust score."}, "player_6": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was near a dead body at R01(3,13). Player_5 has no clear Visual Tasks. Others seem Innocent."}, "player_7": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7's own behavior shows loops and stalls, which are suspicious. Player_1 has consistent movement but no clear tasks. Player_3 seems normal with diverse actions. Player_5 is doing repeated tasks, which could be faked. Player_6 has varied movements, seems okay. Player_2's turns are too repetitive and lacks task indicators."}}}, {"step": 200, "round_key": "200", "n_votes": 7, "tally": {"player_3": 3, "player_1": 1, "player_4": 1, "player_6": 1, "player_7": 1}, "predicted_eject": "player_3", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 was near a dead body and showed erratic movement. Player_6 had suspicious task behavior and movement patterns. Player_5 seems innocent based on consistent actions. Others lack info."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 has shown inconsistent behavior with multiple turns and no clear task progress, raising suspicion. Player_3 and Player_4 have been doing visual tasks consistently, earning higher trust. Player_5 has been toggling actions without clear purpose, seem suspicious. Others are either too passive or unclear in their movements."}, "player_3": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 has shown consistent task activity and logical movement without suspicion. player_6 seems uncertain with indirect movements, while others have low visibility or unclear actions, making their trust scores lower by default."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was near a dead body and showed suspicious movement patterns, while other players have shown consistent task behavior."}, "player_5": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 showed suspicious movements such as turning back and forth, while Player_6's path seemed erratic. Both are uncertain but lean towards being imposters. Others appear consistent with tasks. I'll vote 'skip' due to uncertainty."}, "player_6": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was seen repeatedly doing tasks at R01(7,15), which seems genuine. player_5's movements appear consistent and task-oriented. However, player_4 showed erratic movement between tiles without clear task focus, raising suspicion."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 and Player_5 have inconsistent movement patterns, with frequent turns that don't align with typical task behaviors. Player_4 shows varied actions without clear purpose, raising suspicion. Player_1 has multiple direction changes, appearing non-committal. Player_2's movements are overly repetitive, suggesting possible faking of tasks. Player_6 exhibits erratic pathing and rapid direction shifts, indicating possible Imposter behavior."}}}, {"step": 240, "round_key": "240", "n_votes": 7, "tally": {"player_3": 2, "player_7": 2, "player_2": 1, "player_4": 1, "player_5": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 is highly suspcious due to repeated location and actions without clear task progression, indicating possible Imposter behavior. Players 3,4,6,7 show consistent task-related movements and actions, appearing as Crewmates. Player_5's varied actions are uncertain but not definitively suspicious."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 and player_4 have been turning left and right repeatedly without clear purpose, showing erratic behavior. player_5 was moving forward but recently stayed near tasks, which is somewhat suspicious. Others like player_1 and player_6 seem consistent."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has been turning right and left erratically near R01(8,14), showing inconsistent movement patterns. Player_5 was moving forward in R00(7,3) which is unusual behavior while others are doing visual tasks."}, "player_4": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has High Trust due to doing Visual Tasks. Player_5 is also doing tasks but has mixed data. However, Player_7's repeated door actions are Suspicious, and Player_2 isn't completing tasks consistently. Therefore, I will vote for Player_7 as the most Suspicous."}, "player_5": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 and Player_4 show repeating patterns in their movements which is suspicious, but no clear evidence. Player_7's door actions seem consistent with normal behavior. I'll vote skip due to uncertainty."}, "player_6": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 has consistent task actions and movement, earning high trust. player_7 shows repetitive door behavior, appearing suspicious. Others have unclear activity, so I'll skip voting."}, "player_7": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 shows suspicious behavior with repeated strafing and inconsistent movement patterns, avoiding tasks. Player_3 has unstable actions oscillating between turning left and right. Player_1 and Player_2 have consistent but unverified actions. Player_4 appears normal, completing visual tasks consistently."}}}, {"step": 280, "round_key": "280", "n_votes": 7, "tally": {"player_4": 4, "player_1": 1, "player_2": 1, "player_3": 1}, "predicted_eject": "player_4", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 has low trust due to limited movement and repeated actions. Player_3 is completing visual tasks, earning high trust. Others' movements appear normal, no evidence of erratic behavior."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 has low trust due to erratic movement and no task completion. player_4 was moving erratically but saw them doing tasks, so medium trust. player_5 and player_6 were near a door but no clear signs of guilt. player_7 had repetitive actions, raising suspicion."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has inconsistent movements and was seen near suspicious areas multiple times, showing erratic behavior which raises red flags. Player_5's path seems overly evasive, avoiding main areas. Players 1,2,6,7 have consistent movement patterns without major discrepancies."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_100 was near a dead body and didn't report it, which is suspicious. Player_101 is doing visual tasks, so trust is high. Others have no clear evidence of being imposters."}, "player_5": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 has shown inconsistent movement and recently moved backward without clear purpose, raising suspicion. player_3 has also made erratic turns. Both actions could indicate Imposter behavior."}, "player_6": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 shows inconsistent movement and task patterns, staying in one area then moving erratically. player_5 has questionable behavior with repeated strafing. player_3's tasks don't align with their movement. player_7 keeps opening/closing doors without clear purpose."}, "player_7": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 has inconsistent movement and was near tasks but didn't complete them, raising suspicion. Other players show consistent task-oriented behavior."}}}, {"step": 320, "round_key": "320", "n_votes": 7, "tally": {"player_1": 2, "player_5": 2, "player_3": 1, "player_4": 1, "player_7": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7 shows repetitive behavior with door actions, raising suspicion. Player_5's movement seems erratic and untasked. Others have steady task patterns or understandable actions."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1's path shows repeated turns without task completion, appearing suspicious. player_7's repetitive door actions seem erratic, while others show more consistent task-oriented behavior."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 has no info but is Crewmate. player_1 and player_2 moved erratically. player_4 did tasks. player_5, player_6, player_7 have alibis. Voting player_1 due to suspicious movement."}, "player_4": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 appears near dead body and has erratic movement; low trust. Others have no red flags, so voting Player_5."}, "player_5": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 was near tasks and moved erratically, acting suspiciously without visual confirmations. Others have consistent behavior with some task verifications."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 shows inconsistent movement and no clear task completion. Player_3 has repetitive actions without progress. Both are suspicious."}, "player_7": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Players 3 and 6 show suspicious turning patterns without clear tasks. Others have inconsistent movements but no direct evidence of guilt."}}}, {"step": 360, "round_key": "360", "n_votes": 7, "tally": {"player_5": 3, "player_1": 2, "player_2": 1, "player_4": 1}, "predicted_eject": "player_5", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 has low trust due to repeated actions without clear purpose. Player_3's tasks seem genuine, so high trust. Player_4 shows consistency, high trust. Player_5 appears productive, medium trust. Player_6 and Player_7 have unclear behavior, medium trust."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 has been stationary and turning left repeatedly, showing potential stalling behavior. Player_3 and Player_4 have consistent movement patterns without clear task completion. Player_5, Player_6, and Player_7 show varied but possibly suspicious actions."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has been stationary at R01(8,18), showing no movement or task progress, which is suspicious and warrants a low trust score of 0.05. Player_6's repeated turning pattern near R01(9,12) without clear purpose raises suspicions with a trust score of 0.25. Other players like player_1 and player_2 seem to be following consistent paths, earning them higher trust scores around 0.8. Based on these observations, I will vote for the most suspicious player, which is player_4."}, "player_4": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5's erratic movement and repeated back-and-forth patterns raise suspicion. Player_7's consistent door actions seem normal, while others show mixed but less alarming behavior."}, "player_5": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_100 has been moving erratically and was near a dead body without reporting, raising suspicions. Player_101 is consistently doing visual tasks, making them appear trustworthy."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 shows inconsistent movement and task behavior, potentially indicating deception. Player_7 is repeatedly opening/closing doors without progress, appearing suspicious. Player_3 has erratic pathing patterns that raise doubt."}, "player_7": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has inconsistent movement patterns, frequently changing direction without clear purpose, which raises suspicion. Player_5 exhibits erratic pathing and task behavior, warranting low trust. I will vote for Player_5 as their actions appear more suspicious overall."}}}, {"step": 400, "round_key": "400", "n_votes": 7, "tally": {"player_7": 3, "player_5": 2, "player_2": 1, "player_3": 1}, "predicted_eject": "player_7", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2's path loops at R10(14,4), showing potential stalling behavior. Player_3's repeated turns at R01(8,15) seem suspicious. Player_6 has consistent turning pattern at R01(9,12), which might indicate Imposter evasion. I'll vote for player_2 as they seem the most erratic."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has been moving erratically and repeating actions without clear progress, raising suspicions. Player_5 appears inconsistent in task behavior. Other players' movements seem more purposeful."}, "player_3": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 moved erratically between rooms without clear purpose, showing suspicious behavior. player_7 repeatedly opening and closing doors seems untrustworthy. player_6 stuck turning right constantly, which is odd. Others like player_1, 2, and 4 have consistent movements."}, "player_4": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_100 has been repeatedly turning right at the same position R01(8,18), showing stalling behavior which is suspicious. Player_101 turned left multiple times near the same area, indicating possible evasion tactics. Players 102 and 103 have consistent movement patterns with mixed signals but nothing conclusive."}, "player_5": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7 shows repetitive door behavior without progress, suggesting possible sabotage. Player_3 and Player_4 have consistent turning patterns that may indicate evasion. Player_6 has slight movement inconsistencies but not enough to confirm guilt."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 moved erratically and was near a dead body. Player_3 has low engagement in tasks. Player_7's repetitive actions are suspicious."}, "player_7": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 is moving erratically and has no clear task pattern, raising suspicion. Player_6's repetitive actions at R01(9,12) are unusual. Others have consistent behaviors but need more info."}}}, {"step": 440, "round_key": "440", "n_votes": 7, "tally": {"player_5": 3, "player_4": 2, "player_1": 1, "player_7": 1}, "predicted_eject": "player_5", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 and player_6 show inconsistent movement patterns, while player_7's repetitive door actions are suspicious. player_5's task progression seems genuine."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 is repeatedly turning right at R01(8,18), which seems suspicious and inconsistent. player_5 moved erratically, changing direction multiple times near R00(9,7). player_3 has consistent movement but no clear tasks observed. player_6 showed mixed signals with varied turns but mostly stayed at R01(9,12)."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 was doing visual tasks like moving forward and turning, which seems genuine. Player_7's door opening/closing pattern appears consistent and not erratic. However, player_4 has repeated similar paths without clear task progression, raising suspicion."}, "player_4": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has inconsistent movements and was near tasks without clear progress. Player_7 repeatedly opens/closes doors, appearing suspicious. I'm uncertain about others, so I'll skip voting."}, "player_5": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_100 was near a dead body and didn't report it, which raises suspicion. Player_7 has consistent door actions, seeming reliable. Other players' movements are mixed, but no clear red flags beyond Player_100."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 moved erratically and seems suspicious with inconsistent actions. Player_7 stayed near doors, which could be hiding something. Player_1, Player_2, and Player_3 have consistent movements, making them seem more trustworthy."}, "player_7": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has inconsistent movement and task actions, appearing suspicious. Player_3 shows erratic pathing without clear purpose. Other players exhibit mostly consistent behavior, but without enough info."}}}, {"step": 480, "round_key": "480", "n_votes": 7, "tally": {"player_3": 2, "player_5": 2, "player_1": 1, "player_6": 1, "player_7": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has been moving erratically, showing suspicious behavior with frequent turns and inconsistent actions. Player_5's repeated back-and-forth movement near R10(18,9) seems odd. Player_7 is stuck in a loop of opening and closing doors without progress, indicating possible impostor activity. Player_2 and player_4 have shown some consistent task-related movements. Player_6 appears to be following standard procedures without erratic behavior."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 had inconsistent movement and actions, appearing suspicious. Player_7's repetitive door actions seem eerie. Others showed no clear signs of guilt."}, "player_3": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 was observed oscillating between R00 and R10 without clear purpose, actions like MOVE_FORWARD and MOVE_BACKWARD suggest possible stalling behavior which raises suspicion. Player_7's repeated door interactions (OPEN_DOOR and CLOSE_DOOR) are questionable as they don't align with typical Crewmate tasks."}, "player_4": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 frequently moved back and forth near R10(18,9), showing erratic behavior. Player_3 was seen turning right unexpectedly while others turned left. Player_7 repeatedly opened and closed doors without clear purpose."}, "player_5": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7's repeated door actions seem suspicious without clear purpose. Player_4 and Player_6 show inconsistent movement patterns, while others have steady behavior."}, "player_6": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_6 shows stalled movement and loops in place, which is suspicious. Others are moving consistently without major red flags."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Self has been stagnant, repeatedly opening and closing doors without progress. Players 1,2,3,4,5 remain active with varied tasks, showing no clear red flags. Player_6 is suspicious due to repetitive actions in one spot."}}}, {"step": 520, "round_key": "520", "n_votes": 7, "tally": {"player_5": 4, "player_3": 2, "player_7": 1}, "predicted_eject": "player_5", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 and Player_7 show repetitive actions without progress, indicating possible stalling. Player_4 has consistent behavior with no suspicious patterns. Others have mixed movements but nothing conclusive."}, "player_2": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 and Player_5 show consistent task activity, earning high trust. Player_7's repetitive door actions are suspicious, lowering their score. Player_1 has no notable behavior, remaining neutral. Voting for Player_7 due to erratic actions."}, "player_3": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 shows erratic movement, moving back and forth without clear purpose. player_7 is repeatedly opening and closing doors, appearing suspicious. player_4 has consistent turning pattern which might indicate looping. I'll vote skip due to uncertainty."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 had inconsistent movements and was near suspicious areas without clear tasks. player_5 showed unusual movement patterns, moving erratically between locations. Others seem to be following consistent task behaviors."}, "player_5": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has inconsistent movement and task behavior, raising suspicion. Player_7 shows repetitive door actions without progress, appearing suspicious."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has inconsistent movement and tasks, showing suspicious behavior. Player_1, Player_2, Player_3, and Player_4 have predictable patterns. Player_7's repetitive door actions seem unusual but not definitively Imposter-like."}, "player_7": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_7 is myself with High Trust. player_5 moved erratically and didn't complete tasks - Low Trust. Others have Medium Trust as their actions are consistent but unverified."}}}, {"step": 560, "round_key": "560", "n_votes": 7, "tally": {"player_1": 2, "player_4": 2, "player_2": 1, "player_3": 1, "player_7": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 and Player_3 have consistent movement patterns and task completions, suggesting they are likely Crewmates. Player_4 shows repetitive actions which could indicate Imposter behavior. Player_5 and Player_6 have inconsistent movements, making them suspicious. Player_7's repeated door actions seem artificial, indicating possible imposture."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 has constant movement and actions without clear purpose at R01(5,14). Player_3 shows varied actions but remains unclear. Players 4-7 have repetitive patterns but no direct signs of guilt. Player_1's behavior seems more erratic compared to others."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 and Player_2 have low trust scores due to repetitive actions without clear task progress, appearing suspicious. Player_7's consistent door activity seems genuine. Others show mixed signals, but Player_4's steady movement is more trusting."}, "player_4": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has shown consistent movement and task behavior, clearing them as likely Crewmate. Player_7's repeated door actions are suspicious, indicating possible sabotage attempts by an Imposter."}, "player_5": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 has shown inconsistent movement patterns and was near a dead body without reporting. player_6 exhibited erratic behavior by frequently turning back, which is suspicious. player_7 repeated opening and closing doors without clear purpose, raising concerns. Other players' movements appear more consistent and task-oriented."}, "player_6": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Players showing repetitive, looped behavior like player_4 and player_5 are suspicious. Player_7 has consistent door actions, seeming genuine. Others have mixed or unclear behaviors."}, "player_7": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 moved erratically between tiles and showed no clear purpose, raising suspicion. Other players' movements appear consistent with normal behavior without erratic actions."}}}, {"step": 600, "round_key": "600", "n_votes": 7, "tally": {"player_1": 2, "player_7": 2, "player_3": 1, "player_4": 1, "player_6": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 is repeatedly turning right at the same position, showing erratic behavior. player_5 moved erratically between locations without clear purpose. player_6 also has unstable movement patterns."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved erratically and was near the dead body without reporting, making them highly suspicious. Other players showed normal movement patterns and task behavior, earning them higher trust scores."}, "player_3": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 and Player_7 are moving erratically near doors and have unclear intent, raising suspicion of being Imposters."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 and player_5 showed repetitive actions without clear task progression, indicating possible impostor behavior. Player_7 repeatedly opening/closing doors is suspicious."}, "player_5": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_6 was near a dead body and moved erratically. Player_3 and Player_7 have been near tasks but their behavior is unclear."}, "player_6": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 and player_5 have no reported tasks or suspicious movements. player_7's repetitive door actions are low trust. Voting player_7 due to their consistent, unproductive behavior."}, "player_7": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 shows looping behavior, opening and closing the door repeatedly without progress, indicating possible Imposter activity. Player_2 is consistently moving forward and doing tasks, appearing trustworthy. Players 3-6 have mixed movements but no clear red flags."}}}, {"step": 640, "round_key": "640", "n_votes": 7, "tally": {"player_4": 3, "player_3": 2, "player_7": 2}, "predicted_eject": "player_4", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 was doing tasks consistently and moving clearly, earning high trust. player_3 showed mixed movements but no clear malicious intent. player_4 moved erratically between tiles without clear purpose, raising suspicion. player_5 had unstable movement patterns, which could indicate impostor behavior. player_6 and player_7 both exhibited repetitive actions near the same locations, which might be suspicious for possible faking tasks."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has inconsistent movement patterns and no clear task progress, raising suspicion. Player_5's movements seem erratic without purpose. Other players show more consistent behavior related to tasks or patrolling."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 shows oscillating movement, moving between R01(8,18), R01(8,16), and R01(9,15). Such repeated back-and-forth movements are suspicious. Player_7 is repeatedly opening and closing the door at R01(7,11) without progress, which also raises concerns as it indicates possible stalling or hiding."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has been moving erratically and is at R01(5,12), while Player_7's repeated door actions are suspicious. Player_1 and Player_5 seem less suspicious with their tasks. I'll vote skip due to some uncertainty."}, "player_5": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 is doing mixed actions and seems suspicious but not enough evidence to confirm. Player_7's repetitive door behavior is concerning, indicating possible Imposter activity. Others seem normal with no major red flags."}, "player_6": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7 shows repetitive door behavior, acting suspiciously. Player_3 has erratic movement patterns. I'll vote skip due to uncertainty."}, "player_7": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 shows suspicious movement with repeated strafing and direction changes, indicating possible erratic behavior. player_5 has inconsistent movement patterns, making them uncertain. player_3's movements seem more consistent and task-oriented."}}}, {"step": 680, "round_key": "680", "n_votes": 7, "tally": {"player_6": 2, "player_7": 2, "player_1": 1, "player_3": 1, "player_4": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has shown possible stalling behavior with repeated actions and loop alerts, making them suspicious. Player_7's consistent door actions may indicate nervousness or faked tasks, lowering their trust. Other players show normal task behaviors without clear red flags."}, "player_2": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 and Player_6 show suspicious behavior with repeated turning near tasks, indicating possible fakes. Player_7 is consistently at the same location, opening and closing doors repeatedly, which seems staged. Player_4 has been strafing right multiple times, a common impostor tactic to avoid collision detection. Player_1 is moving erratically between tiles, raising suspicion. Player_5's movements seem normal but not enough for high trust."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 has been moving erratically and near where tasks were done by others, raising suspicion. Player_2 and Player_4 have shown consistent task behavior which gives them higher trust scores. The rest are uncertain due to limited observations."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 shows oscillating behavior with repeated back-and-forth movement and no clear task completion. player_5 has unusual turning patterns without much progress. both are suspicious."}, "player_5": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "(player_6 stuck near R01(9,12) oscillates directions without progress, raises suspicions of stalling; player_7 repeatedly opening/closing doors at R01(7,11) appears suspicious & avoidant; player_1 and player_3 displayed mixed erratic movements but less indicative.)"}, "player_6": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7's repetitive door actions without progress are suspicious. The others have shown consistent movement patterns and task engagements, making them more trustworthy."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 shows consistent movement and task behavior without erratic actions, earning high trust. Player_6 has repeated similar actions in the same area, appearing suspicious with little progress, warranting low trust. Other players have mixed or unclear behavior."}}}, {"step": 720, "round_key": "720", "n_votes": 7, "tally": {"player_4": 5, "player_1": 1, "player_5": 1}, "predicted_eject": "player_4", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 is acting suspiciously with repeated turning at R11(14,18), possible stalling. Player_7's door actions seem inconsistent, maybe hiding something. Others have consistent movement patterns, but player_3's back and forth near R01(1,17-19) raises some suspicion."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 is stationary and not completing tasks, appears suspicious. Player_5 is also showing erratic turn behavior without progress. I'll trust others more."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4's repetitive turning without clear progress is suspicious and earns a low trust score of 0.3. Player_7's consistent door actions suggest genuine task behavior with a trust score of 0.8. Other players like Player_1 and Player_2 show mixed activities, but no concrete evidence points to them as Imposters. Therefore, I vote for Player_4 due to their erratic movement pattern."}, "player_4": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has been stationary and oscillating actions, appearing suspicious. Player_3 shows consistent back-and-forth movement near the edge, which could indicate evasion. Player_7's repeated door actions without clear progress seem odd. Others like player_1 and player_2 show more varied movements, making them less suspicious."}, "player_5": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 observed self looping and stalling, which is suspicious. Player_3 shows consistent movement but no clear task, raising concerns. Others have mixed signals without definite evidence."}, "player_6": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_100 has low trust due to being near a dead body and no alibi. Player_101 is doing tasks, seems trustworthy. Others have inconsistent movements but not enough info."}, "player_7": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 shows repetitive turning behavior at the same location, which is suspicious and may indicate impostor activity. Others have no clear red flags but are uncertain due to limited information."}}}, {"step": 760, "round_key": "760", "n_votes": 7, "tally": {"player_3": 3, "player_1": 1, "player_4": 1, "player_5": 1, "player_7": 1}, "predicted_eject": "player_3", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 and player_3 showed repetitive movements without clear purpose, raising suspicion. player_5 and player_7 demonstrated inconsistent actions, while player_4 and player_6 had unclear tasks. player_7 interacted with a door early on which could indicate impostor behavior."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 and Player_4 have repetitive movement patterns, which could indicate stalls or loops, raising suspicion. Player_5 shows inconsistent directions, suggesting possible evasion. Player_7's task completions seem genuine, earning higher trust."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has been stalling and moving erratically without clear task progress, raising suspicions. Player_5 shows inconsistent movement patterns, which are unclear but not definitively impostor-like. Other players' movements appear more consistent with crewmate tasks."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 and player_6 show suspicious movement patterns with repeated turning and minimal task engagement, indicating possible Imposter behavior."}, "player_5": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_100 has shown suspicious behavior by repeatedly turning in place and appears stuck at R10(18,8), indicating possible stalling or loitering near a potential crime scene. Player_101 is performing visible tasks such as DO_TASKs, which adds to their credibility. Player_102 shows uncertainty with mixed actions like MOVE_FORWARD and TURN_BACK. Players 103, 104, and 105 are not observed in the history, leaving their trust scores at medium. Player_106's behavior is unclear but doesn't show definite signs of being an imposter."}, "player_6": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 has consistent movement patterns and performed tasks normally. Player_3 showed repeated back-and-forth movements which are suspicious. Player_4's actions seem erratic, moving forward and turning frequently. I'm uncertain about others."}, "player_7": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 was near a dead body and moved erratically. Player_3 has no suspicious behavior observed. Others have unclear actions, so their trust is uncertain."}}}, {"step": 800, "round_key": "800", "n_votes": 7, "tally": {"player_6": 3, "player_4": 2, "player_3": 1, "player_7": 1}, "predicted_eject": "player_6", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_6 was moving erratically and near tasks, raising suspicion. Others like player_3 and player_4 have unclear actions but not enough evidence to be certain. I'll vote skip due to uncertainty."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 is showing repetitive behavior, consistently turning left and right without clear purpose. Player_7 has been stationary near a task location, which might indicate pretending. Player_3 and Player_5 have been moving erratically between similar positions. Trust scores reflect uncertainty due to inconclusive actions."}, "player_3": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 and Player_5 have high trust scores due to consistent task activity; Player_6 appears suspicious with inconsistent movement patterns near the dead body, assigning lower trust score of 0.3; voting for Player_6 as the lowest trust score."}, "player_4": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has a consistent pattern of movement and task completion, earning a high trust score. Player_7 shows suspicious behavior with multiple direction changes and no clear task focus, leading to a low trust score. Other players have mixed or uncertain behaviors but are less suspicious than Player_7."}, "player_5": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7 was completing tasks and has consistent movement. Player_6 moved erratically and often changed direction, raising suspicion. Player_3 and Player_4 showed repeated turning patterns, which might indicate imitation. Player_1 and Player_2 have unclear behavior but no clear red flags. Player_5 is myself, so not evaluated."}, "player_6": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7 cleared by completing tasks repeatedly. Player_3 and Player_4 show suspicious looping behavior without clear task progress, indicating possible imposters."}, "player_7": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 and Player_6 show suspicious behavior with repeated actions and no clear task progress, indicating possible imposters."}}}, {"step": 840, "round_key": "840", "n_votes": 7, "tally": {"player_4": 4, "player_3": 2, "player_6": 1}, "predicted_eject": "player_4", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4's repeated turning patterns and lack of task progression raise suspicion. Player_6 performing tasks gives some credibility."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 is stuck in a loop of turning left and right without moving, which is suspicious. Player_3 and Player_5 have inconsistent movements. Player_6 was doing tasks but moved erratically. I'll vote for Player_4 as they seem the most suspicious."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has been turning frequently without clear purpose, raising suspicion. Player_6 was doing tasks but moved erratically afterward, which is concerning. Player_7's task behavior seems inconsistent, lowering trust."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 was near a dead body and showed erratic movement. Player_5 has been moving suspiciously without clear tasks, while others are doing visual tasks or moving logically."}, "player_5": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has inconsistent rotation pattern, raising suspicion of being Imposter. Player_2 and Player_7 show stable task engagement, gaining higher trust."}, "player_6": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has been moving erratically and near tasks without completing them, appearing suspicious. Player_5 showed inconsistent movement patterns, turning frequently without clear purpose. Player_7 was seen doing tasks but also moved backward multiple times, raising uncertainty."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_6 was near a dead body and moved erratically. player_3 showed suspicious looping behavior. Both have low trust scores due to inconsistent actions."}}}, {"step": 880, "round_key": "880", "n_votes": 7, "tally": {"player_4": 5, "player_1": 1, "player_5": 1}, "predicted_eject": "player_4", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7 has inconsistent movement and was near the area without clear task completion, raising suspicion. Player_4 shows repetitive actions with no visible task, indicating potential impostor activity."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 has been turning right consistently without clear purpose, raising suspicion.player_6 moved toward area with others, could be surveillance.player_7's erratic path suggests possible avoidance of tasks."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 shows consistent turning without progress, appearing suspicious. player_5 has varied movements, raising uncertainty. Others seem normal with some visual task potential."}, "player_4": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 has inconsistent movement and looped at R11 without tasks. player_7 moved erratically near R10 and R18, avoiding typical paths."}, "player_5": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 notices player_4 is frequently turning right and left without progress, indicating possible stalling or impersonation. Player_7 has sporadic movement with backtrack, raising suspicion. Other players show more consistent task-oriented behavior."}, "player_6": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 shows inconsistent movement patterns and stuck in a loop with repetitive actions, raising suspicion. player_7 has erratic pathing and velocity changes. player_5's actions seem consistent. No clear evidence against others."}, "player_7": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_100 shows suspicious movement, frequently moving back and forth without clear purpose. Player_101 is consistently doing visual tasks and appears trustworthy. Other players have mixed or unclear behavior, making them medium trust."}}}, {"step": 920, "round_key": "920", "n_votes": 7, "tally": {"player_4": 5, "player_3": 2}, "predicted_eject": "player_4", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 and player_3 have low trust scores due to erratic movement patterns and proximity to suspicious areas, suggesting potential Imposter behavior. Player_6 is uncertain but shows mixed signals, while others remain neutral with no clear evidence."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has shown inconsistent movement and frequent turning without clear direction, raising suspicion. Player_6 displayed erratic pathing near the end, suggesting possible Imposter behavior. Other players' movements seem more consistent with Crewmate tasks."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 has been repeatedly turning in place without moving much, appearing suspicious and unproductive. player_6 moved erratically between tiles without clear purpose. player_5 had inconsistent movement patterns, raising concerns."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 has inconsistent movements and was near R01(9,11), which seems suspicious. player_5 stayed too long at R10(18,8). All others seem normal with consistent tasks."}, "player_5": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has shown inconsistent movement patterns, frequently turning right and left without clear purpose, which is suspicious. Player_3 moved erratically between different rooms quickly, raising doubts about their intentions. Both players' behaviors are not definitively impostor-like but warrant closer observation."}, "player_6": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has been turning in place repeatedly, which is suspicious and erratic behavior. Player_5 shows inconsistent movements, raising flags. Player_7 seems uncertain with mixed actions, while others have clearer paths. I'll vote for the most erratic one."}, "player_7": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 and player_5 have suspiciously repetitive movements and no clear tasks. player_3 is completing tasks, earning high trust."}}}];
+    const trust = {"targets": [], "series_all": {}, "series_crewmate": {}, "series_imposter": {}};
+    const taskProgressSources = {"player_1": "activity/viz_crewmate_player_1/parsed_turns.jsonl", "player_2": "activity/viz_crewmate_player_2/parsed_turns.jsonl", "player_3": "activity/viz_crewmate_player_3/parsed_turns.jsonl", "player_4": "activity/viz_crewmate_player_4/parsed_turns.jsonl", "player_5": "activity/viz_crewmate_player_5/parsed_turns.jsonl", "player_6": "activity/viz_crewmate_player_6/parsed_turns.jsonl", "player_7": "activity/viz_crewmate_player_7/parsed_turns.jsonl"};
+
+    function fmtPct(x) {
+      if (x === null || x === undefined) return '—';
+      return (100.0 * x).toFixed(1) + '%';
+    }
+
+    // ---------- Voting rounds table/cards ----------
+    const container = document.getElementById('voteRounds');
+    if (container) {
+      if (!voteRounds || voteRounds.length === 0) {
+        container.innerHTML = "<div class='muted' style='margin-top:10px;'>(no voting logs found)</div>";
+      } else {
+        const parts = [];
+        for (const r of voteRounds) {
+          const step = (r.step !== null && r.step !== undefined) ? r.step : r.round_key;
+          const pred = r.predicted_eject ? (r.predicted_eject + (r.predicted_eject_is_imposter ? " (imposter)" : " (crewmate)")) : "tie/skip";
+          const tallyStr = Object.entries(r.tally || {}).map(([k,v]) => k + ":" + v).join(", ");
+
+          const voters = Object.entries(r.per_voter || {})
+            .map(([v, info]) => {
+              const role = (info.role || '').toLowerCase().startsWith('imp') ? 'imposter' : 'crewmate';
+              const pill = role === 'imposter' ? "pill imp" : "pill crew";
+              const vote = info.vote || 'skip';
+              const flags = [];
+              if (info.target_is_imposter) flags.push("target=imposter");
+              if (info.target_is_crewmate) flags.push("target=crewmate");
+              if (info.is_skip) flags.push("skip");
+              const thought = info.thought || '';
+              return `
+                <tr>
+                  <td class="mono">${v}</td>
+                  <td><span class="${pill}">${role}</span></td>
+                  <td class="mono">${vote}</td>
+                  <td class="mono">${flags.join(", ") || "—"}</td>
+                  <td>${thought ? thought : "—"}</td>
+                </tr>
+              `;
+            })
+            .join("");
+
+          parts.push(`
+            <details style="margin-top: 10px;">
+              <summary>Round step ${step} · crewAcc ${fmtPct(r.accuracy_crewmate_detect_imposter)} · impAcc ${fmtPct(r.accuracy_imposter_vote_crewmate)} · predicted eject: ${pred}</summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">${tallyStr || "—"}</span></div>
+              <table>
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>flags</th><th>thought</th></tr></thead>
+                <tbody>${voters || "<tr><td colspan='5' class='muted'>(no voters)</td></tr>"}</tbody>
+              </table>
+            </details>
+          `);
+        }
+        container.innerHTML = parts.join("");
+      }
+    }
+
+    // ---------- Plot: voting accuracy ----------
+    function drawVoteAcc(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!voteRounds || voteRounds.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No voting data.', 12, 24);
+        return;
+      }
+
+      const pts = voteRounds
+        .map((r, i) => {
+          const x = (r.step !== null && r.step !== undefined) ? r.step : i;
+          return {
+            x,
+            crew: r.accuracy_crewmate_detect_imposter,
+            imp: r.accuracy_imposter_vote_crewmate,
+            any: r.accuracy_any_detect_imposter,
+          };
+        });
+
+      const xs = pts.map(p => p.x);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('accuracy', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      function drawLine(key, color, width) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        let started = false;
+        for (const p of pts) {
+          const y = p[key];
+          if (y === null || y === undefined) continue;
+          const x = sx(p.x);
+          const yy = sy(y);
+          if (!started) { ctx.moveTo(x, yy); started = true; }
+          else ctx.lineTo(x, yy);
+        }
+        if (started) ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+
+      drawLine('any', '#111827', 4);
+      drawLine('crew', '#1d4ed8', 2);
+      drawLine('imp', '#dc2626', 2);
+
+      // Legend
+      ctx.fillStyle = '#111827';
+      ctx.fillRect(padL + innerW - 170, padT + 10, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('any (vote=imposter)', padL + innerW - 154, padT + 19);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(padL + innerW - 170, padT + 28, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('crewmates', padL + innerW - 154, padT + 37);
+
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(padL + innerW - 170, padT + 46, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('imposters', padL + innerW - 154, padT + 55);
+    }
+
+    // ---------- Plot: trust trends (mean) ----------
+    function drawTrust(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      const seriesAll = (trust && trust.series_all) ? trust.series_all : null;
+      const targets = (trust && trust.targets) ? trust.targets : [];
+      if (!seriesAll || !targets || targets.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust snapshot data (step_*_scores.json).', 12, 24);
+        return;
+      }
+
+      // Choose up to 8 targets with most points (or just first).
+      const scored = targets.map(t => {
+        const pts = seriesAll[t] || [];
+        return { t, n: pts.length };
+      }).sort((a,b) => b.n - a.n);
+      const chosen = scored.slice(0, 8).map(x => x.t);
+
+      const allPts = [];
+      for (const t of chosen) {
+        for (const p of (seriesAll[t] || [])) allPts.push(p);
+      }
+      if (allPts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust points.', 12, 24);
+        return;
+      }
+
+      const xs = allPts.map(p => p[0]);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('mean trust', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      const palette = ['#1d4ed8','#c026d3','#16a34a','#f59e0b','#0ea5e9','#dc2626','#7c3aed','#334155'];
+      function colorFor(i) { return palette[i % palette.length]; }
+
+      chosen.forEach((t, idx) => {
+        const pts = (seriesAll[t] || []).slice().sort((a,b) => a[0] - b[0]);
+        if (!pts.length) return;
+        ctx.strokeStyle = colorFor(idx);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        pts.forEach((p, i) => {
+          const x = sx(p[0]), y = sy(p[1]);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      });
+
+      // Legend (right)
+      ctx.font = '12px ui-sans-serif, system-ui';
+      let lx = padL + innerW - 8;
+      let ly = padT + 14;
+      chosen.forEach((t, idx) => {
+        ctx.fillStyle = colorFor(idx);
+        ctx.fillRect(lx - 12, ly - 9, 10, 10);
+        ctx.fillStyle = '#111';
+        const label = t;
+        const w = ctx.measureText(label).width;
+        ctx.fillText(label, lx - 16 - w, ly);
+        ly += 16;
+      });
+    }
+
+    // ---------- Overall task completion ----------
+    async function fetchJsonl(url) {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`fetch failed (${res.status}) for ${url}`);
+      const text = await res.text();
+      const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
+      const out = [];
+      for (const ln of lines) {
+        try { out.push(JSON.parse(ln)); } catch (e) { /* ignore malformed */ }
+      }
+      return out;
+    }
+
+    function buildPlayerSeries(turns) {
+      const m = new Map();
+      for (const r of (turns || [])) {
+        const step = (r.step !== null && r.step !== undefined) ? r.step : r.idx;
+        const done = Array.isArray(r.finished_tasks) ? r.finished_tasks.length : 0;
+        const todo = Array.isArray(r.tasks_to_complete) ? r.tasks_to_complete.length : 0;
+        const total = done + todo;
+        if (typeof step === 'number') m.set(step, { done, total });
+      }
+      const steps = Array.from(m.keys()).sort((a,b) => a - b);
+      return steps.map(s => ({ step: s, done: m.get(s).done, total: m.get(s).total }));
+    }
+
+    function unionSteps(seriesByPlayer) {
+      const all = new Set();
+      for (const s of Object.values(seriesByPlayer)) {
+        for (const p of s) all.add(p.step);
+      }
+      return Array.from(all).sort((a,b) => a - b);
+    }
+
+    function computeOverallSeries(seriesByPlayer) {
+      const players = Object.keys(seriesByPlayer);
+      const steps = unionSteps(seriesByPlayer);
+      const idxByPlayer = Object.fromEntries(players.map(p => [p, 0]));
+      const lastByPlayer = Object.fromEntries(players.map(p => [p, { done: 0, total: 0, has: false }]));
+
+      const out = [];
+      for (const step of steps) {
+        let doneSum = 0;
+        let totalSum = 0;
+        for (const player of players) {
+          const series = seriesByPlayer[player] || [];
+          let i = idxByPlayer[player] || 0;
+          while (i < series.length && series[i].step <= step) {
+            lastByPlayer[player] = { done: series[i].done, total: series[i].total, has: true };
+            i += 1;
+          }
+          idxByPlayer[player] = i;
+          const last = lastByPlayer[player];
+          if (last && last.has && last.total > 0) {
+            doneSum += last.done;
+            totalSum += last.total;
+          }
+        }
+        const pct = totalSum ? (doneSum / totalSum) : 0;
+        out.push({ step, done: doneSum, total: totalSum, pct });
+      }
+      return out;
+    }
+
+    function drawTaskProgress(canvasId, pts) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!pts || pts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No task progress data.', 12, 24);
+        return;
+      }
+
+      const xs = pts.map(p => p.step);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('task completion', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      // Line
+      ctx.strokeStyle = '#16a34a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      pts.forEach((p, i) => {
+        const x = sx(p.step);
+        const y = sy(p.pct);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.lineWidth = 1;
+    }
+
+    async function initOverallTaskProgress() {
+      const summaryEl = document.getElementById('taskProgressSummary');
+      const barEl = document.getElementById('taskProgressBar');
+
+      const entries = taskProgressSources ? Object.entries(taskProgressSources) : [];
+      if (!entries.length) {
+        if (summaryEl) summaryEl.textContent = '(no parsed_turns.jsonl files found)';
+        return;
+      }
+
+      try {
+        const seriesByPlayer = {};
+        await Promise.all(entries.map(async ([player, url]) => {
+          const turns = await fetchJsonl(url);
+          seriesByPlayer[player] = buildPlayerSeries(turns);
+        }));
+
+        const pts = computeOverallSeries(seriesByPlayer);
+        const last = pts.length ? pts[pts.length - 1] : null;
+        const pctTxt = (!last || !last.total) ? '—' : (100 * last.pct).toFixed(1) + '%';
+        if (summaryEl && last) summaryEl.innerHTML = `<b>${pctTxt}</b> · ${last.done}/${last.total} tasks complete (step ${last.step})`;
+        if (barEl && last) barEl.style.width = (!last || !last.total) ? '0%' : (100 * last.pct).toFixed(1) + '%';
+        drawTaskProgress('plotTaskProgress', pts);
+      } catch (e) {
+        if (summaryEl) summaryEl.textContent = `(failed to load task progress: ${e && e.message ? e.message : e})`;
+      }
+    }
+
+    drawVoteAcc('plotVoteAcc');
+    drawTrust('plotTrust');
+    initOverallTaskProgress();
+  </script>
+</body>
+</html>

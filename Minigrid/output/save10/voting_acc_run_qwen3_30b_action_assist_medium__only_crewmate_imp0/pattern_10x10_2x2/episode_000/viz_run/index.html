@@ -1,0 +1,524 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LLM Run Report (activity + voting + trust)</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; color: #111; }
+    .muted { color: #666; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .box { border: 1px solid #ddd; border-radius: 12px; padding: 12px 14px; background: #fafafa; }
+    h2, h3 { margin: 0 0 10px 0; }
+    h3 { font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eee; text-align: left; padding: 6px 8px; font-size: 13px; vertical-align: top; }
+    th { background: #fbfbfb; position: sticky; top: 0; }
+    details { border: 1px solid #e2e2e2; border-radius: 12px; padding: 10px 12px; background: white; }
+    details[open] { border-color: #cfcfcf; box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
+    summary { cursor: pointer; font-weight: 650; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; background: #fff; }
+    .pill.imp { border-color: #fecaca; background: #fff1f2; }
+    .pill.crew { border-color: #bfdbfe; background: #eff6ff; }
+    canvas { width: 100%; height: auto; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+    .outcome { margin-top: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid #ddd; background: #fff; }
+    .outcome.crewwin { border-color: #bfdbfe; background: #eff6ff; }
+    .outcome.impwin { border-color: #fecaca; background: #fff1f2; }
+    .outcome.inconclusive { border-color: #fde68a; background: #fffbeb; }
+    .outcome.unknown { border-color: #e5e7eb; background: #f9fafb; }
+    .roster { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px; margin-top: 10px; }
+    .roster-item { padding: 8px 10px; border: 1px solid #eee; border-radius: 10px; background: #fff; }
+    .roster-item.dead { opacity: 0.55; text-decoration: line-through; }
+    .thoughtSmall { max-height: 120px; overflow: auto; white-space: pre-wrap; }
+    .progressWrap { margin-top: 10px; height: 12px; background: #eee; border-radius: 999px; overflow: hidden; border: 1px solid #e5e5e5; }
+    .progressBar { height: 100%; width: 0%; background: linear-gradient(90deg, #16a34a, #22c55e); }
+  </style>
+</head>
+<body>
+  <h2>LLM Run Report</h2>
+  <div class="muted">Run dir: <span class="mono">/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save10/voting_acc_run_qwen3_30b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/episode_000</span></div>
+  <div class="outcome crewwin">
+    <div><b>Outcome: crewmates won</b></div>
+    <div class="muted">All imposters eliminated (inferred).</div>
+  </div>
+
+  <div class="row" style="margin-top: 14px;">
+    <div class="box" style="min-width: 320px;">
+      <h3>Roles</h3>
+      <div style="margin-bottom: 8px;">
+        <span class="pill crew">Crewmates: 7</span>
+        <span class="pill imp">Imposters: 0</span>
+      </div>
+      <table>
+        <thead><tr><th>agent</th><th>role</th></tr></thead>
+        <tbody>
+          <tr><td class='mono'>player_1</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_2</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_3</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_4</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_5</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_6</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_7</td><td>Crewmate</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Activity reports</h3>
+      <div class="muted">These are generated using the same parsing logic as <span class="mono">visualize_llm_log.py</span>.</div>
+      <ul>
+        <li><a href='agent/crewmate_player_1.html'>crewmate_player_1.log (turns=1500)</a></li>
+<li><a href='agent/crewmate_player_2.html'>crewmate_player_2.log (turns=1500)</a></li>
+<li><a href='agent/crewmate_player_3.html'>crewmate_player_3.log (turns=1500)</a></li>
+<li><a href='agent/crewmate_player_4.html'>crewmate_player_4.log (turns=1500)</a></li>
+<li><a href='agent/crewmate_player_5.html'>crewmate_player_5.log (turns=120)</a></li>
+<li><a href='agent/crewmate_player_6.html'>crewmate_player_6.log (turns=200)</a></li>
+<li><a href='agent/crewmate_player_7.html'>crewmate_player_7.log (turns=280)</a></li>
+      </ul>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Overall task completion</h3>
+      <div id="taskProgressSummary" class="muted">Loading task progress…</div>
+      <div class="progressWrap" aria-label="task completion progress">
+        <div id="taskProgressBar" class="progressBar"></div>
+      </div>
+      <div style="margin-top: 10px;">
+        <canvas id="plotTaskProgress" width="900" height="260"></canvas>
+      </div>
+      <div class="muted">
+        Computed from per-agent <span class="mono">parsed_turns.jsonl</span> using
+        <span class="mono">finished_tasks</span> / (<span class="mono">finished_tasks</span> + <span class="mono">tasks_to_complete</span>) at each step.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top: 14px;">
+    <div class="box">
+      <h3>Voting accuracy over rounds</h3>
+      <canvas id="plotVoteAcc" width="900" height="260"></canvas>
+      <div class="muted">
+        Crewmate accuracy = fraction of crewmates voting an imposter. Imposter accuracy = fraction of imposters voting a crewmate. Skip counts as incorrect.
+      </div>
+    </div>
+    <div class="box">
+      <h3>Trust (mean) over time</h3>
+      <canvas id="plotTrust" width="900" height="260"></canvas>
+      <div class="muted">
+        Uses <span class="mono">trust_scores/step_*_scores.json</span> if present (runner snapshots). Shows mean trust per target across raters.
+      </div>
+    </div>
+  </div>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Voting rounds (details)</summary>
+    <div class="muted" style="margin-top: 6px;">Click a round to expand per-voter info (thoughts included).</div>
+    <div id="voteRounds"></div>
+  </details>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Vote sessions (who voted whom · alive roster · elimination)</summary>
+    <div class="muted" style="margin-top: 6px;">
+      Pulled from run-level <span class="mono">vote_events.jsonl</span> (when available). This includes alive agents + true roles for context.
+    </div>
+    <div class='muted' style='margin-top: 10px;'>(no vote_events.jsonl sessions found for this episode)</div>
+  </details>
+
+  <script>
+    const voteRounds = [{"step": 40, "round_key": "40", "n_votes": 7, "tally": {"player_1": 2, "player_2": 2, "player_3": 1, "player_6": 1, "player_7": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 is stuck in a loop (R01(1,19) to (1,18) repeatedly). Player_6 moves erratically between (1,17) and (2,17) without tasks. Player_3 and player_4 show suspicious task behavior near player_5's task area. Player_2 and player_7 are stable. Vote for player_6 based on erratic movement."}, "player_2": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 and player_7 both showed odd movement patterns. Player_1 was near a dead body location and did not report. Player_3 and player_4 were near the task area but not suspicious. Player_5 moved fast. Player_6 did repetitive movements. Player_7 was near the dead body and didn't report."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 was at dead body location (R10(11,5) step 12) while moving erratically (straferight left) but stopped at body step 35. player_4 did visual tasks (DO_TASK). player_7 reported a task (DO_TASK) at step 25. player_1 was looping near dead body (R01(1,19) step 35-39). player_6 & player_5 doing normal movement."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2, player_3, player_7 showed unusual behavior near R10(11,5) and R10(16,5) with repeated turns and no task completion. player_4 is self (no vote), other players seem to have regular movement and task completion (player_5 did a task at R11(16,14), player_6 did consistent strafing, player_1 moved steadily. player_2's constant left turns and stopping at R10(11,5) after turning are suspicious, as are player_3's back-and-forth movements and player_7's path near suspicious locations. player_1's movement appears normal, and player_5 completed a task as expected. player_102 appears to be the im"}, "player_5": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was near a dead body (at R10(16,5) doing tasks repeatedly) but didn't report. player_2 moved erratically with strange strafing patterns. player_1 and player_6 have inconsistent movement patterns. player_4 has consistent tasks but no verification."}, "player_6": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Self is stuck in a loop (R01(1,17)↔R01(2,17)), but no body seen. player_1 moves near dead body location at step 34-39 (R01(1,18)-R01(1,19)), but no accusation. player_2 has consistent strafing (R10(11,1)-R10(11,7)), no task. player_3 does routine tasks (step 15: DO_TASK), good. player_4 turns frequently (no task), player_5 has valid task (step 10), good. player_7 does visual tasks (step 25: DO_TASK), good. player_2 is suspicious with no task at step 39, high erratic movement, low trust."}, "player_7": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 was near the dead body and didn't report. Player_5 is doing visual tasks."}}}, {"step": 80, "round_key": "80", "n_votes": 7, "tally": {"player_2": 2, "player_3": 2, "player_1": 1, "player_4": 1, "player_5": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Players 4 and 6 showed repetitive, suspicious movements near the dead body area (R10(12,6) and R01(2,17)). Player 5 was near a body but did tasks, player_7 did tasks at R00(5,6). Player_2 moved right/left consistently. Player_3 stayed in one place."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3's repeated turns without moving near a body, player_4's repetitive turns, and player_5's task-stalling are suspicious. player_1 and player_6 move erratically but may be innocent. player_2 is me (self). player_7 does tasks but has erratic movement. The lowest trust is player_3 at 0.1, so vote for player_3."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 is suspicious: did DO_TASK at R00(4,2) multiple times without moving from same spot, and has been near a body? player_2 kept strafing side-to-side in R10(11,1) without moving forward, might be an imposter waiting. player_1,4,6,7 have normal movement or task patterns."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was near a dead body and didn't report. player_5 is doing visual tasks for verification. player_101 is at R10(12,6) constantly turning, possibly a loop."}, "player_5": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Self-memory shows repetitive tasks at R00(4,2) with no movement, raising suspicion. Player_2 consistently strafing right/left near R10(11,1) is erratic. Player_3 and player_4 show odd turns at same spot. Player_1 and player_6 have repetitive movements. Player_7 does tasks visibly but no evidence of imposter behavior."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 and player_4 show repetitive, inactive paths (stuck turning), possibly imposter behavior. player_5 has erratic movement but doing tasks. player_7 is consistently doing tasks near others. player_1 and player_2 moving normally. player_6 (me) should not be voted on. vote for player_3 (lowest trust due to inactivity)."}, "player_7": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Observing patterns: player_3 and player_4 show repetitive movements (stuck turning) suggesting possible Imposter deception. player_5 was at a task spot for extended periods, possibly faking tasks. player_2 and player_6 have erratic movement but less suspicious than others. player_1 is moving normally."}}}, {"step": 120, "round_key": "120", "n_votes": 7, "tally": {"player_1": 4, "player_2": 1, "player_3": 1, "player_5": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing player movements near bodies and task completion patterns. player_3 is stationary at (16,5) for all steps (91-119), suspiciously doing nothing. player_5 did DO_TASK at (4,2) but then moved erratically without reason. player_2,4,6,7 show normal task movement patterns. player_3's immobility and lack of activity are classic imposter behavior as they should be reporting bodies or working."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_100 was near the dead body and didn't report. Player_101 is doing visual tasks."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near dead body at step 105, erratic movement; player_2 moving near task but no report; player_4 doing repetitive turns, suspicious; player_5 near task but moving slowly; player_6 & 7 seem normal. Lowest trust: player_1."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 moved erratically near dead body (R10(11,1) at step 119), while Player_6 did a visual task (DO_TASK). Player_5 is doing visual tasks. Player_1 and Player_3 are near dead body locations."}, "player_5": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved near dead body at step 115, but didn't report; player_2 and player_6 show repetitive movements; player_7 has consistent visual tasks."}, "player_6": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing player movements: player_1 moved near dead body at R01(2,17) without reporting, player_5 did repetitive tasks at R00(4,2), player_7 oscillated near R00(5,6). player_3 & player_4 show consistent turning (likely doing tasks), player_2 shows repetitive strafing (suspicious). Trust scores based on erratic behavior: player_1=0.05 (near body), player_2=0.1, player_5=0.2, player_7=0.15. Others are medium trust."}, "player_7": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 was near a dead body (R00(4,2) at step 98) and didn't report. Player_1 moved erratically near body site. Player_3 is stationary (high trust). Player_4 is repetitive (medium trust). Player_6 is consistent (high trust). Player_2 is consistent (high trust)."}}}, {"step": 160, "round_key": "160", "n_votes": 6, "tally": {"player_3": 5, "player_4": 1}, "predicted_eject": "player_3", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 is dead, so not considered. player_3 stayed at R10(16,5) doing no tasks, likely idle. player_4 constantly turning, possibly avoiding detection. player_2 moved around, but not near body. player_7 had consistent movement but not suspicious. player_6 oscillated at R01(2,17), maybe not engaged. Trust: player_5 dead, 3=0.2, 4=0.2, 2=0.5, 6=0.4, 7=0.6. Vote for lowest trust: player_3 or 4."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 is dead (110, R00(4,3), 100, STRAFE_LEFT) and didn't move for 100 steps but the body wasn't reported by anyone. player_3, player_4, and player_7 were near the dead body location. player_3 and player_4 had erratic patterns (constant turning) and player_7 turned multiple times around the body. player_1 was seen doing tasks but it's unclear if they were near the body."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 is dead. Self (player_3) was looping in place (16,5) with TURN_BACK for many steps. Player_1 and player_2 were near a body (R00(4,3) was player_5's position when dead). Player_5's location was R00(4,3) but no one reported. Player_4 and player_7 were moving erratically near player_5. Player_6 was at (1,17) with no visible connection."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 showed repeated stationary behavior near the dead body (player_5). Most actions were 'TURN_BACK' at same position. Player_1 and player_2 have erratic movement near critical areas. Player_7 is the only one doing consistent visual tasks (TURN_RIGHT repeatedly)."}, "player_6": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Players near dead player_5 (R00(4,1)) showed no task or movement towards it. player_3, player_4, player_7 had repetitive movements near dead zone. player_1 and player_2 moved towards tasks but not towards body."}, "player_7": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 and player_4 show repetitive movements (turning back/forward without purpose), likely Imposter. player_1 and player_6 do tasks, but player_1 is near a dead body? No evidence, player_6 not near dead body. player_2 has odd movement, but player_5 is dead, so player_2 not near body. player_1 did NOT near dead body (dead body is player_5 at 4,1; player_1 at 5,11,13,13-13,13-13: far)."}}}, {"step": 200, "round_key": "200", "n_votes": 6, "tally": {"player_1": 4, "player_3": 2}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 has been near player_5's dead body at R00(4,1) consistently. player_2 and player_4 show erratic movement. player_7 shows consistent turns but no suspicious behavior."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 is moving towards R10(13,7) and doing DO_TASK, which is suspicious as crewmates don't typically do tasks near dead bodies (player_5 is dead at R00(4,1)). player_3 and player_4 are moving around the same area (R10(11,6-7)) which seems normal. player_6 and player_7 are moving around different areas (R01 and R00) with no apparent suspicious activity. player_5 is already dead so not considered. player_1 has high suspicion due to task near dead body area, I'll assign 0.1 trust score. Others all have high trust scores."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near dead body (R00(4,1)), didn't report, moved erratically. player_5 dead, player_1 near R00(4,1). player_2 moved with strafe patterns, no clear task. player_4 and player_7 consistently turning, no task. player_6 with strafe patterns, no task."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near the dead body (player_5 at R00(4,1)), moved erratically (195-199), and didn't report. player_2 moved with a pattern (strafing left/right) but no clear bad behavior. player_3 stayed stationary at R10(16,5) doing turns (no task). player_6 strafing without task (suspicious patterns). player_7 did many turns (possibly not performing tasks). player_1 has the lowest trust score based on proximity to dead body and erratic movement. All others have medium trust."}, "player_6": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "The history shows player_5 is dead (100% imposter), but we must vote for alive players. player_3 repeatedly turned back at R10(16,5) without moving, suggesting sabotage. player_4 and player_7 had consistent turning patterns, but player_1 and player_2 moved logically. player_3's inactivity near dead body (R10(16,5) vs body at R00(4,1)?) suggests foul play."}, "player_7": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzed movements: player_5 (dead) at R00(4,1) was ignored. player_1 moved erratically near dead body. player_2,3,4,6 show normal patterns. player_100 is not a player. Low trust on player_1."}}}, {"step": 240, "round_key": "240", "n_votes": 5, "tally": {"player_2": 2, "player_3": 2, "player_4": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 moved erratically near player_5's body (R00(4,1)), player_3 stayed stationary near dead body, player_4 did tasks but near body, player_7 did tasks consistently. player_3 has highest suspicion due to no movement near dead body."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Historical analysis shows player_4 and player_7 near dead bodies. player_4 (alive) did STRAFE actions near R10(12,7) where body was. player_7 did DO_TASK at R00(4,5) near dead body player_5. player_1 and player_3 show consistent movements away from dead bodies."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 (dead) and player_6 (dead), so focus on alive players. player_2 had erratic movement near dead body. player_4 did visual tasks (DO_TASK). player_7 did DO_TASK and reported near dead body? player_1 and player_2 both near the dead body area but player_2 moved erratically without reporting."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 near dead body, erratic movements. Player_7 doing tasks at R00(4,5)."}, "player_7": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was near body (R10(16,5) near dead body at R00(4,1)?), player_1 and player_2 near dead body R00(4,1), player_4 did visual tasks but moved erratically, player_7 is me, no info on others."}}}, {"step": 280, "round_key": "280", "n_votes": 5, "tally": {"player_1": 3, "player_2": 1, "player_4": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 and player_6 are dead. player_2 moved erratically near dead body (player_5), player_3 was stationary near player_5, player_4 did tasks, player_7 has inconsistent movement."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 was near dead player_5 (at R00(4,1) on 230-279 steps) and moved erratically. player_7 moved to a dead body location (R01(2,17) was player_6's spot) and did not report. player_1 and player_3 had normal behavior. player_2 is me, so skipped."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near player_5 (dead at R00(4,1)) and moved erratically. player_2 did repetitive turns. player_4 did visual tasks (DO_TASK at 237). player_7 was near dead bodies and moved erratically."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_101 was near the dead body and didn't report. player_102 is doing visual tasks."}, "player_7": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near dead body at step 279 (R10(18,8)), but did not report. player_2 has erratic turning, low task activity. player_3 is stuck turning for 12 steps. player_4 moves erratically near tasks."}}}, {"step": 320, "round_key": "320", "n_votes": 4, "tally": {"player_2": 2, "player_1": 1, "player_3": 1}, "predicted_eject": "player_2", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1's history shows loop alert and stall, but it's self. Player_2 moves erratically near dead bodies. Player_3 stands still near player_5's dead body. Player_4 moves away from dead body near player_6. Trust scores: player_2=0.2, player_3=0.1, player_4=0.5."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Observing the history, player_1 was near dead body at R00(4,1) but didn't report. player_3 was near dead body at R01(2,17) but didn't report. player_4 was moving in a pattern without clear purpose. I'll vote for the lowest trust score.\n"}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near the dead body of player_7 at R10(15,6) but moved away after. player_2 did erratic strafing near player_5's body (R00(4,1)). player_4 was moving erratically near player_6's body (R01(2,17))."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved near dead body at R00(4,1) but only stayed still. player_2 was erratic near dead body. player_3 was stationary near dead body, but all dead bodies were on the map. player_2 is moving erratically in R10(11,8) where dead player_7 was located. player_1 moved near dead body at R00(4,1) too, but stayed still. player_3 was stationary near dead body. player_1 is near player_5's body, player_2 near player_7's body. player_2 had a lot of STRAFE actions, suspicious. player_3 was mostly TURN commands near the dead bodies."}}}, {"step": 360, "round_key": "360", "n_votes": 4, "tally": {"player_2": 2, "player_3": 2}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 is moving erratically near dead bodies (R00(4,1) is dead player_5, R10(15,6) is dead player_7), player_4 did tasks but didn't report. player_1 has self memory, but must rate others."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was near a corpse (R10(15,6) for player_7) and didn't report. player_4 did tasks but is near corpse (R01(2,17) for player_6), suggesting possible imposter."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_100 was near the dead body and didn't report. player_101 is doing visual tasks."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing activity patterns. Player_3 was near dead body (R10(16,5)) for 12 steps & repeatedly turned back, suspicious. Player_1 & player_2 show erratic movement near dead zones. Player_4 (me) had valid tasks at R11(14,18) but 12 steps of DO_TASKs = high activity. 0.0=Player_3 (near dead body, no movement), 0.3=Player_1 (erratic path), 0.3=Player_2 (similar), 1.0=Player_4."}}}, {"step": 400, "round_key": "400", "n_votes": 4, "tally": {"player_2": 2, "player_3": 2}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_100 was near the dead body and didn't report. Player_101 is doing visual tasks."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near dead body at R00(4,1) but moved away; player_3 stayed at R10(16,5) doing turns; player_4 did tasks at R11(14,18) and stayed consistent. I see no evidence of Imposters near bodies yet."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved erratically near dead zone, player_2 stayed suspiciously near dead body, player_4 did tasks but might be faking. Self stuck in loop."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 was near dead body, moved erratically. Player_3 did many visual tasks."}}}, {"step": 440, "round_key": "440", "n_votes": 4, "tally": {"player_3": 2, "player_1": 1, "player_2": 1}, "predicted_eject": "player_3", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 spent all time at R16(5), doing turns with no movement, suspicious. player_2 and player_4 had erratic movements but no clear imposter behavior. player_3's constant turning at same spot suggests they're trying to hide something near the dead body at R16(5) (player_7 was killed there)."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 was near the dead body at R00(4,1) but moved away. Player_3 is stuck turning in place. Player_4 is moving back and forth near R11(11,11)."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 is stuck in a loop (16,5) repeating TURN_BACK. player_1 moves erratically near dead bodies. player_4 is consistent. player_2 is doing visual tasks."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near a dead body (player_5) but not seen moving near it. player_2 has consistent strafing, possibly avoiding attention. player_3 is stationary, might be suspicious."}}}, {"step": 480, "round_key": "480", "n_votes": 4, "tally": {"player_3": 2, "player_1": 1, "player_4": 1}, "predicted_eject": "player_3", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 was near death site R00(3,6) doing tasks, but player_3 near dead body R10(15,6) without reporting. Player_4 moving erratically with strafing. Player_2 showed activity at task location, player_4's behavior is suspicious."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near the dead body at (4,1) but didn't report; player_4 was moving erratically near the dead body at (12,11) and doing STRAFE repeatedly; player_3 is doing normal tasks"}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 did visual tasks (DO_TASK) at R00(3,6) in multiple steps, suggesting they are working as crewmate. player_4 was moving between R11(12,11) and R11(12,12) without purpose, possibly trying to hide near bodies. player_1 was near the dead body at R10(19,1) but not reporting, showing erratic movement."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5 is dead and not a vote target. player_2 did DO_TASK at the same location where player_5 died (R00(3,6) near R00(4,1)), and player_3 moved erratically near dead bodies. player_1 has stable patterns."}}}, {"step": 520, "round_key": "520", "n_votes": 4, "tally": {"player_1": 3, "player_4": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "SELF MEMORY: Loop_alert and stall_alert indicate erratic movement. OBSERVATIONS: player_2 and player_3 near dead bodies, player_4 doing repetitive strafing. player_4 has low trust due to erratic movement near body (R11(12,11)), player_3 suspicious near body (R01(6,12)), player_2 not near dead bodies. Votes should be for lowest trust: player_4."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved near dead player_7 at R10(15,6) but didn't report. player_3 did tasks at R01(6,14) but moved erratically. player_4 was looping near R11(12,11) without task."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzed history: player_3's movements show loop alert and erratic path (R01(6,12) - R01(6,13)), but others have regular paths. player_2 and player_4 show consistent tasking. player_1 has back-and-forth at R10(19,x). player_5,6,7 are dead but not relevant. Loop alert indicates potential imposter (low trust)."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 was near dead body at R01(7,11) but did DO_TASK after, not suspicious. player_1 moved erratically near R10(19,1) and didn't report dead body. player_3 did visual tasks at R00(1,6) and cleared. player_2 doing DO_TASK at R11(17,17) and cleared. player_3 near dead body at R00(4,1) and did DO_TASK so cleared. player_2 near dead body at R11(17,17) but did DO_TASK, so trust high. player_3 near dead body at R00(4,1) but did DO_TASK, so trust high. player_1 moved erratically near dead body at R10(19,1), not reporting. player_2 at R11(17,17) doing DO_TASK, trust high. player_3 at R00(1,6) doin"}}}, {"step": 560, "round_key": "560", "n_votes": 4, "tally": {"player_1": 2, "player_2": 1, "player_4": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing player movements: player_2 was near dead body (R11(17,17) close to player_6's location at R01(2,17)) and did odd moves. player_3 and player_4 did normal tasks. player_2 is suspicious with low trust."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near dead player_5 (R10(19,9) vs R00(4,1) is not adjacent), player_3 did a DO_TASK (verified), player_4 moved erratically near dead player_7 (R11(12,11)), so low trust on player_4."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved erratically near dead bodies (player_6 at R01(2,17)), player_2 was near the dead player_5 (R00(4,1)) and did tasks nearby, player_4 was in a loop with strafing near death. player_3 is self (ignored). Low trust on player_1, player_2, player_4 as they show suspicious movement patterns near deaths."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near dead body (player_7 died at R10(15,6)) and moved erratically. player_2 did tasks but moved back and forth near a dead body. player_3 doing visual tasks but not near bodies."}}}, {"step": 600, "round_key": "600", "n_votes": 4, "tally": {"player_1": 2, "player_4": 2}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 (myself) has looped movements near dead bodies (player_7, R10(15,6)) and displayed stall alerts. player_2 moved near player_3's task location. player_3 did tasks but moved erratically. player_4 has constant strafing without purpose."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing player behavior near dead bodies and movement patterns. Player_5,6,7 are dead with NOOPs, so focus on alive players. Player_1 moves erratically (repeated turns), Player_3 does tasks but has strange path, Player_4 strafes constantly. Player_3 did a task at step 550, verified by action. Player_4's strafing is suspicious (no task, repetitive). Player_1 moving back/forward might be avoiding detection. Vote for Player_4 with lowest trust (0.05)."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 (myself) have observed player_1 and player_2 moving erratically near dead bodies. player_1 was near player_7's body, moving in a loop. player_2 was near player_6's body. player_4's movement is consistent with visual tasks - no indication of imposter behavior."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 observed self-looping at R11(11,11) and R11(12,11) with repetitive strafing (STRAFE_LEFT/STRAFE_RIGHT). player_1 moves erratically near dead body (R10(11,1) near player_5's dead body at R00(4,1)) but claims to be on a task. player_2 has a regular path near player_6 dead body. player_3 doing visual tasks (DO_TASK at R01(6,14)) clears her. player_1 appears suspicious with near dead body moves."}}}, {"step": 640, "round_key": "640", "n_votes": 4, "tally": {"player_1": 2, "player_3": 1, "player_4": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 moved erratically near dead bodies and didn't report. player_4 did visual tasks. player_2 is suspicious but not as bad."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near body at R00(4,1) but not confirmed. player_4 moving erratically (strafing) near dead body. player_3 is doing visual tasks."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_6 is dead, so no need to vote. Player_100 has erratic movement near dead body at R01(2,17) and moved near R00(4,1) where player_5 died. Player_102 and player_103 are doing strange visual tasks. Player_5 died in R00(4,1) but no one reported it."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved erratically near dead body R00(4,1) and player_2's path near R01(2,17) and R10(15,6) shows suspicion. player_3 clear path. player_100 has low trust for near dead body, player_101 medium trust. Voting for player_100 since high trust for others."}}}, {"step": 680, "round_key": "680", "n_votes": 4, "tally": {"player_1": 3, "player_3": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Checked history: player_3 near dead body R01(7,11) at step 678, moved erratically (TURN_BACK). player_4 did repetitive strafing. player_2 moved normally without suspicious actions. player_1 (me) have stalling alerts but no evidence, so low trust only if actions indicate imposter. No visual tasks to verify trust."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved erratically near R11(16,18) repeatedly and didn't check dead bodies. player_3 had normal movement but didn't report. player_4 was doing visual tasks."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4's path shows repetitive back-and-forth strafing near possible dead zones. player_2 and player_1 show erratic movements near bodies. player_5 is dead but no action. player_1's path is erratic near dead body at R10(19,8). player_2 near R11(16,18) which matches body location. player_4 strafes near dead body at R11(12,11) which might be near player_6's location (R01(2,17) is not close). player_100 is not a player ID. vote for player_1."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_100 near the dead body at R00(4,1) but no reports, player_101 doing visual tasks and moving normally"}}}, {"step": 720, "round_key": "720", "n_votes": 4, "tally": {"player_1": 2, "player_2": 1, "player_4": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 is trapped in a loop (R10(11,9) to R10(12,9) repeatedly), suggesting imposter behavior. player_2 moves erratically between R11(16,18) and R11(17,18). player_3 moves between R01(7,11-19) but reports no anomalies. player_4's STRAFE patterns look suspicious near dead bodies (R11(12,11-12)). Low trust on player_4 (0.25), medium on others (0.5-0.6). Vote for player_4 as most suspicious."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2's self memory shows looping movement (R11, oscillating). Player_1 moved erratically near dead bodies. Player_3 had suspicious path. Player_4 showed normal pattern."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 near dead body at R11(16,18) during no movement actions. player_4 doing erratic strafing without tasks. No visual tasks for player_1."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 moved erratically near dead bodies (R10(19,9) to R10(11,9) with 100-103 points), high suspicion. Player_2 followed repetitive path (R11(16,18) to R11(17,18)) without reporting, medium-low trust. Player_3 checked tasks (R01(7,14) to R01(7,19)) but had a dead body nearby (R01(2,17)=player_6 dead), high trust. Dead players not scored."}}}, {"step": 760, "round_key": "760", "n_votes": 4, "tally": {"player_1": 1, "player_2": 1, "player_3": 1, "player_4": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 moved erratically near dead body, player_3 suspiciously near player_6 dead body, player_4 is doing visual tasks."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 moved erratically near dead bodies (R01(2,17) and R00(4,1)), while player_1 moved away from the main area. Player_4 showed consistent movement without suspicion."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_6 is dead and was near R01(2,17), but player_3 (myself) moved through similar path. player_1 and player_2 moved in consistent paths near player_6's body. player_4's path seemed erratic near dead bodies. Low trust should be player_4 due to erratic movement near deaths."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1, player_2, and player_3 are alive. From history: player_1 moves backward near dead body at (11,9), player_2 oscillates near (17,11), player_3 moves toward dead body at (2,17). Suspicious: player_1 (near dead body without reporting), player_3 (near dead body), player_2 (oscillating behavior). Low trust for player_1, low trust for player_3. High trust for player_2 (stable moves). Player_1 has lowest trust (0.1), vote for player_1."}}}, {"step": 800, "round_key": "800", "n_votes": 4, "tally": {"player_2": 2, "player_3": 2}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 showed consistent movement near dead bodies (R11(17,12) to R11(18,12)). player_3 moved erratically in dead zones (R01(3,16) to R01(6,17)). player_4 strafed excessively without task. All have low trust."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 moved near dead body (R00(4,1)) but not accused. Player_3 near dead body (R01(2,17)). Player_4 has erratic movements."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1's path near dead body R00(4,1) but no action; player_2 near dead body R10(15,6) and moving erratically; player_4 is near dead body R10(15,6) and moving erratically. Player_1 is at R10(19,1) and moving, but not near dead body."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was near the dead body at R01(2,17) and moved erratically. player_2 is doing visual tasks but is moving in a loop. player_1 is moving forward without apparent task."}}}, {"step": 840, "round_key": "840", "n_votes": 4, "tally": {"player_1": 2, "player_2": 2}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 near dead body at R11(17,12), erratic movement (loop alert), low trust. player_3 near dead body R01(5,12), suspicious actions. player_4 has stable movements, safe."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near dead body at R10(19,8) and moved erratically. player_3 has inconsistent movement near R01(5,12). player_4 did repetitive strafing. No visual tasks observed."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Self: Looping path, no task completion. Player_1: Moving near dead body at step 835-839. Player_2: Strange movement near dead body steps 818-839. Player_4: Consistent movement, no suspicious activity."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyze behaviors: player_5 (dead) in R00(4,1) with NOOP, player_6 dead in R01(2,17), player_7 dead in R10(15,6). player_1 (alive) moved between R10(19,1) and R10(19,8)/R10(19,9) - suspicious near dead bodies? player_2 (alive) moved from R11(19,12) to R11(17,12), then back towards R11(19,12) - might be hiding? player_3 (alive) moved in R01(5,17)-R01(5,12) but never near dead bodies. player_4 (me, Crewmate) looped in R11(11,11) with STRAFE_LEFT/RIGHT - might be avoiding detection due to oscillating alerts. player_2 near player_5, player_6, player_7 bodies? player_2 moved near R11(17,12) which m"}}}, {"step": 880, "round_key": "880", "n_votes": 4, "tally": {"player_1": 3, "player_4": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 and player_4 showed erratic movement near dead bodies (player_5, player_6), while player_3 moved normally. player_3 has high trust."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 has erratic movement near dead body at (16,12). player_3 is doing tasks. player_4 is moving erratically near bodies."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing history: Player_100 (player_1) moves erratically near dead bodies (R00(4,1) and R01(2,17)), with no reports. Player_101 (player_2) does visual tasks. Player_102 (player_4) is doing harmless strafing. Player_5 and others are dead."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 (me) is at R11(12,12) in a loop, but others show suspicious patterns. player_2 moves erratically near player_5's body (R00(4,1)), player_3 moves toward a dead body (R01(2,17)), and player_1 is at R10(12,9) but doesn't report a body. player_1 has low trust as they ignored a dead body. player_2's erratic movements near a body look suspicious. player_3 seems suspicious moving toward a dead body. player_4 (me) am the crewmate."}}}, {"step": 920, "round_key": "920", "n_votes": 4, "tally": {"player_1": 3, "player_4": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 showed erratic moves like strafing in a loop, which is suspicious. player_2 and player_3 have normal movement. player_100 and player_101 are dead or not in scope."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 was near body (R10(11,9) at step 870), moved erratically, then avoided body. Player_3 near R01(3,13) which might be near a body. Player_4 moved consistently between two points with no suspicious behavior. "}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing player movement patterns near dead bodies and suspicious actions. Player_1 moves erratically near dead body locations. Player_2 and Player_4 show consistent movement patterns, but Player_4 is near dead body locations. Player_2 shows no suspicious patterns."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1: erratic movement near R10(11,9) with no clear task. player_2: repetitive movement near R11(16,12) but consistent. player_3: erratic turning near R01(3,13) with no clear task. LOWEST trust: player_1 (0.1), player_3 (0.1). Voted for player_1 as first suspicious."}}}, {"step": 960, "round_key": "960", "n_votes": 4, "tally": {"player_1": 3, "player_3": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 moved erratically near dead bodies. Player_3 consistently near dead body at R01(1,13). Player_4 is doing strange moves but no obvious signs. Highest suspicion on player_3."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 near body at step 917 (R10(11,2)), no report. Player_3 erratic in room R01. Player_4 stuck moving back/forth."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved near dead bodies on R10(11,1) and R10(18,1) without reporting, player_2 did strange movement near R11(18,16) but was moving erratically, player_4 did repetitive strafe movements which is suspicious."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Self: Oscillating, stalling near dead body (R00(4,1)). Player_1 moves erratically near dead bodies. Player_2 moving near dead bodies. Player_3 near dead bodies."}}}, {"step": 1000, "round_key": "1000", "n_votes": 4, "tally": {"player_1": 2, "player_2": 1, "player_4": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing player movements: player_2 and player_3 show erratic patterns near dead bodies (player_5, player_6, player_7 at R00, R01, R10). player_4 has repetitive strafing motion. Myself (player_1) has looped movement but I'm the observer. Low trust for player_2 and player_3. Voting for player_2 as their path near dead bodies is most suspicious as their movement is near R00(4,1) dead body location"}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 was near multiple dead bodies (player5,6,7) but didn't report. Player_3 has erratic movement near player5's location. Player_1 seems to have stable movement near body but no reports."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 moved erratically near player_5's dead body at R00(4,1) and didn't report. Player_2 showed consistent movement but no clear tasks. Player_4's path near dead bodies suggests suspicious activity. Low trust for player_1 (0.05) and player_4 (0.10), medium for player_2 (0.45). Vote for player_1 as most suspicious."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5, player_6, player_7 are dead. Player_1, player_2, player_3 are alive. Player_1 moves near R10(19,8) which is near death site at R00(4,1)? Not sure. Player_2's path near R11(18,16) - not obviously near dead bodies. Player_3 moves to R01(1,19) which seems far from dead bodies. Self had looped on tile. No one near death sites."}}}, {"step": 1040, "round_key": "1040", "n_votes": 4, "tally": {"player_1": 1, "player_2": 1, "player_3": 1, "player_4": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 moved erratically near dead body. player_3 oscillating near dead body. player_4 doing visual tasks."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1: Moved erratically near dead body at R10(15,6). player_3: Constant back-and-forth near dead body path. player_4: Consistently moving in a loop at R11(12,11-12)."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has erratic movement near dead bodies (player_6)."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyze behavior based on history. player_1 moved back/forth near R10(19,9) and R10(11,9), inconsistent. player_2 moved between R11(18,16) and R11(18,15), consistent. player_3 moved between R01(1,18) and R01(1,19), consistent. Dead players are at R00(4,1), R01(2,17), R10(15,6). player_1's erratic path near dead zones suggests possible imposter behavior (near body but not reported)."}}}, {"step": 1080, "round_key": "1080", "n_votes": 4, "tally": {"player_3": 2, "player_2": 1, "player_4": 1}, "predicted_eject": "player_3", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Based on history, player_2 and player_4 show erratic movement near dead bodies. player_3 is doing typical task patterns. player_1 is me (Crewmate). All others are dead. Lowest trust is player_4."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1's erratic movement near dead body R00(4,1) (player_5). Player_3's repetitive path near dead body R01(2,17) (player_6). Player_4's consistent strafing not near bodies. No visual tasks observed."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 is constantly moving between two spots near dead bodies (R11(18,16) R11(18,15)) while others are stable. player_4 shows consistent strafing without clear purpose. player_1 has steady movement. player_3 (self) has loop alert."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near dead body? No, player_5 dead at R00(4,1). player_2 moved in pattern. player_3 moving near dead bodies? player_6 dead at R01(2,17) and player_3 at R01(1,19) and (2,19) - no direct nearness. player_1 moved near R10(11,9), R10(11,5) - not near dead bodies. player_1 killed player_7? player_7 dead at R10(15,6), player_1 was at R10(11,5), R10(11,2) - close to R10(15,6)? R10 is room 10, positions (11,5) to (15,6) is 4 steps, not extremely close. player_1 accused others? Not seen. player_2 moved in pattern near room R11, dead players at R00, R01, R10 - not directly near. player_3 nea"}}}, {"step": 1120, "round_key": "1120", "n_votes": 4, "tally": {"player_1": 1, "player_2": 1, "player_3": 1, "player_4": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was near the dead body (R01(1,11)) and moved erratically. player_2 did no tasks. player_4's path doesn't match crewmate behavior."}, "player_2": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 is near dead bodies (player_5,6,7) and moved erratically. player_1 and player_3 have normal movement patterns."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_5, player_6, player_7 were dead at R00(4,1), R01(2,17), R10(15,6) with NOOPs. player_1 near body at R10(18,1) moving erratically. player_2 near R11(11,15) with no clear task. player_4 did strange strafes. I'll vote for player_1."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 was near the dead body of player_5 (R11(18,15) to R11(12,15), which is close to R00(4,1) where player_5 is dead). player_3 is moving erratically near a dead body (R01(1,11) near player_7's body R10(15,6) is too far, but player_6 is at R01(2,17) and player_3 is at R01(1,11) - not too close). player_1 is moving to and fro near R10(19,1) without reporting. player_4 (me) should not vote."}}}, {"step": 1160, "round_key": "1160", "n_votes": 4, "tally": {"player_4": 2, "player_1": 1, "player_2": 1}, "predicted_eject": "player_4", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Based on observation history, player_4 repeatedly strafed near dead bodies at R11(12,11) and R11(11,11) at multiple timestamps. player_2 moved erratically through R11 area. player_3 showed repetitive turns at R01 location. player_1 (myself) has low trust alerts from memory but I'm the observer so this is self-confirmed. vote for player_4 as lowest trust."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near a dead body (dead player_5) and moved erratically. player_3 and player_4 had no suspicious behavior."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 and player_2 have been moving around the dead body areas (player_6 on R01(2,17) and player_7 on R10(15,6)), but player_4 was near player_5 (R00(4,1)) which might be a dead body. player_4's path shows erratic strafing which is suspicious. player_2 and player_1 have been moving near the dead bodies but may have legitimate reasons. player_4's consistent near-dead-body presence suggests low trust. vote for player_4."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 is near the dead body at R00(4,1) and doesn't seem to be acting suspiciously. player_2 is moving around R11(12,12/13) which could be near the dead body. player_3 is always at R01(1,11) which seems safe. The dead bodies are at R00(4,1), R01(2,17), and R10(15,6). player_2 is most suspicious due to near the dead body location. vote for player_2."}}}, {"step": 1200, "round_key": "1200", "n_votes": 4, "tally": {"player_2": 2, "player_1": 1, "player_3": 1}, "predicted_eject": "player_2", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 is in a loop (moving forward then backward repeatedly at R10(11,9)), likely Imposter. player_2 moves erratically near R11(15,13), player_3 stays at R01(1,11) turning, player_4 moves between R11(12,11) and (12,12). No visible dead body reports, so players near dead bodies (player_7 dead at R10(15,6) but not near) score low."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 oscillating near dead bodies (R00, R01, R10) with repeated movements. Player_3 stationary, high trust. Player_4 repetitive strafing, suspicious. Player_1 moving erratically, low trust."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved near dead body at R10(4,1) but stayed in place. player_2 showed erratic movements near corpse. player_4 is moving in a loop near dead body. All suspicious."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was at R01(1,11) turning right for 12 steps, never leaving area suggesting roleplay or no movement. player_1 and player_2 have erratic movement near dead bodies but player_1 has consistent movement pattern. player_2 has stable movement."}}}, {"step": 1240, "round_key": "1240", "n_votes": 4, "tally": {"player_1": 3, "player_2": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 was near a dead body and moved erratically. player_3 was at a fixed position doing repetitive turns. player_4 was moving around but not near bodies."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 moved erratically near player_5's body (R00(4,1)), player_2 has looping movement (R11(14,18) oscillating), player_4 has suspicious strafing patterns. player_3 is stationary and verified by visual tasks."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near dead body (R00(4,1) where player_5 died) but then moved away. player_2 moved erratically without reporting. player_4 stayed moving but not near bodies. All dead bodies are in R00, R01, R10 locations. player_1 visited R00(4,1) twice but not reported. player_2 stayed near R10(15,6) where player_7 died. player_4 did not go near bodies."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_100 was near the dead body and didn't report. Player_101 is doing visual tasks."}}}, {"step": 1280, "round_key": "1280", "n_votes": 4, "tally": {"player_1": 1, "player_2": 1, "player_3": 1, "player_4": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 was near a dead body (player_6 at R01(2,17)) and moved erratically. Player_3 is suspicious due to repeated turns near dead body (player_7 at R10(15,6)). Player_4 is moving normally but near dead body (player_5 at R00(4,1))."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 showed no movement (always R01(1,11)) after body discovery, suspicious patterns. player_1 moved erratically near dead body. player_4 has consistent movement (visual task verified), but not as suspicious."}, "player_3": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 was near the dead body (player_6) and moved erratically (strafing). player_1 and player_2 have consistent paths but player_1's path near dead bodies is suspicious."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Observing recent movements: player_1 moved erratically near R10(15,1), player_2 showed consistent back-and-forth, player_3 stayed at one spot with turns. Dead bodies at R00(4,1), R01(2,17), R10(15,6). No one reported deaths. player_1 near dead body at R10(15,6) but moved away. player_3 suspicious with no movement. All alive players suspicious, but player_1 near dead body has lowest trust."}}}, {"step": 1320, "round_key": "1320", "n_votes": 4, "tally": {"player_2": 2, "player_1": 1, "player_3": 1}, "predicted_eject": "player_2", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was near dead body at R01(1,11) but is doing repetitive turns. player_2 is moving erratically with STRAFE actions near dead bodies. player_4 has stable STRAFE patterns. player_2 is most suspicious with low trust."}, "player_2": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 has been moving in place (all turns) while others move. player_4 is also stationary but with consistent strafing. player_1 has been moving but seems to be investigating. player_5-7 are dead, not voting."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 was near a dead body (player_5 at R00(4,1)) in step 1270 and moved to R10(19,1) then back, showing erratic behavior. Player_2 was doing routine strafe movements but no suspicious actions. Player_4 did similar strafe patterns without near dead bodies. Player_1's movement near a dead body without reporting makes them low trust (0.1). Others seem normal."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 has no movement (stuck turning right) for 12 steps, suspicious behavior. Player_2 oscillates near the dead body (player_6 at R01(2,17)), likely Imposter. Player_1 moves normally but is near the dead body (player_5 at R00(4,1)), so medium trust. Player_2 is most suspicious with erratic movement near dead body."}}}, {"step": 1360, "round_key": "1360", "n_votes": 4, "tally": {"player_1": 2, "player_2": 1, "player_3": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near a dead body and did not report. player_2 moved erratically. player_3 is suspicious. player_4 is doing visual tasks."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 observed player_1 moving near dead body R00(4,1) and player_5 was dead there. player_4's erratic motions near dead body R01(2,17) with player_6. player_3 has no suspicious motions."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Observing the history: player_5 (dead) was at R00(4,1) with NOOP, but player_1 was near dead body at R10(12,9) around step 1356. player_1 moved between R10(12,9) and R10(11,9) but never reported the body. player_2 and player_4 show consistent movement patterns (strafing) but no indication of being near bodies. player_1 has a pattern of moving near the dead body area without reporting, indicating low trust. player_2 and player_4 have medium trust as there's no clear evidence. player_4 seems to have consistent movement but still, player_1 is the most suspicious."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_2 was moving erratically between positions and near corpse R11(12,11) where player_4 (me) was at R11(12,12), potentially covering up a kill. Player_1 and player_3 showed normal movements."}}}, {"step": 1400, "round_key": "1400", "n_votes": 4, "tally": {"player_1": 3, "player_3": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing player movements from history observations.\nplayer_2: Moving left and right frequently near dead bodies (player_6 dead at R01(2,17)), suspicious.\nplayer_3: Constantly turning right in same spot (R01(1,11)), no movement, highly suspicious.\nplayer_4: Moving in repetitive patterns near dead bodies (player_7 dead at R10(15,6)), suspicious.\nplayer_2 near dead body player_6 (R01(2,17)) and player_7 (R10(15,6)) area.\nplayer_3 staying in one spot, no task completion.\nplayer_4 moving near dead body player_7 (R10(15,6)).\nAll 3 alive players (2,3,4) show suspicious activity, but player_3 is mos"}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_2 has LOOP_ALERT and STALL_ALERT, moving erratically near a dead body (player_6 at R01(2,17), observed as dead at step 1399). player_1 moved near player_6 and player_7, player_4 did visual tasks near player_7, player_3 is stuck turning."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing behavior: player_1 moved erratically near dead bodies. player_2 and player_4 showed consistent movement patterns. player_5,6,7 dead bodies at fixed positions."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 oscillated near dead body at R10(11,9) and moved erratically. player_2 moved in a loop near R11(12,18). player_3 stood still at R01(1,11) doing turns. All alive except me."}}}, {"step": 1440, "round_key": "1440", "n_votes": 4, "tally": {"player_1": 3, "player_2": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyze history: player_2 showed erratic movements (oscillating) near dead body at R10(18,1) and R10(19,1). player_3 and player_4 had stable paths. player_5,6,7 dead but not observed near bodies by others. player_2's behavior matches low trust (0.0-0.3)."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Analyzing history for suspicious behavior. player_1 moved erratically near dead body location (R10(15,1) near R10(15,6) corpse), player_3 and player_4 showed normal activity. player_2 (self) has loop alerts but no direct evidence. player_1 has low trust due to suspicious movement near corpse site."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 was near dead body at R00(4,1) but didn't report. player_2 moving back and forth suspiciously. player_4 doing visual tasks."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 and player_2 show erratic movement near dead bodies (player_5, player_6), but no clear imposter behavior. player_3 is stationary with consistent actions, so high trust. No one near dead bodies without reporting (low trust)."}}}, {"step": 1480, "round_key": "1480", "n_votes": 4, "tally": {"player_1": 2, "player_2": 1, "player_3": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.0, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.0, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_3 was near dead body at R01(1,11) but didn't report; player_4 has erratic movement near bodies; player_2 is stable."}, "player_2": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 drifted near R10(19,8) where player_5 died, then moved away. player_3 stayed at R01(1,11) doing turns. player_4 moved around R11(12,11) with strafing. All have 0.5 trust. player_1 was near dead body without reporting."}, "player_3": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 near R00(4,1) which is where player_5 died. player_2 near R10(15,6) where player_7 died and was moving erratically. player_4 near R01(2,17) where player_6 died."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_1 is near zone where multiple bodies were found, moved erratically. player_2 has no movement pattern, suspicious. player_3 is inactive, but safe."}}}];
+    const trust = {"targets": [], "series_all": {}, "series_crewmate": {}, "series_imposter": {}};
+    const taskProgressSources = {"player_1": "activity/viz_crewmate_player_1/parsed_turns.jsonl", "player_2": "activity/viz_crewmate_player_2/parsed_turns.jsonl", "player_3": "activity/viz_crewmate_player_3/parsed_turns.jsonl", "player_4": "activity/viz_crewmate_player_4/parsed_turns.jsonl", "player_5": "activity/viz_crewmate_player_5/parsed_turns.jsonl", "player_6": "activity/viz_crewmate_player_6/parsed_turns.jsonl", "player_7": "activity/viz_crewmate_player_7/parsed_turns.jsonl"};
+
+    function fmtPct(x) {
+      if (x === null || x === undefined) return '—';
+      return (100.0 * x).toFixed(1) + '%';
+    }
+
+    // ---------- Voting rounds table/cards ----------
+    const container = document.getElementById('voteRounds');
+    if (container) {
+      if (!voteRounds || voteRounds.length === 0) {
+        container.innerHTML = "<div class='muted' style='margin-top:10px;'>(no voting logs found)</div>";
+      } else {
+        const parts = [];
+        for (const r of voteRounds) {
+          const step = (r.step !== null && r.step !== undefined) ? r.step : r.round_key;
+          const pred = r.predicted_eject ? (r.predicted_eject + (r.predicted_eject_is_imposter ? " (imposter)" : " (crewmate)")) : "tie/skip";
+          const tallyStr = Object.entries(r.tally || {}).map(([k,v]) => k + ":" + v).join(", ");
+
+          const voters = Object.entries(r.per_voter || {})
+            .map(([v, info]) => {
+              const role = (info.role || '').toLowerCase().startsWith('imp') ? 'imposter' : 'crewmate';
+              const pill = role === 'imposter' ? "pill imp" : "pill crew";
+              const vote = info.vote || 'skip';
+              const flags = [];
+              if (info.target_is_imposter) flags.push("target=imposter");
+              if (info.target_is_crewmate) flags.push("target=crewmate");
+              if (info.is_skip) flags.push("skip");
+              const thought = info.thought || '';
+              return `
+                <tr>
+                  <td class="mono">${v}</td>
+                  <td><span class="${pill}">${role}</span></td>
+                  <td class="mono">${vote}</td>
+                  <td class="mono">${flags.join(", ") || "—"}</td>
+                  <td>${thought ? thought : "—"}</td>
+                </tr>
+              `;
+            })
+            .join("");
+
+          parts.push(`
+            <details style="margin-top: 10px;">
+              <summary>Round step ${step} · crewAcc ${fmtPct(r.accuracy_crewmate_detect_imposter)} · impAcc ${fmtPct(r.accuracy_imposter_vote_crewmate)} · predicted eject: ${pred}</summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">${tallyStr || "—"}</span></div>
+              <table>
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>flags</th><th>thought</th></tr></thead>
+                <tbody>${voters || "<tr><td colspan='5' class='muted'>(no voters)</td></tr>"}</tbody>
+              </table>
+            </details>
+          `);
+        }
+        container.innerHTML = parts.join("");
+      }
+    }
+
+    // ---------- Plot: voting accuracy ----------
+    function drawVoteAcc(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!voteRounds || voteRounds.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No voting data.', 12, 24);
+        return;
+      }
+
+      const pts = voteRounds
+        .map((r, i) => {
+          const x = (r.step !== null && r.step !== undefined) ? r.step : i;
+          return {
+            x,
+            crew: r.accuracy_crewmate_detect_imposter,
+            imp: r.accuracy_imposter_vote_crewmate,
+            any: r.accuracy_any_detect_imposter,
+          };
+        });
+
+      const xs = pts.map(p => p.x);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('accuracy', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      function drawLine(key, color, width) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        let started = false;
+        for (const p of pts) {
+          const y = p[key];
+          if (y === null || y === undefined) continue;
+          const x = sx(p.x);
+          const yy = sy(y);
+          if (!started) { ctx.moveTo(x, yy); started = true; }
+          else ctx.lineTo(x, yy);
+        }
+        if (started) ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+
+      drawLine('any', '#111827', 4);
+      drawLine('crew', '#1d4ed8', 2);
+      drawLine('imp', '#dc2626', 2);
+
+      // Legend
+      ctx.fillStyle = '#111827';
+      ctx.fillRect(padL + innerW - 170, padT + 10, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('any (vote=imposter)', padL + innerW - 154, padT + 19);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(padL + innerW - 170, padT + 28, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('crewmates', padL + innerW - 154, padT + 37);
+
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(padL + innerW - 170, padT + 46, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('imposters', padL + innerW - 154, padT + 55);
+    }
+
+    // ---------- Plot: trust trends (mean) ----------
+    function drawTrust(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      const seriesAll = (trust && trust.series_all) ? trust.series_all : null;
+      const targets = (trust && trust.targets) ? trust.targets : [];
+      if (!seriesAll || !targets || targets.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust snapshot data (step_*_scores.json).', 12, 24);
+        return;
+      }
+
+      // Choose up to 8 targets with most points (or just first).
+      const scored = targets.map(t => {
+        const pts = seriesAll[t] || [];
+        return { t, n: pts.length };
+      }).sort((a,b) => b.n - a.n);
+      const chosen = scored.slice(0, 8).map(x => x.t);
+
+      const allPts = [];
+      for (const t of chosen) {
+        for (const p of (seriesAll[t] || [])) allPts.push(p);
+      }
+      if (allPts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust points.', 12, 24);
+        return;
+      }
+
+      const xs = allPts.map(p => p[0]);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('mean trust', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      const palette = ['#1d4ed8','#c026d3','#16a34a','#f59e0b','#0ea5e9','#dc2626','#7c3aed','#334155'];
+      function colorFor(i) { return palette[i % palette.length]; }
+
+      chosen.forEach((t, idx) => {
+        const pts = (seriesAll[t] || []).slice().sort((a,b) => a[0] - b[0]);
+        if (!pts.length) return;
+        ctx.strokeStyle = colorFor(idx);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        pts.forEach((p, i) => {
+          const x = sx(p[0]), y = sy(p[1]);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      });
+
+      // Legend (right)
+      ctx.font = '12px ui-sans-serif, system-ui';
+      let lx = padL + innerW - 8;
+      let ly = padT + 14;
+      chosen.forEach((t, idx) => {
+        ctx.fillStyle = colorFor(idx);
+        ctx.fillRect(lx - 12, ly - 9, 10, 10);
+        ctx.fillStyle = '#111';
+        const label = t;
+        const w = ctx.measureText(label).width;
+        ctx.fillText(label, lx - 16 - w, ly);
+        ly += 16;
+      });
+    }
+
+    // ---------- Overall task completion ----------
+    async function fetchJsonl(url) {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`fetch failed (${res.status}) for ${url}`);
+      const text = await res.text();
+      const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
+      const out = [];
+      for (const ln of lines) {
+        try { out.push(JSON.parse(ln)); } catch (e) { /* ignore malformed */ }
+      }
+      return out;
+    }
+
+    function buildPlayerSeries(turns) {
+      const m = new Map();
+      for (const r of (turns || [])) {
+        const step = (r.step !== null && r.step !== undefined) ? r.step : r.idx;
+        const done = Array.isArray(r.finished_tasks) ? r.finished_tasks.length : 0;
+        const todo = Array.isArray(r.tasks_to_complete) ? r.tasks_to_complete.length : 0;
+        const total = done + todo;
+        if (typeof step === 'number') m.set(step, { done, total });
+      }
+      const steps = Array.from(m.keys()).sort((a,b) => a - b);
+      return steps.map(s => ({ step: s, done: m.get(s).done, total: m.get(s).total }));
+    }
+
+    function unionSteps(seriesByPlayer) {
+      const all = new Set();
+      for (const s of Object.values(seriesByPlayer)) {
+        for (const p of s) all.add(p.step);
+      }
+      return Array.from(all).sort((a,b) => a - b);
+    }
+
+    function computeOverallSeries(seriesByPlayer) {
+      const players = Object.keys(seriesByPlayer);
+      const steps = unionSteps(seriesByPlayer);
+      const idxByPlayer = Object.fromEntries(players.map(p => [p, 0]));
+      const lastByPlayer = Object.fromEntries(players.map(p => [p, { done: 0, total: 0, has: false }]));
+
+      const out = [];
+      for (const step of steps) {
+        let doneSum = 0;
+        let totalSum = 0;
+        for (const player of players) {
+          const series = seriesByPlayer[player] || [];
+          let i = idxByPlayer[player] || 0;
+          while (i < series.length && series[i].step <= step) {
+            lastByPlayer[player] = { done: series[i].done, total: series[i].total, has: true };
+            i += 1;
+          }
+          idxByPlayer[player] = i;
+          const last = lastByPlayer[player];
+          if (last && last.has && last.total > 0) {
+            doneSum += last.done;
+            totalSum += last.total;
+          }
+        }
+        const pct = totalSum ? (doneSum / totalSum) : 0;
+        out.push({ step, done: doneSum, total: totalSum, pct });
+      }
+      return out;
+    }
+
+    function drawTaskProgress(canvasId, pts) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!pts || pts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No task progress data.', 12, 24);
+        return;
+      }
+
+      const xs = pts.map(p => p.step);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('task completion', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      // Line
+      ctx.strokeStyle = '#16a34a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      pts.forEach((p, i) => {
+        const x = sx(p.step);
+        const y = sy(p.pct);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.lineWidth = 1;
+    }
+
+    async function initOverallTaskProgress() {
+      const summaryEl = document.getElementById('taskProgressSummary');
+      const barEl = document.getElementById('taskProgressBar');
+
+      const entries = taskProgressSources ? Object.entries(taskProgressSources) : [];
+      if (!entries.length) {
+        if (summaryEl) summaryEl.textContent = '(no parsed_turns.jsonl files found)';
+        return;
+      }
+
+      try {
+        const seriesByPlayer = {};
+        await Promise.all(entries.map(async ([player, url]) => {
+          const turns = await fetchJsonl(url);
+          seriesByPlayer[player] = buildPlayerSeries(turns);
+        }));
+
+        const pts = computeOverallSeries(seriesByPlayer);
+        const last = pts.length ? pts[pts.length - 1] : null;
+        const pctTxt = (!last || !last.total) ? '—' : (100 * last.pct).toFixed(1) + '%';
+        if (summaryEl && last) summaryEl.innerHTML = `<b>${pctTxt}</b> · ${last.done}/${last.total} tasks complete (step ${last.step})`;
+        if (barEl && last) barEl.style.width = (!last || !last.total) ? '0%' : (100 * last.pct).toFixed(1) + '%';
+        drawTaskProgress('plotTaskProgress', pts);
+      } catch (e) {
+        if (summaryEl) summaryEl.textContent = `(failed to load task progress: ${e && e.message ? e.message : e})`;
+      }
+    }
+
+    drawVoteAcc('plotVoteAcc');
+    drawTrust('plotTrust');
+    initOverallTaskProgress();
+  </script>
+</body>
+</html>
