@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EM²-Bench: Results Summary</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --bg-deep: #05080d;
+            --bg-surface: #0c1018;
+            --bg-elevated: #141c28;
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(148, 163, 184, 0.12);
+            --glow-blue: rgba(59, 130, 246, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ============ HEADER ============ */
+        header {
+            padding: 60px 0 40px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-blue);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+        }
+
+        header h1 .highlight {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 24px;
+            font-weight: 400;
+        }
+
+        .meta-info {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* ============ HERO SECTION - INTERACTIVE DEMOS ============ */
+        .hero-section {
+            padding: 80px 0;
+            background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-deep) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            margin-bottom: 20px;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        /* Demo Grid */
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .demo-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .demo-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -20px var(--glow-blue);
+        }
+
+        .demo-card .preview {
+            height: 180px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .demo-card .preview::before {
+            content: '▶';
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .demo-card:hover .preview::before {
+            color: var(--accent-blue);
+            transform: scale(1.1);
+        }
+
+        .demo-card .preview .icon {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--accent-green);
+        }
+
+        .demo-card .info {
+            padding: 20px;
+        }
+
+        .demo-card .info h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .demo-card .info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .demo-card .info .tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .demo-card .info .tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 4px;
+            color: var(--accent-blue);
+        }
+
+        /* Featured Demo */
+        .featured-demo {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 40px;
+        }
+
+        .featured-demo .header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .featured-demo .header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .featured-demo .header .live-badge {
+            padding: 4px 10px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--accent-red);
+            animation: live-pulse 2s infinite;
+        }
+
+        @keyframes live-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .featured-demo .header a {
+            font-size: 0.85rem;
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        .featured-demo .iframe-wrapper {
+            position: relative;
+            padding-top: 62%;
+            background: #0a0a0a;
+        }
+
+        .featured-demo iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .featured-demo .caption {
+            padding: 16px 24px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+        }
+
+        /* ============ SECTIONS ============ */
+        section {
+            padding: 60px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+        }
+
+        .section-header .question-tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-yellow);
+            margin-bottom: 8px;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+        }
+
+        /* Figure Card - Full Width for Paper Figures */
+        .figure-full {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .figure-full .fig-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .figure-full .fig-header h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .figure-full .fig-header .fig-tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            color: var(--text-muted);
+        }
+
+        .figure-full img {
+            width: 100%;
+            display: block;
+            background: #fff;
+        }
+
+        .figure-full .fig-caption {
+            padding: 14px 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            margin-top: 24px;
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container th,
+        .table-container td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .table-container th {
+            background: var(--bg-elevated);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--text-muted);
+        }
+
+        .table-container tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-container .mono {
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* Agent Logs */
+        .agent-logs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .agent-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .agent-card:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .agent-card .model-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .agent-card .model-header .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-green);
+        }
+
+        .agent-card .model-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .agent-card .links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .agent-card .link {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .agent-card .link:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--accent-blue);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer code {
+            font-family: 'IBM Plex Mono', monospace;
+            background: var(--bg-surface);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .hero-title {
+                font-size: 1.6rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.4rem;
+            }
+
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="container">
+            <div class="logo">Research Preview</div>
+            <h1><span class="highlight">EM²-Bench</span> Results Summary</h1>
+            <p class="subtitle">
+                Embodied Evaluation of Multi-Agent, Multi-Objective Reasoning —
+                Benchmarking LLM agents in social deduction environments with planning, reasoning, and psychological
+                inference.
+            </p>
+            <div class="meta-info">
+                <span>📅 January 7, 2026</span>
+                <span>🔬 7 Models Evaluated</span>
+                <span>🎮 600+ Episodes</span>
+                <span>📊 10×10 2×2 Configuration</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION: Interactive Agent Visualizations -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-badge">Interactive Visualizations</div>
+            <h2 class="hero-title">🎬 Dynamic Agent Log Visualizations</h2>
+            <p class="hero-desc">
+                Explore how LLM agents reason, plan, and interact in real-time. These interactive HTML reports show
+                agent reasoning traces,
+                trust dynamics, voting decisions, and spatial navigation with animated minimap playback.
+            </p>
+
+            <!-- Demo Cards Grid -->
+            <div class="demo-grid">
+                <a href="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/index.html"
+                    target="_blank" class="demo-card">
+                    <div class="preview">
+                        <span class="icon">HTML</span>
+                    </div>
+                    <div class="info">
+                        <h3>DeepSeek-R1-32B Episode Run</h3>
+                        <p>Full episode visualization with voting rounds, trust dynamics, and task progress tracking.
+                        </p>
+                        <div class="tags">
+                            <span class="tag">Episode Index</span>
+                            <span class="tag">7 Players</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html"
+                    target="_blank" class="demo-card">
+                    <div class="preview">
+                        <span class="icon">AGENT LOG</span>
+                    </div>
+                    <div class="info">
+                        <h3>Single Agent Deep Dive</h3>
+                        <p>Step-by-step reasoning trace with animated minimap, action logs, and chain-of-thought.</p>
+                        <div class="tags">
+                            <span class="tag">Crewmate</span>
+                            <span class="tag">120 Turns</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="Minigrid/output/save/voting_acc_run_llama3.1_70b_action_assist_medium_node2/pattern_10x10_2x2/episode_000/viz_run/index.html"
+                    target="_blank" class="demo-card">
+                    <div class="preview">
+                        <span class="icon">HTML</span>
+                    </div>
+                    <div class="info">
+                        <h3>LLaMA-3.1-70B Episode</h3>
+                        <p>Compare reasoning patterns across different model architectures.</p>
+                        <div class="tags">
+                            <span class="tag">70B Params</span>
+                            <span class="tag">Full Run</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/viz_voting/index.html"
+                    target="_blank" class="demo-card">
+                    <div class="preview">
+                        <span class="icon">VOTING</span>
+                    </div>
+                    <div class="info">
+                        <h3>Voting Analysis Dashboard</h3>
+                        <p>Cross-episode voting patterns, detection accuracy, and trust calibration metrics.</p>
+                        <div class="tags">
+                            <span class="tag">Aggregate</span>
+                            <span class="tag">Multi-Episode</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="Minigrid/output/voting_acc_run_gemma3_27b_action_assist_medium/pattern_10x10_2x2/episode_002/viz_run/index.html"
+                    target="_blank" class="demo-card">
+                    <div class="preview">
+                        <span class="icon">HTML</span>
+                    </div>
+                    <div class="info">
+                        <h3>Gemma-3-27B Episode</h3>
+                        <p>Observe smaller model behavior and failure patterns in embodied settings.</p>
+                        <div class="tags">
+                            <span class="tag">27B Params</span>
+                            <span class="tag">Episode 2</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="Minigrid/output/voting_acc_run_qwen3-next_80b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/episode_001/viz_run/index.html"
+                    target="_blank" class="demo-card">
+                    <div class="preview">
+                        <span class="icon">HTML</span>
+                    </div>
+                    <div class="info">
+                        <h3>Qwen3-Next-80B (Crewmate Only)</h3>
+                        <p>Controlled setting without impostors to isolate planning capabilities.</p>
+                        <div class="tags">
+                            <span class="tag">80B Params</span>
+                            <span class="tag">No Impostor</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Featured Demo with Embedded iFrame -->
+            <div class="featured-demo">
+                <div class="header">
+                    <h3>
+                        Live Preview: Episode Visualization
+                        <span class="live-badge">● INTERACTIVE</span>
+                    </h3>
+                    <a href="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/index.html"
+                        target="_blank">Open in new tab →</a>
+                </div>
+                <div class="iframe-wrapper">
+                    <iframe
+                        src="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/index.html"
+                        loading="lazy"></iframe>
+                </div>
+                <div class="caption">
+                    <strong>Features:</strong> Animated minimap playback • Step-by-step action replay • Voting round
+                    breakdown with thoughts • Trust score timeseries • Task completion progress • Role assignments and
+                    outcomes
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Environment Overview (Figure 1 & 2) -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <div class="question-tag">Environment</div>
+                <h2>EM²-Bench Overview</h2>
+                <p>A controllable and embodied benchmark evaluating planning, reasoning, and psychological inference in
+                    multi-agent settings inspired by Among Us.</p>
+            </div>
+
+            <div class="figure-full">
+                <div class="fig-header">
+                    <h4>Figure 2: System Overview</h4>
+                    <span class="fig-tag">Pipeline</span>
+                </div>
+                <img src="sharelatex/figures/overview.png" alt="EM²-Bench Overview" />
+                <div class="fig-caption">
+                    <strong>Overview of EM²-Bench.</strong> EM²-Bench generates gridworld environments based on
+                    user-specified parameters, into which LLM agents are deployed and evaluated on both task completion
+                    and voting activities. Performance is automatically assessed and analyzed with actionable feedback
+                    for agent developers.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Q1: Task and Planning Performance (Figure 3) -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <div class="question-tag">(Q1) Task & Planning Performance</div>
+                <h2>Do major models complete their roles reliably in the embodied multi-agent multi-objective setting?
+                </h2>
+                <p>Current LLMs struggle with even basic path planning in embodied settings. Without the planning
+                    assistant, most models fail to reach their assigned tasks.</p>
+            </div>
+
+            <div class="figure-full">
+                <div class="fig-header">
+                    <h4>Figure 3: Task Performance & Planning Efficiency</h4>
+                    <span class="fig-tag">Assist vs No-Assist</span>
+                </div>
+                <img src="sharelatex/figures/assist_vs_noassist_tp_psr_pp.png" alt="Task Performance Comparison" />
+                <div class="fig-caption">
+                    <strong>LLM agents cannot perform path planning reliably in the embodied setting.</strong>
+                    Comparison of crewmate performance on EM²-Bench. Without the planning assistant, most models
+                    struggle—even failing to reach assigned tasks.
+                    GPT-OSS-120B was the sole baseline to achieve near-perfect task completion with assistance. Planning
+                    efficiency rarely exceeds 0.5 even with assistance.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Q2: Mental Model Building (Figure 4) -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <div class="question-tag">(Q2) Mental Model Building</div>
+                <h2>Can LLM agents build mental models robustly, evaluating the trustworthiness of other agents
+                    reliably?</h2>
+                <p>Trust Brier scores remain below 0.4 across all models, indicating frequent misjudgments about other
+                    agents' trustworthiness.</p>
+            </div>
+
+            <div class="figure-full">
+                <div class="fig-header">
+                    <h4>Figure 4: Voting Accuracy & Trust Assessment</h4>
+                    <span class="fig-tag">Detection & Calibration</span>
+                </div>
+                <img src="sharelatex/figures/assist_vs_noassist_vacc_bs_tv.png" alt="Voting and Trust Assessment" />
+                <div class="fig-caption">
+                    <strong>LLM agents cannot build mental models robustly in the embodied setting.</strong>
+                    Left: Voting accuracy—without assistance, performance never exceeds 60%. Smaller models occasionally
+                    outperform larger counterparts.
+                    Center: Trust Brier score—agents frequently misjudge trustworthiness (>0.4 indicates poor
+                    calibration).
+                    Right: Trust volatility—larger models produce more stable assessments, but assistance doesn't
+                    consistently improve stability.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- League Matching + Model Scaling (Table 1 + Figure 7) -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <div class="question-tag">League Matching</div>
+                <h2>Model-to-Model Competition Results</h2>
+                <p>30 unique matchups across 6 models reveal stark asymmetry: impostors dominate with 92.6% win rate
+                    while crewmates win only 7.4%.</p>
+            </div>
+
+            <!-- Table 1: League Rankings -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Model</th>
+                            <th>Composite</th>
+                            <th>Crew WR</th>
+                            <th>Crew W-L</th>
+                            <th>Crew Detect</th>
+                            <th>Imp WR</th>
+                            <th>Imp W-L</th>
+                            <th>Imp Obj</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="mono">1</td>
+                            <td class="mono">GPT-OSS-120B</td>
+                            <td class="mono">0.585</td>
+                            <td class="mono" style="color: var(--accent-green);">19.4%</td>
+                            <td class="mono">19-79</td>
+                            <td class="mono">30.0%</td>
+                            <td class="mono" style="color: var(--accent-red);">98.5%</td>
+                            <td class="mono">64-1</td>
+                            <td class="mono">55.1%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">2</td>
+                            <td class="mono">Llama3.1-70B</td>
+                            <td class="mono">0.544</td>
+                            <td class="mono">5.5%</td>
+                            <td class="mono">4-69</td>
+                            <td class="mono">33.6%</td>
+                            <td class="mono" style="color: var(--accent-red);">97.6%</td>
+                            <td class="mono">83-2</td>
+                            <td class="mono">54.8%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">3</td>
+                            <td class="mono">Qwen3-30B</td>
+                            <td class="mono">0.531</td>
+                            <td class="mono">7.7%</td>
+                            <td class="mono">6-72</td>
+                            <td class="mono">32.7%</td>
+                            <td class="mono">88.5%</td>
+                            <td class="mono">69-9</td>
+                            <td class="mono">64.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">4</td>
+                            <td class="mono">DeepSeek-R1-70B</td>
+                            <td class="mono">0.518</td>
+                            <td class="mono">5.5%</td>
+                            <td class="mono">4-69</td>
+                            <td class="mono">29.8%</td>
+                            <td class="mono">92.7%</td>
+                            <td class="mono">76-6</td>
+                            <td class="mono">56.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">5</td>
+                            <td class="mono">Phi4-R-14B</td>
+                            <td class="mono">0.500</td>
+                            <td class="mono">2.6%</td>
+                            <td class="mono">2-74</td>
+                            <td class="mono">30.5%</td>
+                            <td class="mono">86.2%</td>
+                            <td class="mono">75-12</td>
+                            <td class="mono">65.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">6</td>
+                            <td class="mono">Gemma3-27B</td>
+                            <td class="mono">0.499</td>
+                            <td class="mono">1.1%</td>
+                            <td class="mono">1-87</td>
+                            <td class="mono">25.2%</td>
+                            <td class="mono">93.3%</td>
+                            <td class="mono">83-6</td>
+                            <td class="mono">61.8%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">
+                <strong>Table 1:</strong> League Rankings: Overall Performance. Models ranked by composite score
+                combining win rate (70%) with role-specific metrics: detection accuracy for crewmates and objective
+                accuracy for impostors (30% each). W-L indicates wins-losses.
+            </p>
+
+            <div class="figure-full" style="margin-top: 40px;">
+                <div class="fig-header">
+                    <h4>Figure 7: Model Scaling Analysis</h4>
+                    <span class="fig-tag">Parameter Count vs Performance</span>
+                </div>
+                <img src="sharelatex/figures/league_params_correlation_pattern_10x10_2x2.png"
+                    alt="Model Scaling Analysis" />
+                <div class="fig-caption">
+                    <strong>Model Scaling Analysis: Parameter Count vs Performance.</strong>
+                    (A) Strong positive correlation between parameters and composite score.
+                    (B) Larger models achieve higher crewmate win rates, though all remain below 20%.
+                    (C) Impostor performance is consistently high across all model sizes.
+                    (D) Detection accuracy has weak correlation with parameters, remaining below the 50% random baseline
+                    for all models.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Q3: Complexity Analysis (Figure 5) -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <div class="question-tag">(Q3) Complexity Factors</div>
+                <h2>What are the key factors that make models succeed or fail?</h2>
+                <p>Map area and room count affect performance differently. Map area dominates task performance while
+                    room count affects planning efficiency more.</p>
+            </div>
+
+            <div class="figure-full">
+                <div class="fig-header">
+                    <h4>Figure 5: Complexity Analysis (No Assist)</h4>
+                    <span class="fig-tag">TP & PP vs Environment Parameters</span>
+                </div>
+                <img src="sharelatex/figures/complexity_analysis_tp_pp_noassist.png" alt="Complexity Analysis" />
+                <div class="fig-caption">
+                    <strong>Complexity analysis (No Assist): task performance (TP) and planning performance
+                        (PP).</strong>
+                    Without assistance, all models struggle significantly. Performance degrades with increased map
+                    complexity.
+                    Map area shows stronger negative correlation with TP (β=-0.12), while room count more strongly
+                    affects PP (β=-0.22).
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Q4: Error Analysis (Figure 6) -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <div class="question-tag">(Q4) Error Analysis</div>
+                <h2>What typical failures do the agents make in the environment?</h2>
+                <p>LLM agents make systematic failures including door spam, stalling, and backtracking loops—behaviors
+                    rarely seen in human players.</p>
+            </div>
+
+            <div class="figure-full">
+                <div class="fig-header">
+                    <h4>Figure 6: Failure Leaderboard</h4>
+                    <span class="fig-tag">Systematic Failure Modes</span>
+                </div>
+                <img src="sharelatex/figures/failure_leaderboard.png" alt="Failure Leaderboard" />
+                <div class="fig-caption">
+                    <strong>LLM agents make systematic failures in the embodied setting.</strong>
+                    Top-k models shown with the covered fraction of failures out of the entire episode.
+                    Door spam (repeatedly opening/closing doors) affects even large models like Qwen3-next-80B and
+                    GPT-OSS-120B.
+                    The navigation assistant reduces do-task stall failures but not door spam, revealing a critical gap
+                    between LLM agents and human players.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- All Agent Logs -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <div class="question-tag">All Visualizations</div>
+                <h2>🤖 Browse Agent Logs by Model</h2>
+                <p>Interactive HTML reports available for all evaluated models across episodes and configurations.</p>
+            </div>
+
+            <div class="agent-logs-grid">
+                <div class="agent-card">
+                    <div class="model-header">
+                        <span class="indicator"></span>
+                        <h4>DeepSeek-R1-32B</h4>
+                    </div>
+                    <div class="links">
+                        <a class="link"
+                            href="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/index.html"
+                            target="_blank">Ep 0</a>
+                        <a class="link"
+                            href="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_001/viz_run/index.html"
+                            target="_blank">Ep 1</a>
+                        <a class="link"
+                            href="Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/viz_voting/index.html"
+                            target="_blank">Voting</a>
+                    </div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="model-header">
+                        <span class="indicator"></span>
+                        <h4>LLaMA-3.1-70B</h4>
+                    </div>
+                    <div class="links">
+                        <a class="link"
+                            href="Minigrid/output/save/voting_acc_run_llama3.1_70b_action_assist_medium_node2/pattern_10x10_2x2/episode_000/viz_run/index.html"
+                            target="_blank">Ep 0</a>
+                        <a class="link"
+                            href="Minigrid/output/save/voting_acc_run_llama3.1_70b_action_assist_medium_node2/viz_voting/index.html"
+                            target="_blank">Voting</a>
+                    </div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="model-header">
+                        <span class="indicator"></span>
+                        <h4>Gemma-3-27B</h4>
+                    </div>
+                    <div class="links">
+                        <a class="link"
+                            href="Minigrid/output/voting_acc_run_gemma3_27b_action_assist_medium/pattern_10x10_2x2/episode_002/viz_run/index.html"
+                            target="_blank">Ep 2</a>
+                    </div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="model-header">
+                        <span class="indicator"></span>
+                        <h4>Qwen3-30B</h4>
+                    </div>
+                    <div class="links">
+                        <a class="link"
+                            href="Minigrid/output/voting_acc_run_qwen3_30b_action_assist_medium/pattern_18x18_2x2/episode_003/viz_run/index.html"
+                            target="_blank">18x18</a>
+                    </div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="model-header">
+                        <span class="indicator"></span>
+                        <h4>Phi4-Reasoning</h4>
+                    </div>
+                    <div class="links">
+                        <a class="link"
+                            href="Minigrid/output/voting_acc_run_phi4-reasoning_latest_action_assist_medium/pattern_18x18_2x2/episode_003/viz_run/index.html"
+                            target="_blank">18x18</a>
+                    </div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="model-header">
+                        <span class="indicator"></span>
+                        <h4>Qwen3-Next-80B</h4>
+                    </div>
+                    <div class="links">
+                        <a class="link"
+                            href="Minigrid/output/voting_acc_run_qwen3-next_80b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/episode_001/viz_run/index.html"
+                            target="_blank">Crewmate</a>
+                    </div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="model-header">
+                        <span class="indicator" style="background: var(--accent-yellow);"></span>
+                        <h4>Qwen3-4B (RL Fine-tuned)</h4>
+                    </div>
+                    <div class="links">
+                        <a class="link"
+                            href="Minigrid/output/voting_acc_run_qwen3-final-medium_4b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/episode_000/"
+                            target="_blank">Medium</a>
+                        <a class="link"
+                            href="Minigrid/output/voting_acc_run_qwen3-final-easy_4b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/"
+                            target="_blank">Easy</a>
+                        <a class="link"
+                            href="Minigrid/output/voting_acc_run_qwen3-final-hard_4b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/"
+                            target="_blank">Hard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>EM²-Bench Results Summary — Generated from <code>/mnt/vast/home/hs40vahe/AmongUs</code></p>
+            <p style="margin-top: 8px; opacity: 0.7;">Multi-Agent, Multi-Objective Reasoning Benchmark for LLM Agents
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.05 });
+
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+
+</html>

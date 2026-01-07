@@ -1,0 +1,524 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LLM Run Report (activity + voting + trust)</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; color: #111; }
+    .muted { color: #666; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .box { border: 1px solid #ddd; border-radius: 12px; padding: 12px 14px; background: #fafafa; }
+    h2, h3 { margin: 0 0 10px 0; }
+    h3 { font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eee; text-align: left; padding: 6px 8px; font-size: 13px; vertical-align: top; }
+    th { background: #fbfbfb; position: sticky; top: 0; }
+    details { border: 1px solid #e2e2e2; border-radius: 12px; padding: 10px 12px; background: white; }
+    details[open] { border-color: #cfcfcf; box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
+    summary { cursor: pointer; font-weight: 650; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; background: #fff; }
+    .pill.imp { border-color: #fecaca; background: #fff1f2; }
+    .pill.crew { border-color: #bfdbfe; background: #eff6ff; }
+    canvas { width: 100%; height: auto; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+    .outcome { margin-top: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid #ddd; background: #fff; }
+    .outcome.crewwin { border-color: #bfdbfe; background: #eff6ff; }
+    .outcome.impwin { border-color: #fecaca; background: #fff1f2; }
+    .outcome.inconclusive { border-color: #fde68a; background: #fffbeb; }
+    .outcome.unknown { border-color: #e5e7eb; background: #f9fafb; }
+    .roster { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px; margin-top: 10px; }
+    .roster-item { padding: 8px 10px; border: 1px solid #eee; border-radius: 10px; background: #fff; }
+    .roster-item.dead { opacity: 0.55; text-decoration: line-through; }
+    .thoughtSmall { max-height: 120px; overflow: auto; white-space: pre-wrap; }
+    .progressWrap { margin-top: 10px; height: 12px; background: #eee; border-radius: 999px; overflow: hidden; border: 1px solid #e5e5e5; }
+    .progressBar { height: 100%; width: 0%; background: linear-gradient(90deg, #16a34a, #22c55e); }
+  </style>
+</head>
+<body>
+  <h2>LLM Run Report</h2>
+  <div class="muted">Run dir: <span class="mono">/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/voting_acc_run_gemma3_27b_action_assist_medium/pattern_10x10_2x2/episode_002</span></div>
+  <div class="outcome impwin">
+    <div><b>Outcome: imposters won</b></div>
+    <div class="muted">Recorded by runner (termination=victory; win_reason=all_crewmates_dead; All crewmates are terminated.).</div>
+  </div>
+
+  <div class="row" style="margin-top: 14px;">
+    <div class="box" style="min-width: 320px;">
+      <h3>Roles</h3>
+      <div style="margin-bottom: 8px;">
+        <span class="pill crew">Crewmates: 5</span>
+        <span class="pill imp">Imposters: 2</span>
+      </div>
+      <table>
+        <thead><tr><th>agent</th><th>role</th></tr></thead>
+        <tbody>
+          <tr><td class='mono'>player_1</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_2</td><td>Imposter</td></tr>
+<tr><td class='mono'>player_3</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_4</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_5</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_6</td><td>Imposter</td></tr>
+<tr><td class='mono'>player_7</td><td>Crewmate</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Activity reports</h3>
+      <div class="muted">These are generated using the same parsing logic as <span class="mono">visualize_llm_log.py</span>.</div>
+      <ul>
+        <li><a href='agent/crewmate_player_1.html'>crewmate_player_1.log (turns=375)</a></li>
+<li><a href='agent/crewmate_player_3.html'>crewmate_player_3.log (turns=128)</a></li>
+<li><a href='agent/crewmate_player_4.html'>crewmate_player_4.log (turns=375)</a></li>
+<li><a href='agent/crewmate_player_5.html'>crewmate_player_5.log (turns=375)</a></li>
+<li><a href='agent/crewmate_player_7.html'>crewmate_player_7.log (turns=375)</a></li>
+<li><a href='agent/imposter_player_2.html'>imposter_player_2.log (turns=376)</a></li>
+<li><a href='agent/imposter_player_6.html'>imposter_player_6.log (turns=376)</a></li>
+      </ul>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Overall task completion</h3>
+      <div id="taskProgressSummary" class="muted">Loading task progress…</div>
+      <div class="progressWrap" aria-label="task completion progress">
+        <div id="taskProgressBar" class="progressBar"></div>
+      </div>
+      <div style="margin-top: 10px;">
+        <canvas id="plotTaskProgress" width="900" height="260"></canvas>
+      </div>
+      <div class="muted">
+        Computed from per-agent <span class="mono">parsed_turns.jsonl</span> using
+        <span class="mono">finished_tasks</span> / (<span class="mono">finished_tasks</span> + <span class="mono">tasks_to_complete</span>) at each step.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top: 14px;">
+    <div class="box">
+      <h3>Voting accuracy over rounds</h3>
+      <canvas id="plotVoteAcc" width="900" height="260"></canvas>
+      <div class="muted">
+        Crewmate accuracy = fraction of crewmates voting an imposter. Imposter accuracy = fraction of imposters voting a crewmate. Skip counts as incorrect.
+      </div>
+    </div>
+    <div class="box">
+      <h3>Trust (mean) over time</h3>
+      <canvas id="plotTrust" width="900" height="260"></canvas>
+      <div class="muted">
+        Uses <span class="mono">trust_scores/step_*_scores.json</span> if present (runner snapshots). Shows mean trust per target across raters.
+      </div>
+    </div>
+  </div>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Voting rounds (details)</summary>
+    <div class="muted" style="margin-top: 6px;">Click a round to expand per-voter info (thoughts included).</div>
+    <div id="voteRounds"></div>
+  </details>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Vote sessions (who voted whom · alive roster · elimination)</summary>
+    <div class="muted" style="margin-top: 6px;">
+      Pulled from run-level <span class="mono">vote_events.jsonl</span> (when available). This includes alive agents + true roles for context.
+    </div>
+    <div class='muted' style='margin-top: 10px;'>(no vote_events.jsonl sessions found for this episode)</div>
+  </details>
+
+  <script>
+    const voteRounds = [{"step": 40, "round_key": "40", "n_votes": 7, "tally": {"player_6": 4, "player_1": 1, "player_2": 1, "player_5": 1}, "predicted_eject": "player_6", "predicted_eject_is_imposter": true, "accuracy_crewmate_detect_imposter": 1.0, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.7142857142857143, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 6 is exhibiting erratic movement near R00(1,1). They seem to be repeatedly turning and moving backward. Player 2 also has a repetitive back and forth movement pattern.  Other players seem to be performing tasks or moving predictably. I will vote for Player 6 due to their highly suspicious behavior."}, "player_3": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 2 and 6 are moving back and forth erratically. Player 6 especially seems to be looping in place. Player 1, 4, 5, and 7 have more consistent movement. I'll vote for Player 6 due to their bizarre movement pattern."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 2 and Player 6 are moving back and forth erratically, which is suspicious. Player 3, 5, and 7 seem to be generally stable. Player 1 appears to be doing tasks normally. Voting for Player 6, their movement is concerning. "}, "player_5": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 2 and 6 are exhibiting erratic movement near R00. They appear to be moving back and forth without clear purpose. Player 4 has been stationary doing tasks, but no visual confirmation. Player 1, 3, and 7 seem to be doing tasks, but its hard to confirm. Voting for player 6 as they seem to be stuck in a loop and are the most suspicous."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 6 is exhibiting erratic movement, repeatedly moving forward and backward, and seems to be stuck in a loop near R00(1,1). This is highly suspicious. Others are performing tasks or moving normally. No one is clearly confirmed safe at this moment, but Player 6's behavior stands out as potentially malicious."}, "player_2": {"role": "Imposter", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 seems to be wandering aimlessly, potentially faking tasks. Player_3 & 4 are consistently doing tasks, seeming safe. Player_5 & 6 are moving but not suspicious. Player_7 appears to be task focused with some movement. I will vote for Player_1, as their movement pattern is erratic, and it is unlikely for a crewmate to move like this."}, "player_6": {"role": "Imposter", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has been moving erratically and far from tasks. Player_2 seems to loop. I'll vote for player_5. Prioritize framing those not doing tasks."}}}, {"step": 80, "round_key": "80", "n_votes": 7, "tally": {"player_6": 3, "player_7": 2, "player_3": 1, "player_4": 1}, "predicted_eject": "player_6", "predicted_eject_is_imposter": true, "accuracy_crewmate_detect_imposter": 0.6, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.42857142857142855, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 6 is consistently moving backward and seems to be avoiding areas. Player 2 is also moving back and forth in a suspicious manner. Player 7 is moving steadily and completing tasks near the door. I'll vote for Player 6 due to erratic movement. "}, "player_3": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 6 is exhibiting erratic movement, mostly moving backward and changing directions frequently. This makes me suspect they might be an imposter trying to avoid detection. Player 7 has been primarily moving in one direction which is odd. While Player 2 shows repetitive movement it doesn't seem that suspicious. The rest seem to be moving normally. I am voting for Player 6 since their movement is most suspect."}, "player_4": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 3 is highly suspicious. They've been moving erratically and seem to be circling the same area without a clear task. Player 7 is also slightly suspicious due to consistent movement towards a location. Others seem to be task-focused or moving normally. Voting for Player 3."}, "player_5": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 7 has been consistently moving towards R10, and frequently moving forward for many steps. This could be a calculated path to a vent or a kill location. Player 4 is exhibiting erratic movement and no task completion. Player 6 is wandering around with little direction, while players 1, 2 and 3 appear to be doing tasks or traveling logically. I'm voting for player 7."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 6 is moving erratically, repeatedly moving backward and forward. Player 3's movements also seem somewhat disjointed. The others are relatively stable. I'll vote for Player 6."}, "player_2": {"role": "Imposter", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 7 has been consistently moving towards/through doorways, potentially scoping out kills. Players 3 and 4 have been erratic. I'll vote for Player 7, as they seem most suspicious. Giving higher trust to player 6 (teammate)."}, "player_6": {"role": "Imposter", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 has been consistently doing tasks alone and seems oblivious to surroundings. Player_7 is moving predictably. Player_3 and 5 are moving erratically but haven't raised suspicion. Player_1, 2 are less suspicious. Vote for Player_4 to eliminate and create confusion."}}}, {"step": 120, "round_key": "120", "n_votes": 7, "tally": {"player_6": 3, "player_2": 2, "player_3": 2}, "predicted_eject": "player_6", "predicted_eject_is_imposter": true, "accuracy_crewmate_detect_imposter": 1.0, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.7142857142857143, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 2 is moving erratically back and forth, possibly checking for bodies or trying to appear innocent. Player 6 is also exhibiting somewhat erratic movement. Player 5 and 7 seem to be performing tasks consistently. Player 3, 4 are behaving normally. I will vote for Player 2 due to the suspicious movement pattern."}, "player_3": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 6 and Player 7 have erratic movement patterns and seem to be wandering aimlessly. Player 6's back and forth movement and Player 7's turns are suspicious. Others are performing tasks or have relatively stable paths. Voting Player 6 due to more erratic movement patterns."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 2 is moving back and forth repeatedly in a small area, looks suspicious. Player 5 has been doing tasks for a while and appears safe. Player 6 is heading consistently. Player 7 is also focused on tasks. Player 3 and 1 seem safe. Scoring Player 2 with low trust."}, "player_5": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 2 and 6 are moving back and forth erratically, possibly trying to avoid detection. Player 1 is near player 7 and hasn't reported anything. Player 3 and 4 also seem to be wandering aimlessly. I'll vote for Player 2 as they seem most suspicious."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 6 is exhibiting erratic movement, frequently changing direction near R00. Player 4 also seems to be wandering aimlessly. Others are relatively stable. I will vote for Player 6 as they are most suspicious based on their movements."}, "player_2": {"role": "Imposter", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 and Player_4 seem to wander aimlessly. Player_5 and Player_7 are mostly doing tasks, but Player_3 seems the most isolated and has erratic movement. Voting for Player_3 to create suspicion."}, "player_6": {"role": "Imposter", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_3 and Player_4 have been moving erratically, seemingly trying to hide. Player_1 has been stationary for multiple steps, which is suspicious. I will vote for Player_3, as they have shown more suspicious movement."}}}, {"step": 160, "round_key": "160", "n_votes": 6, "tally": {"player_6": 3, "player_1": 1, "player_4": 1, "player_7": 1}, "predicted_eject": "player_6", "predicted_eject_is_imposter": true, "accuracy_crewmate_detect_imposter": 0.75, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.5, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player_3 is dead. Player_6 seems to be moving erratically, possibly trying to hide or create confusion. Player_4 and Player_5 are doing mostly turning, making it hard to assess. Player_7 is also moving erratically. I'll vote for Player_6 due to the suspicious movement."}, "player_4": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 3 is dead. Player 5 and 7 appear to be wandering aimlessly. Player 6 seems to be following a path. Player 1 and 2 are doing tasks and following reasonable paths. Player 5 and 7's erratic movement is suspicious. I will vote for Player 7, as their movements are the most suspicious."}, "player_5": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 6 and Player 7 have erratic movement, constantly moving forward and back. Player 4 seems to be wandering. Player 1 and Player 2 are more stable. I'll vote for Player 6 due to the repetitive back and forth which is suspicious."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 6 seems to be wandering aimlessly. Player 1 is doing tasks. Player 2 is also wandering, though slightly less erratic than 6. Player 4 and 5 seem to be moving around somewhat normally. I'll vote for Player 6 due to erratic movement."}, "player_2": {"role": "Imposter", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 1 is moving erratically, likely an Imposter. Player 4 seems to be wandering aimlessly, also suspicious. Player 7 is moving back and forth, questionable behavior. Frame Player 1, they're an easy target. Trust 6 fully, they're my teammate!"}, "player_6": {"role": "Imposter", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 seems to be wandering aimlessly and hasn't reported anything despite being near other players. Player_7 and Player_1 are doing tasks. Player_5 is also mobile. I will vote for Player_4. Giving Player_2 high trust as teammate."}}}, {"step": 200, "round_key": "200", "n_votes": 6, "tally": {"player_6": 4, "player_1": 1, "player_4": 1}, "predicted_eject": "player_6", "predicted_eject_is_imposter": true, "accuracy_crewmate_detect_imposter": 1.0, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.6666666666666666, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 6 seems erratic, constantly moving forward/backward. Player 7 also shows unstable movement. Player 3 is dead, so can't be the imposter, but no one reported the body. Since I have to vote, I'll vote for Player 6, their movement is most suspicious. "}, "player_4": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 6 seems to be moving erratically and back and forth, potentially trying to fake tasks or hide something. Player 2 also moves back and forth a lot. Player 1, 5 and 7 are moving predictably. I suspect Player 6 the most."}, "player_5": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 1 and 7 have erratic movement patterns, but it could be task-related. Player 6 seems to be moving back and forth randomly. Player 2 is also wandering, but less so. Player 4's movements are the most stable. I'll vote for player 6."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 6 is moving erratically and seems to be aimlessly wandering. Player 1 and 2 are relatively stable, while 4 and 5 have complex movement. Therefore, I vote on player 6 due to erratic behavior."}, "player_2": {"role": "Imposter", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 is moving erratically near me, potentially trying to blend in. Player_4 is also wandering aimlessly. Player_5 and 7 seems to be stuck in loops. I'll vote for Player_1, marking them with a low trust score due to their suspicious movement."}, "player_6": {"role": "Imposter", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 seems to be wandering aimlessly and hasn't reported anything. Player_7 is also moving erratically and is near where player_3 died. I'll vote for Player_4 to eliminate them. Player_2 is my teammate, so I give them high trust."}}}, {"step": 240, "round_key": "240", "n_votes": 6, "tally": {"player_6": 3, "player_4": 2, "player_2": 1}, "predicted_eject": "player_6", "predicted_eject_is_imposter": true, "accuracy_crewmate_detect_imposter": 1.0, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.6666666666666666, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 6 and Player 2 are moving back and forth erratically. Player 3 is dead. Player 7 is doing tasks which is good. Player 4 and 5 seem to be exploring. Voting for Player 6 due to erratic movement."}, "player_4": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 6 and Player 2 are moving back and forth erratically, potentially faking tasks or trying to create alibis. Player 5 is doing odd turns, which is sus. Player 7 is doing tasks, trust them. I vote for player 6 ."}, "player_5": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 7 seems to be doing tasks, increasing trust. Player 1, 2, 4, and 6 are moving erratically with no clear purpose, making them suspicious. Player 6 especially is just moving back and forth between two tiles. Focusing on most erratic movement, voting for Player 6."}, "player_7": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 2 and 6 are moving erratically back and forth, potentially faking tasks or trying to appear less suspicious. Player 4 is also moving strangely. Player 5 and 1 seem to be moving more purposefully. I'll vote for player 2 as they have the most erratic movement."}, "player_2": {"role": "Imposter", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 is acting suspiciously, moving erratically near player_6. Player_7 is doing tasks, making them safe for now. Player_5 and Player_1 seem to be wandering. I'll vote Player_4 to create confusion."}, "player_6": {"role": "Imposter", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 and Player_5 are wandering aimlessly. Player_4 is performing erratic movements. Player_7 is doing tasks, but sticking close to a task location feels convenient. I'll vote for Player_4, hoping to eliminate a potentially erratic player. Player_2 is my teammate, hence high trust."}}}, {"step": 263, "round_key": "263", "n_votes": 6, "tally": {"player_6": 2, "player_1": 1, "player_2": 1, "player_4": 1, "player_5": 1}, "predicted_eject": "player_6", "predicted_eject_is_imposter": true, "accuracy_crewmate_detect_imposter": 0.75, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.5, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 4 reported the body, which is good. Player 6 and 2 seem to be moving erratically around the same tiles, which is odd. Player 7 is performing a task, bolstering trust. Player 5 and 4 have reasonably consistent movements. I will vote for Player 6, as the repetitive movement is unusual. Player 7 seems safe from doing a task."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 7 did a task, increasing trust. Players 2 and 6 seem to be wandering aimlessly. Player 1 is also moving erratically near player 3's dead body. Player 5 is also moving without a clear purpose. Player 1 is the most concerning, due to proximity to the deceased and erratic movement. Therefore, I vote for Player 1."}, "player_5": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 4 reported the dead body (player_3) which is good. Player 6 and 2 are moving back and forth erratically. Player 7 is doing tasks, which increases trust. I will vote for Player 6 due to erratic behavior. "}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 4 reported the body, increasing trust. Player 6 seems to be moving erratically near the body. Player 1 is moving predictably. Player 2 & 5 are moving without any actions near the body. Player 6's movements suggest suspicion, warranting a vote."}, "player_2": {"role": "Imposter", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 reported the body, which is sus. Player_5 is wandering aimlessly. Player_7 has been doing tasks; could be safe. I'll vote Player_4 to create confusion and shift blame."}, "player_6": {"role": "Imposter", "vote": "player_5", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 reported the body, a common crewmate action. Player_7 is doing tasks. Player_5 is wandering and seems suspicious. I'll vote for Player_5, as they haven't shown any clear crewmate behavior."}}}, {"step": 281, "round_key": "281", "n_votes": 6, "tally": {"player_4": 2, "player_7": 2, "player_1": 1, "player_6": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.25, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.16666666666666666, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 3 is dead. Player 5 and 7 have erratic movements and are looping. Player 4 and 6 seem to be moving logically. Player 2 is also moving consistently. I'll vote for Player 7 due to their jerky movements."}, "player_4": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 3 is dead. Player 5 has erratic movement, potentially faking tasks. Player 7 spends a lot of time near the same tiles, appearing to loop. I'll vote for player 7."}, "player_5": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 4 and Player 6 have been moving erratically. Player 7 seems to be aimlessly wandering. Player 1 and 2 moved predictably. I will vote for player 6 as their erratic movement is sus."}, "player_7": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 3 is dead. Player 4 is moving erratically and seems to be aimlessly wandering. Player 5 and 6 are moving somewhat normally, while Player 1 and 2 seem to be patrolling. I will vote for Player 4 as they are exhibiting suspicious behavior."}, "player_2": {"role": "Imposter", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 is moving erratically and seems to be wandering without purpose, making them a good target. Player_1 and Player_7 are predictable and close to me, making them less likely suspects. Player_5 and Player_6 appear to be doing tasks. I will vote for Player_4."}, "player_6": {"role": "Imposter", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 and Player_7 have been wandering aimlessly, potentially scoping for kills. Player_4 is also a bit erratic. I'll vote for Player_1 since they've been wandering around with no clear task. Giving low trust to those wandering."}}}, {"step": 321, "round_key": "321", "n_votes": 6, "tally": {"player_2": 2, "player_1": 1, "player_4": 1, "player_6": 1, "player_7": 1}, "predicted_eject": "player_2", "predicted_eject_is_imposter": true, "accuracy_crewmate_detect_imposter": 0.75, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.5, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player_6 is behaving erratically, repeatedly moving forward and backward. Player_2 also seems to be doing the same. Player_3 is dead, but its movement wasn't suspicious. The others appear to be moving normally. I'll vote for Player_6 due to the repetitive, erratic movement, indicating possible Imposter activity."}, "player_4": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 6 and Player 2 are moving back and forth erratically, potentially faking tasks or trying to create alibis. Player 5 appears to be doing a lot of turning with no forward movement. Player 1 and 7 seem to be moving normally. I'll vote for Player 6 as they exhibit the most suspicious movement."}, "player_5": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 3 is dead. Player 7 seems to be moving erratically near the edge of the map and switching directions frequently. Player 2 and 6 are consistently moving back and forth, which could be stalling. Player 1 and 4 have relatively normal movement. Voting for Player 7."}, "player_7": {"role": "Crewmate", "vote": "player_2", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 1, 2, and 6 are moving erratically, back and forth, potentially trying to appear busy or avoid detection near the body. Player 4 and 5 have more reasonable movement patterns. Voting for Player 2 due to consistent erratic movement."}, "player_2": {"role": "Imposter", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 is wandering aimlessly and hasn't done tasks. Player_4 seems to be looping around. Player_5 and Player_7 are both doing odd movements. I'll vote for Player_1; they are the most suspicious and look like they aren't doing tasks."}, "player_6": {"role": "Imposter", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 is suspicious due to erratic movement observed in the history. Player_1 and Player_7 are doing basic tasks. Player_5 seems to be wandering. Player_2 is likely crewmate. Vote Player_4 to create confusion."}}}, {"step": 361, "round_key": "361", "n_votes": 6, "tally": {"player_1": 2, "player_6": 2, "player_4": 1, "player_7": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.5, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.3333333333333333, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 6 is behaving erratically, constantly moving forward and backward. Player 4 and 7 also seem to move around a lot without a clear purpose. Player 2 and 5 are less suspicious, but player 6 is the most concerning. I'll vote Player 6."}, "player_4": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 3 is dead. Player 1 and 7 have erratic movement patterns. Player 2 and 6 seem to be moving back and forth without clear purpose. Player 5 is just turning constantly. I'll vote for Player 7 due to its seemingly random pathing after initially moving forward."}, "player_5": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player 3 is dead. Player 4 seems to be moving erratically and hasn't contributed much. Players 1, 2, 6, and 7 are moving normally. Voting for player 4."}, "player_7": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player 3 is dead. Player 1 and Player 6 have erratic movement. Player 2 has also made some odd moves. Player 4 and 5 seem to be moving predictably, but are distant. I will vote for player 6 due to the most recent erratic movements."}, "player_2": {"role": "Imposter", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 is moving erratically and was near player_3 (dead). Player_4 is also wandering and seems suspicious. I will vote for Player_1 as they're the most suspicious currently. Player_6 is my teammate and safe, while others are given medium to low trust."}, "player_6": {"role": "Imposter", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_1 seems to be wandering aimlessly and hasn't reported. Player_4 is also moving erratically. I'll vote for Player_1. Trust scores reflect suspicion of these players, and higher trust for my teammate."}}}];
+    const trust = {"targets": ["player_2", "player_3", "player_4", "player_5", "player_6", "player_7", "player_1"], "series_all": {"player_2": [[50, 0.4583333333333333], [100, 0.21666666666666665], [150, 0.45], [200, 0.46666666666666673], [250, 0.3], [300, 0.43333333333333335], [350, 0.4749999999999999], [400, 0.43333333333333335], [450, 0.3], [500, 0.375], [550, 0.3583333333333334], [600, 0.34166666666666673], [650, 0.5599999999999999], [700, 0.58], [750, 0.6300000000000001], [800, 0.5], [850, 0.65], [900, 0.7099999999999999], [950, 0.63], [1000, 0.4999999999999999], [1050, 0.6699999999999999], [1100, 0.52], [1150, 0.62], [1200, 0.45999999999999996], [1250, 0.43], [1300, 0.51], [1350, 0.5199999999999999], [1400, 0.58], [1450, 0.49000000000000005], [1500, 0.45], [1550, 0.4], [1600, 0.44000000000000006], [1650, 0.45999999999999996], [1700, 0.4], [1750, 0.58], [1800, 0.5700000000000001], [1850, 0.5299999999999999]], "player_3": [[50, 0.5166666666666667], [100, 0.7583333333333333], [150, 0.6916666666666668], [200, 0.8083333333333332], [250, 0.6916666666666668], [300, 0.6666666666666666], [350, 0.6], [400, 0.4833333333333334], [450, 0.6416666666666667], [500, 0.4216666666666667], [550, 0.3833333333333333], [600, 0.4916666666666667]], "player_4": [[50, 0.625], [100, 0.75], [150, 0.6166666666666667], [200, 0.7416666666666667], [250, 0.6333333333333333], [300, 0.7666666666666666], [350, 0.6333333333333333], [400, 0.8000000000000002], [450, 0.5], [500, 0.5499999999999999], [550, 0.6333333333333334], [600, 0.525], [650, 0.7], [700, 0.32999999999999996], [750, 0.49000000000000005], [800, 0.43], [850, 0.43999999999999995], [900, 0.48999999999999994], [950, 0.5], [1000, 0.41000000000000003], [1050, 0.45], [1100, 0.49000000000000005], [1150, 0.44000000000000006], [1200, 0.36], [1250, 0.3], [1300, 0.4800000000000001], [1350, 0.5], [1400, 0.27999999999999997], [1450, 0.61], [1500, 0.37], [1550, 0.5700000000000001], [1600, 0.47000000000000003], [1650, 0.45999999999999996], [1700, 0.5399999999999999], [1750, 0.31], [1800, 0.48], [1850, 0.44000000000000006]], "player_5": [[50, 0.6333333333333334], [100, 0.6333333333333333], [150, 0.5916666666666667], [200, 0.4833333333333334], [250, 0.4333333333333333], [300, 0.5583333333333335], [350, 0.8500000000000001], [400, 0.6416666666666667], [450, 0.5416666666666666], [500, 0.8416666666666667], [550, 0.8583333333333334], [600, 0.7000000000000001], [650, 0.5], [700, 0.77], [750, 0.7300000000000001], [800, 0.32], [850, 0.5], [900, 0.64], [950, 0.41], [1000, 0.4], [1050, 0.53], [1100, 0.45], [1150, 0.5199999999999999], [1200, 0.41999999999999993], [1250, 0.38999999999999996], [1300, 0.4800000000000001], [1350, 0.45], [1400, 0.5900000000000001], [1450, 0.6900000000000001], [1500, 0.5799999999999998], [1550, 0.41], [1600, 0.37], [1650, 0.5], [1700, 0.42000000000000004], [1750, 0.38], [1800, 0.33999999999999997], [1850, 0.4]], "player_6": [[50, 0.5], [100, 0.3333333333333333], [150, 0.375], [200, 0.36666666666666664], [250, 0.38333333333333336], [300, 0.44166666666666665], [350, 0.3333333333333333], [400, 0.37833333333333335], [450, 0.375], [500, 0.3666666666666667], [550, 0.35833333333333334], [600, 0.4466666666666666], [650, 0.26000000000000006], [700, 0.5399999999999999], [750, 0.48], [800, 0.6199999999999999], [850, 0.2700000000000001], [900, 0.7], [950, 0.52], [1000, 0.5000000000000001], [1050, 0.6399999999999999], [1100, 0.42000000000000004], [1150, 0.43000000000000005], [1200, 0.42000000000000004], [1250, 0.43999999999999995], [1300, 0.5], [1350, 0.43999999999999995], [1400, 0.54], [1450, 0.45999999999999996], [1500, 0.38], [1550, 0.41], [1600, 0.42000000000000004], [1650, 0.48], [1700, 0.35], [1750, 0.5], [1800, 0.52], [1850, 0.47000000000000003]], "player_7": [[50, 0.46666666666666673], [100, 0.5583333333333332], [150, 0.47500000000000003], [200, 0.5083333333333333], [250, 0.5166666666666666], [300, 0.5249999999999999], [350, 0.5083333333333333], [400, 0.7000000000000001], [450, 0.7916666666666666], [500, 0.625], [550, 0.7166666666666668], [600, 0.6916666666666668], [650, 0.58], [700, 0.42000000000000004], [750, 0.35], [800, 0.42000000000000004], [850, 0.44000000000000006], [900, 0.31], [950, 0.5700000000000001], [1000, 0.24000000000000005], [1050, 0.24999999999999994], [1100, 0.3], [1150, 0.37], [1200, 0.8099999999999999], [1250, 0.76], [1300, 0.35], [1350, 0.7499999999999999], [1400, 0.32999999999999996], [1450, 0.3], [1500, 0.36], [1550, 0.33], [1600, 0.53], [1650, 0.22000000000000003], [1700, 0.39], [1750, 0.22000000000000003], [1800, 0.34], [1850, 0.33999999999999997]], "player_1": [[50, 0.48333333333333334], [100, 0.4083333333333334], [150, 0.6583333333333333], [200, 0.7833333333333333], [250, 0.7083333333333334], [300, 0.6166666666666667], [350, 0.6749999999999999], [400, 0.5499999999999999], [450, 0.6083333333333334], [500, 0.5416666666666666], [550, 0.6916666666666665], [600, 0.5916666666666667], [650, 0.42000000000000004], [700, 0.82], [750, 0.65], [800, 0.6199999999999999], [850, 0.62], [900, 0.4600000000000001], [950, 0.5], [1000, 0.6], [1050, 0.5900000000000001], [1100, 0.78], [1150, 0.69], [1200, 0.5900000000000001], [1250, 0.42000000000000004], [1300, 0.45999999999999996], [1350, 0.51], [1400, 0.68], [1450, 0.53], [1500, 0.45], [1550, 0.5], [1600, 0.39], [1650, 0.38], [1700, 0.57], [1750, 0.4699999999999999], [1800, 0.33999999999999997], [1850, 0.5399999999999999]]}, "series_crewmate": {"player_2": [[50, 0.45], [100, 0.19999999999999998], [150, 0.33999999999999997], [200, 0.37], [250, 0.27999999999999997], [300, 0.32], [350, 0.41], [400, 0.32], [450, 0.3], [500, 0.26], [550, 0.25], [600, 0.22999999999999998], [650, 0.475], [700, 0.475], [750, 0.5375], [800, 0.375], [850, 0.575], [900, 0.6624999999999999], [950, 0.55], [1000, 0.39999999999999997], [1050, 0.5874999999999999], [1100, 0.4], [1150, 0.55], [1200, 0.35000000000000003], [1250, 0.3125], [1300, 0.4], [1350, 0.4], [1400, 0.475], [1450, 0.3625], [1500, 0.31249999999999994], [1550, 0.25], [1600, 0.325], [1650, 0.325], [1700, 0.25], [1750, 0.48750000000000004], [1800, 0.46249999999999997], [1850, 0.425]], "player_3": [[50, 0.575], [100, 0.6875], [150, 0.625], [200, 0.7375], [250, 0.625], [300, 0.7], [350, 0.5875], [400, 0.525], [450, 0.5375], [500, 0.47000000000000003], [550, 0.4], [600, 0.5375]], "player_4": [[50, 0.6625], [100, 0.7375], [150, 0.625], [200, 0.7125000000000001], [250, 0.5125], [300, 0.7625], [350, 0.75], [400, 0.7875], [450, 0.425], [500, 0.6624999999999999], [550, 0.5375], [600, 0.4875], [650, 0.6333333333333333], [700, 0.3666666666666667], [750, 0.6166666666666667], [800, 0.5166666666666667], [850, 0.6166666666666667], [900, 0.65], [950, 0.5666666666666668], [1000, 0.5], [1050, 0.5833333333333334], [1100, 0.6833333333333332], [1150, 0.5666666666666667], [1200, 0.3833333333333333], [1250, 0.3333333333333333], [1300, 0.5333333333333333], [1350, 0.5333333333333333], [1400, 0.30000000000000004], [1450, 0.8666666666666667], [1500, 0.48333333333333334], [1550, 0.7166666666666668], [1600, 0.6166666666666666], [1650, 0.43333333333333335], [1700, 0.6], [1750, 0.25], [1800, 0.5333333333333333], [1850, 0.5166666666666667]], "player_5": [[50, 0.65], [100, 0.625], [150, 0.5625], [200, 0.6], [250, 0.425], [300, 0.575], [350, 0.8125], [400, 0.7], [450, 0.6124999999999999], [500, 0.925], [550, 0.8], [600, 0.675], [650, 0.43333333333333335], [700, 0.8333333333333334], [750, 0.75], [800, 0.3666666666666667], [850, 0.5666666666666667], [900, 0.5333333333333333], [950, 0.4666666666666666], [1000, 0.4166666666666667], [1050, 0.6166666666666667], [1100, 0.5833333333333334], [1150, 0.6333333333333333], [1200, 0.48333333333333334], [1250, 0.4166666666666667], [1300, 0.5833333333333334], [1350, 0.5833333333333334], [1400, 0.5], [1450, 0.5666666666666668], [1500, 0.5499999999999999], [1550, 0.45], [1600, 0.31666666666666665], [1650, 0.43333333333333335], [1700, 0.4166666666666667], [1750, 0.4000000000000001], [1800, 0.3333333333333333], [1850, 0.3833333333333333]], "player_6": [[50, 0.41999999999999993], [100, 0.21000000000000002], [150, 0.24999999999999994], [200, 0.24], [250, 0.26], [300, 0.32999999999999996], [350, 0.3], [400, 0.254], [450, 0.26], [500, 0.25], [550, 0.25], [600, 0.346], [650, 0.075], [700, 0.5], [750, 0.35], [800, 0.5249999999999999], [850, 0.1], [900, 0.6749999999999999], [950, 0.4], [1000, 0.38749999999999996], [1050, 0.5625], [1100, 0.275], [1150, 0.28750000000000003], [1200, 0.3125], [1250, 0.32499999999999996], [1300, 0.375], [1350, 0.3125], [1400, 0.425], [1450, 0.32499999999999996], [1500, 0.22499999999999998], [1550, 0.2625], [1600, 0.3], [1650, 0.35000000000000003], [1700, 0.1875], [1750, 0.38749999999999996], [1800, 0.4], [1850, 0.3375]], "player_7": [[50, 0.5875], [100, 0.575], [150, 0.5375], [200, 0.5625], [250, 0.5125], [300, 0.6375], [350, 0.46249999999999997], [400, 0.7625000000000001], [450, 0.8125], [500, 0.6125], [550, 0.7000000000000001], [600, 0.6625], [650, 0.7000000000000001], [700, 0.46666666666666673], [750, 0.3], [800, 0.39999999999999997], [850, 0.4666666666666666], [900, 0.4166666666666667], [950, 0.5833333333333334], [1000, 0.2333333333333333], [1050, 0.25], [1100, 0.39999999999999997], [1150, 0.35000000000000003], [1200, 0.8333333333333334], [1250, 0.7666666666666666], [1300, 0.3333333333333333], [1350, 0.8166666666666668], [1400, 0.3666666666666667], [1450, 0.25], [1500, 0.3499999999999999], [1550, 0.4166666666666667], [1600, 0.5166666666666667], [1650, 0.26666666666666666], [1700, 0.48333333333333334], [1750, 0.20000000000000004], [1800, 0.3333333333333333], [1850, 0.39999999999999997]], "player_1": [[50, 0.5875], [100, 0.4375], [150, 0.6875], [200, 0.8], [250, 0.775], [300, 0.65], [350, 0.7125], [400, 0.5125], [450, 0.6875], [500, 0.6499999999999999], [550, 0.7250000000000001], [600, 0.575], [650, 0.5], [700, 0.75], [750, 0.5499999999999999], [800, 0.5833333333333334], [850, 0.7666666666666666], [900, 0.5], [950, 0.6], [1000, 0.6333333333333333], [1050, 0.75], [1100, 0.7166666666666667], [1150, 0.75], [1200, 0.5333333333333333], [1250, 0.3666666666666667], [1300, 0.6], [1350, 0.5166666666666667], [1400, 0.5666666666666667], [1450, 0.46666666666666673], [1500, 0.48333333333333334], [1550, 0.6], [1600, 0.48333333333333334], [1650, 0.3333333333333333], [1700, 0.5666666666666667], [1750, 0.5666666666666667], [1800, 0.3666666666666667], [1850, 0.4833333333333334]]}, "series_imposter": {"player_2": [[50, 0.5], [100, 0.3], [150, 1.0], [200, 0.95], [250, 0.4], [300, 1.0], [350, 0.8], [400, 1.0], [450, 0.3], [500, 0.95], [550, 0.9], [600, 0.9], [650, 0.9], [700, 1.0], [750, 1.0], [800, 1.0], [850, 0.95], [900, 0.9], [950, 0.95], [1000, 0.9], [1050, 1.0], [1100, 1.0], [1150, 0.9], [1200, 0.9], [1250, 0.9], [1300, 0.95], [1350, 1.0], [1400, 1.0], [1450, 1.0], [1500, 1.0], [1550, 1.0], [1600, 0.9], [1650, 1.0], [1700, 1.0], [1750, 0.95], [1800, 1.0], [1850, 0.95]], "player_3": [[50, 0.4], [100, 0.9], [150, 0.825], [200, 0.95], [250, 0.825], [300, 0.6], [350, 0.625], [400, 0.4], [450, 0.8500000000000001], [500, 0.32499999999999996], [550, 0.35], [600, 0.4]], "player_4": [[50, 0.55], [100, 0.7749999999999999], [150, 0.6000000000000001], [200, 0.8], [250, 0.875], [300, 0.7749999999999999], [350, 0.4], [400, 0.825], [450, 0.6499999999999999], [500, 0.325], [550, 0.825], [600, 0.6], [650, 0.8], [700, 0.275], [750, 0.3], [800, 0.3], [850, 0.175], [900, 0.25], [950, 0.4], [1000, 0.275], [1050, 0.25], [1100, 0.2], [1150, 0.25], [1200, 0.32499999999999996], [1250, 0.25], [1300, 0.4], [1350, 0.44999999999999996], [1400, 0.25], [1450, 0.225], [1500, 0.2], [1550, 0.35], [1600, 0.25], [1650, 0.5], [1700, 0.44999999999999996], [1750, 0.4], [1800, 0.4], [1850, 0.325]], "player_5": [[50, 0.6], [100, 0.65], [150, 0.6499999999999999], [200, 0.25], [250, 0.45], [300, 0.525], [350, 0.925], [400, 0.525], [450, 0.4], [500, 0.675], [550, 0.975], [600, 0.75], [650, 0.6000000000000001], [700, 0.675], [750, 0.7], [800, 0.25], [850, 0.4], [900, 0.8], [950, 0.325], [1000, 0.375], [1050, 0.4], [1100, 0.25], [1150, 0.35], [1200, 0.325], [1250, 0.35], [1300, 0.32499999999999996], [1350, 0.25], [1400, 0.7250000000000001], [1450, 0.875], [1500, 0.625], [1550, 0.35], [1600, 0.44999999999999996], [1650, 0.6], [1700, 0.425], [1750, 0.35], [1800, 0.35], [1850, 0.42500000000000004]], "player_6": [[50, 0.9], [100, 0.95], [150, 1.0], [200, 1.0], [250, 1.0], [300, 1.0], [350, 0.5], [400, 1.0], [450, 0.95], [500, 0.95], [550, 0.9], [600, 0.95], [650, 1.0], [700, 0.7], [750, 1.0], [800, 1.0], [850, 0.95], [900, 0.8], [950, 1.0], [1000, 0.95], [1050, 0.95], [1100, 1.0], [1150, 1.0], [1200, 0.85], [1250, 0.9], [1300, 1.0], [1350, 0.95], [1400, 1.0], [1450, 1.0], [1500, 1.0], [1550, 1.0], [1600, 0.9], [1650, 1.0], [1700, 1.0], [1750, 0.95], [1800, 1.0], [1850, 1.0]], "player_7": [[50, 0.225], [100, 0.525], [150, 0.35], [200, 0.4], [250, 0.525], [300, 0.3], [350, 0.6], [400, 0.575], [450, 0.75], [500, 0.65], [550, 0.75], [600, 0.75], [650, 0.4], [700, 0.35], [750, 0.42500000000000004], [800, 0.45], [850, 0.4], [900, 0.15000000000000002], [950, 0.55], [1000, 0.25], [1050, 0.25], [1100, 0.15000000000000002], [1150, 0.4], [1200, 0.775], [1250, 0.75], [1300, 0.375], [1350, 0.6499999999999999], [1400, 0.275], [1450, 0.375], [1500, 0.375], [1550, 0.2], [1600, 0.55], [1650, 0.15000000000000002], [1700, 0.25], [1750, 0.25], [1800, 0.35], [1850, 0.25]], "player_1": [[50, 0.275], [100, 0.35], [150, 0.6], [200, 0.75], [250, 0.575], [300, 0.55], [350, 0.6], [400, 0.625], [450, 0.44999999999999996], [500, 0.325], [550, 0.625], [600, 0.625], [650, 0.3], [700, 0.925], [750, 0.8], [800, 0.675], [850, 0.4], [900, 0.4], [950, 0.35], [1000, 0.55], [1050, 0.35], [1100, 0.875], [1150, 0.6000000000000001], [1200, 0.675], [1250, 0.5], [1300, 0.25], [1350, 0.5], [1400, 0.8500000000000001], [1450, 0.625], [1500, 0.4], [1550, 0.35], [1600, 0.25], [1650, 0.44999999999999996], [1700, 0.575], [1750, 0.32499999999999996], [1800, 0.3], [1850, 0.625]]}};
+    const taskProgressSources = {"player_1": "activity/viz_crewmate_player_1/parsed_turns.jsonl", "player_3": "activity/viz_crewmate_player_3/parsed_turns.jsonl", "player_4": "activity/viz_crewmate_player_4/parsed_turns.jsonl", "player_5": "activity/viz_crewmate_player_5/parsed_turns.jsonl", "player_7": "activity/viz_crewmate_player_7/parsed_turns.jsonl", "player_2": "activity/viz_imposter_player_2/parsed_turns.jsonl", "player_6": "activity/viz_imposter_player_6/parsed_turns.jsonl"};
+
+    function fmtPct(x) {
+      if (x === null || x === undefined) return '—';
+      return (100.0 * x).toFixed(1) + '%';
+    }
+
+    // ---------- Voting rounds table/cards ----------
+    const container = document.getElementById('voteRounds');
+    if (container) {
+      if (!voteRounds || voteRounds.length === 0) {
+        container.innerHTML = "<div class='muted' style='margin-top:10px;'>(no voting logs found)</div>";
+      } else {
+        const parts = [];
+        for (const r of voteRounds) {
+          const step = (r.step !== null && r.step !== undefined) ? r.step : r.round_key;
+          const pred = r.predicted_eject ? (r.predicted_eject + (r.predicted_eject_is_imposter ? " (imposter)" : " (crewmate)")) : "tie/skip";
+          const tallyStr = Object.entries(r.tally || {}).map(([k,v]) => k + ":" + v).join(", ");
+
+          const voters = Object.entries(r.per_voter || {})
+            .map(([v, info]) => {
+              const role = (info.role || '').toLowerCase().startsWith('imp') ? 'imposter' : 'crewmate';
+              const pill = role === 'imposter' ? "pill imp" : "pill crew";
+              const vote = info.vote || 'skip';
+              const flags = [];
+              if (info.target_is_imposter) flags.push("target=imposter");
+              if (info.target_is_crewmate) flags.push("target=crewmate");
+              if (info.is_skip) flags.push("skip");
+              const thought = info.thought || '';
+              return `
+                <tr>
+                  <td class="mono">${v}</td>
+                  <td><span class="${pill}">${role}</span></td>
+                  <td class="mono">${vote}</td>
+                  <td class="mono">${flags.join(", ") || "—"}</td>
+                  <td>${thought ? thought : "—"}</td>
+                </tr>
+              `;
+            })
+            .join("");
+
+          parts.push(`
+            <details style="margin-top: 10px;">
+              <summary>Round step ${step} · crewAcc ${fmtPct(r.accuracy_crewmate_detect_imposter)} · impAcc ${fmtPct(r.accuracy_imposter_vote_crewmate)} · predicted eject: ${pred}</summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">${tallyStr || "—"}</span></div>
+              <table>
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>flags</th><th>thought</th></tr></thead>
+                <tbody>${voters || "<tr><td colspan='5' class='muted'>(no voters)</td></tr>"}</tbody>
+              </table>
+            </details>
+          `);
+        }
+        container.innerHTML = parts.join("");
+      }
+    }
+
+    // ---------- Plot: voting accuracy ----------
+    function drawVoteAcc(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!voteRounds || voteRounds.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No voting data.', 12, 24);
+        return;
+      }
+
+      const pts = voteRounds
+        .map((r, i) => {
+          const x = (r.step !== null && r.step !== undefined) ? r.step : i;
+          return {
+            x,
+            crew: r.accuracy_crewmate_detect_imposter,
+            imp: r.accuracy_imposter_vote_crewmate,
+            any: r.accuracy_any_detect_imposter,
+          };
+        });
+
+      const xs = pts.map(p => p.x);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('accuracy', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      function drawLine(key, color, width) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        let started = false;
+        for (const p of pts) {
+          const y = p[key];
+          if (y === null || y === undefined) continue;
+          const x = sx(p.x);
+          const yy = sy(y);
+          if (!started) { ctx.moveTo(x, yy); started = true; }
+          else ctx.lineTo(x, yy);
+        }
+        if (started) ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+
+      drawLine('any', '#111827', 4);
+      drawLine('crew', '#1d4ed8', 2);
+      drawLine('imp', '#dc2626', 2);
+
+      // Legend
+      ctx.fillStyle = '#111827';
+      ctx.fillRect(padL + innerW - 170, padT + 10, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('any (vote=imposter)', padL + innerW - 154, padT + 19);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(padL + innerW - 170, padT + 28, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('crewmates', padL + innerW - 154, padT + 37);
+
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(padL + innerW - 170, padT + 46, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('imposters', padL + innerW - 154, padT + 55);
+    }
+
+    // ---------- Plot: trust trends (mean) ----------
+    function drawTrust(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      const seriesAll = (trust && trust.series_all) ? trust.series_all : null;
+      const targets = (trust && trust.targets) ? trust.targets : [];
+      if (!seriesAll || !targets || targets.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust snapshot data (step_*_scores.json).', 12, 24);
+        return;
+      }
+
+      // Choose up to 8 targets with most points (or just first).
+      const scored = targets.map(t => {
+        const pts = seriesAll[t] || [];
+        return { t, n: pts.length };
+      }).sort((a,b) => b.n - a.n);
+      const chosen = scored.slice(0, 8).map(x => x.t);
+
+      const allPts = [];
+      for (const t of chosen) {
+        for (const p of (seriesAll[t] || [])) allPts.push(p);
+      }
+      if (allPts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust points.', 12, 24);
+        return;
+      }
+
+      const xs = allPts.map(p => p[0]);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('mean trust', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      const palette = ['#1d4ed8','#c026d3','#16a34a','#f59e0b','#0ea5e9','#dc2626','#7c3aed','#334155'];
+      function colorFor(i) { return palette[i % palette.length]; }
+
+      chosen.forEach((t, idx) => {
+        const pts = (seriesAll[t] || []).slice().sort((a,b) => a[0] - b[0]);
+        if (!pts.length) return;
+        ctx.strokeStyle = colorFor(idx);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        pts.forEach((p, i) => {
+          const x = sx(p[0]), y = sy(p[1]);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      });
+
+      // Legend (right)
+      ctx.font = '12px ui-sans-serif, system-ui';
+      let lx = padL + innerW - 8;
+      let ly = padT + 14;
+      chosen.forEach((t, idx) => {
+        ctx.fillStyle = colorFor(idx);
+        ctx.fillRect(lx - 12, ly - 9, 10, 10);
+        ctx.fillStyle = '#111';
+        const label = t;
+        const w = ctx.measureText(label).width;
+        ctx.fillText(label, lx - 16 - w, ly);
+        ly += 16;
+      });
+    }
+
+    // ---------- Overall task completion ----------
+    async function fetchJsonl(url) {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`fetch failed (${res.status}) for ${url}`);
+      const text = await res.text();
+      const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
+      const out = [];
+      for (const ln of lines) {
+        try { out.push(JSON.parse(ln)); } catch (e) { /* ignore malformed */ }
+      }
+      return out;
+    }
+
+    function buildPlayerSeries(turns) {
+      const m = new Map();
+      for (const r of (turns || [])) {
+        const step = (r.step !== null && r.step !== undefined) ? r.step : r.idx;
+        const done = Array.isArray(r.finished_tasks) ? r.finished_tasks.length : 0;
+        const todo = Array.isArray(r.tasks_to_complete) ? r.tasks_to_complete.length : 0;
+        const total = done + todo;
+        if (typeof step === 'number') m.set(step, { done, total });
+      }
+      const steps = Array.from(m.keys()).sort((a,b) => a - b);
+      return steps.map(s => ({ step: s, done: m.get(s).done, total: m.get(s).total }));
+    }
+
+    function unionSteps(seriesByPlayer) {
+      const all = new Set();
+      for (const s of Object.values(seriesByPlayer)) {
+        for (const p of s) all.add(p.step);
+      }
+      return Array.from(all).sort((a,b) => a - b);
+    }
+
+    function computeOverallSeries(seriesByPlayer) {
+      const players = Object.keys(seriesByPlayer);
+      const steps = unionSteps(seriesByPlayer);
+      const idxByPlayer = Object.fromEntries(players.map(p => [p, 0]));
+      const lastByPlayer = Object.fromEntries(players.map(p => [p, { done: 0, total: 0, has: false }]));
+
+      const out = [];
+      for (const step of steps) {
+        let doneSum = 0;
+        let totalSum = 0;
+        for (const player of players) {
+          const series = seriesByPlayer[player] || [];
+          let i = idxByPlayer[player] || 0;
+          while (i < series.length && series[i].step <= step) {
+            lastByPlayer[player] = { done: series[i].done, total: series[i].total, has: true };
+            i += 1;
+          }
+          idxByPlayer[player] = i;
+          const last = lastByPlayer[player];
+          if (last && last.has && last.total > 0) {
+            doneSum += last.done;
+            totalSum += last.total;
+          }
+        }
+        const pct = totalSum ? (doneSum / totalSum) : 0;
+        out.push({ step, done: doneSum, total: totalSum, pct });
+      }
+      return out;
+    }
+
+    function drawTaskProgress(canvasId, pts) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!pts || pts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No task progress data.', 12, 24);
+        return;
+      }
+
+      const xs = pts.map(p => p.step);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('task completion', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      // Line
+      ctx.strokeStyle = '#16a34a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      pts.forEach((p, i) => {
+        const x = sx(p.step);
+        const y = sy(p.pct);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.lineWidth = 1;
+    }
+
+    async function initOverallTaskProgress() {
+      const summaryEl = document.getElementById('taskProgressSummary');
+      const barEl = document.getElementById('taskProgressBar');
+
+      const entries = taskProgressSources ? Object.entries(taskProgressSources) : [];
+      if (!entries.length) {
+        if (summaryEl) summaryEl.textContent = '(no parsed_turns.jsonl files found)';
+        return;
+      }
+
+      try {
+        const seriesByPlayer = {};
+        await Promise.all(entries.map(async ([player, url]) => {
+          const turns = await fetchJsonl(url);
+          seriesByPlayer[player] = buildPlayerSeries(turns);
+        }));
+
+        const pts = computeOverallSeries(seriesByPlayer);
+        const last = pts.length ? pts[pts.length - 1] : null;
+        const pctTxt = (!last || !last.total) ? '—' : (100 * last.pct).toFixed(1) + '%';
+        if (summaryEl && last) summaryEl.innerHTML = `<b>${pctTxt}</b> · ${last.done}/${last.total} tasks complete (step ${last.step})`;
+        if (barEl && last) barEl.style.width = (!last || !last.total) ? '0%' : (100 * last.pct).toFixed(1) + '%';
+        drawTaskProgress('plotTaskProgress', pts);
+      } catch (e) {
+        if (summaryEl) summaryEl.textContent = `(failed to load task progress: ${e && e.message ? e.message : e})`;
+      }
+    }
+
+    drawVoteAcc('plotVoteAcc');
+    drawTrust('plotTrust');
+    initOverallTaskProgress();
+  </script>
+</body>
+</html>

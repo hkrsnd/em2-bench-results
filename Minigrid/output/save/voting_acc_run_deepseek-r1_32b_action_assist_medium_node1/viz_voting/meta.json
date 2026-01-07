@@ -1,0 +1,8 @@
+{
+  "run_dir": "/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1",
+  "episodes_found": 2,
+  "processed": 2,
+  "skipped": 0,
+  "failed": 0,
+  "hub_index_html": "/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/viz_voting/index.html"
+}

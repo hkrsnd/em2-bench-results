@@ -1,0 +1,6 @@
+{
+  "log": "/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save/voting_acc_run_llama3.1_70b_action_assist_medium_node2/pattern_10x10_2x2/episode_000/imposter_player_5.log",
+  "out_dir": "/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save/voting_acc_run_llama3.1_70b_action_assist_medium_node2/pattern_10x10_2x2/episode_000/viz_run/activity/viz_imposter_player_5",
+  "turns": 235,
+  "has_timeline_png": true
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voting run reports</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; color: #111; }
+    .muted { color: #666; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .box { border: 1px solid #ddd; border-radius: 12px; padding: 12px 14px; background: #fafafa; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eee; text-align: left; padding: 8px 10px; font-size: 13px; vertical-align: top; }
+    th { background: #fbfbfb; position: sticky; top: 0; }
+    a { color: #1d4ed8; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h2>Voting run reports</h2>
+  <div class="muted">Run dir: <span class="mono">/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save/voting_acc_run_llama3.1_70b_action_assist_medium_node2</span></div>
+
+  <div class="box" style="margin-top: 14px;">
+    <div class="muted">Episode reports are generated per <span class="mono">pattern_*/episode_*</span> into <span class="mono">viz_run/index.html</span>.</div>
+    <table>
+      <thead><tr><th>pattern</th><th>episode</th><th>report</th><th>stats</th></tr></thead>
+      <tbody>
+        <tr><td class='mono'>pattern_10x10_2x2</td><td class='mono'>episode_000</td><td><a href='pattern_10x10_2x2/episode_000/viz_run/index.html'>open report</a></td><td class='muted'>activity=7, voteRounds=2, trustSnaps=23</td></tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

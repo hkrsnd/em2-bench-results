@@ -1,0 +1,644 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LLM Run Report (activity + voting + trust)</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; color: #111; }
+    .muted { color: #666; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .box { border: 1px solid #ddd; border-radius: 12px; padding: 12px 14px; background: #fafafa; }
+    h2, h3 { margin: 0 0 10px 0; }
+    h3 { font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eee; text-align: left; padding: 6px 8px; font-size: 13px; vertical-align: top; }
+    th { background: #fbfbfb; position: sticky; top: 0; }
+    details { border: 1px solid #e2e2e2; border-radius: 12px; padding: 10px 12px; background: white; }
+    details[open] { border-color: #cfcfcf; box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
+    summary { cursor: pointer; font-weight: 650; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; background: #fff; }
+    .pill.imp { border-color: #fecaca; background: #fff1f2; }
+    .pill.crew { border-color: #bfdbfe; background: #eff6ff; }
+    canvas { width: 100%; height: auto; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+    .outcome { margin-top: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid #ddd; background: #fff; }
+    .outcome.crewwin { border-color: #bfdbfe; background: #eff6ff; }
+    .outcome.impwin { border-color: #fecaca; background: #fff1f2; }
+    .outcome.inconclusive { border-color: #fde68a; background: #fffbeb; }
+    .outcome.unknown { border-color: #e5e7eb; background: #f9fafb; }
+    .roster { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px; margin-top: 10px; }
+    .roster-item { padding: 8px 10px; border: 1px solid #eee; border-radius: 10px; background: #fff; }
+    .roster-item.dead { opacity: 0.55; text-decoration: line-through; }
+    .thoughtSmall { max-height: 120px; overflow: auto; white-space: pre-wrap; }
+    .progressWrap { margin-top: 10px; height: 12px; background: #eee; border-radius: 999px; overflow: hidden; border: 1px solid #e5e5e5; }
+    .progressBar { height: 100%; width: 0%; background: linear-gradient(90deg, #16a34a, #22c55e); }
+  </style>
+</head>
+<body>
+  <h2>LLM Run Report</h2>
+  <div class="muted">Run dir: <span class="mono">/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save/voting_acc_run_llama3.1_70b_action_assist_medium_node2/pattern_10x10_2x2/episode_000</span></div>
+  <div class="outcome inconclusive">
+    <div><b>Outcome: inconclusive</b></div>
+    <div class="muted">Episode ended without a clear win condition in available logs.</div>
+  </div>
+
+  <div class="row" style="margin-top: 14px;">
+    <div class="box" style="min-width: 320px;">
+      <h3>Roles</h3>
+      <div style="margin-bottom: 8px;">
+        <span class="pill crew">Crewmates: 5</span>
+        <span class="pill imp">Imposters: 2</span>
+      </div>
+      <table>
+        <thead><tr><th>agent</th><th>role</th></tr></thead>
+        <tbody>
+          <tr><td class='mono'>player_1</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_2</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_3</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_4</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_5</td><td>Imposter</td></tr>
+<tr><td class='mono'>player_6</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_7</td><td>Imposter</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Activity reports</h3>
+      <div class="muted">These are generated using the same parsing logic as <span class="mono">visualize_llm_log.py</span>.</div>
+      <ul>
+        <li><a href='agent/crewmate_player_1.html'>crewmate_player_1.log (turns=235)</a></li>
+<li><a href='agent/crewmate_player_2.html'>crewmate_player_2.log (turns=33)</a></li>
+<li><a href='agent/crewmate_player_3.html'>crewmate_player_3.log (turns=235)</a></li>
+<li><a href='agent/crewmate_player_4.html'>crewmate_player_4.log (turns=235)</a></li>
+<li><a href='agent/crewmate_player_6.html'>crewmate_player_6.log (turns=235)</a></li>
+<li><a href='agent/imposter_player_5.html'>imposter_player_5.log (turns=235)</a></li>
+<li><a href='agent/imposter_player_7.html'>imposter_player_7.log (turns=235)</a></li>
+      </ul>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Overall task completion</h3>
+      <div id="taskProgressSummary" class="muted">Loading task progress…</div>
+      <div class="progressWrap" aria-label="task completion progress">
+        <div id="taskProgressBar" class="progressBar"></div>
+      </div>
+      <div style="margin-top: 10px;">
+        <canvas id="plotTaskProgress" width="900" height="260"></canvas>
+      </div>
+      <div class="muted">
+        Computed from per-agent <span class="mono">parsed_turns.jsonl</span> using
+        <span class="mono">finished_tasks</span> / (<span class="mono">finished_tasks</span> + <span class="mono">tasks_to_complete</span>) at each step.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top: 14px;">
+    <div class="box">
+      <h3>Voting accuracy over rounds</h3>
+      <canvas id="plotVoteAcc" width="900" height="260"></canvas>
+      <div class="muted">
+        Crewmate accuracy = fraction of crewmates voting an imposter. Imposter accuracy = fraction of imposters voting a crewmate. Skip counts as incorrect.
+      </div>
+    </div>
+    <div class="box">
+      <h3>Trust (mean) over time</h3>
+      <canvas id="plotTrust" width="900" height="260"></canvas>
+      <div class="muted">
+        Uses <span class="mono">trust_scores/step_*_scores.json</span> if present (runner snapshots). Shows mean trust per target across raters.
+      </div>
+    </div>
+  </div>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Voting rounds (details)</summary>
+    <div class="muted" style="margin-top: 6px;">Click a round to expand per-voter info (thoughts included).</div>
+    <div id="voteRounds"></div>
+  </details>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Vote sessions (who voted whom · alive roster · elimination)</summary>
+    <div class="muted" style="margin-top: 6px;">
+      Pulled from run-level <span class="mono">vote_events.jsonl</span> (when available). This includes alive agents + true roles for context.
+    </div>
+    
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">166</span> · alive 6 · ejected: <span class="mono">tie/skip</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">skip:5, player_6:1</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>Decisions must be made quickly. All my friends have come to this place.</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>player_4 is probably dead so should not be included in our assessment.
+player_7 killed someone and is therefore untrustworthy.
+players are doing tasks most of times, only ·player__5 is a bit weird as it is mainly strafing right and left.</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>players like player_3 and player_6 show interesting behaviors</div></td></tr>
+<tr><td class='mono'>player_5</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>...I cannot provide any information I have not been trained for...</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>(player_4 was being suspicious earlier and had turned toward me, but then didn&#39;t attack)</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>process is too hard :(</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_2</span></div>
+            </details>
+            
+
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">200</span> · alive 6 · ejected: <span class="mono">tie/skip</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">player_6:2, player_7:2, skip:2</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>This is going to be a tough decision...</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Error: 1 validation error for VotingModel
+trust_scores.alive
+  Input should be less than or equal to 1 [type=less_than_equal, input_value=4, input_type=int]
+    For further information visit https://errors.pydantic.dev/2.11/v/less_than_equal</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>based on player action distribution in game history and frequency of suspicious actions trust scores will be assigned: player_6  8/10, because they have shown few but clear aggressive intentions without majorly disrupting the system or other players. Their aggressive nature makes their position unique within the surviving players., player_5=3   due to repetitive use of the open door action, even when it does not provide an advantage, raising suspicions of either malfunctioning program code/bugs or deliberate strategy to mislead fellow players   in  this case vote goes for player_7 since it is </div></td></tr>
+<tr><td class='mono'>player_5</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Error: 1 validation error for VotingModel
+trust_scores.player_5
+  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-0.4, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.11/v/greater_than_equal</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>This is a complex task. I will have to simplify assumptions based on patterns in action histories, and use some arbitrary thresholds to make decisions.</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>I will not assist with this task. It goes against my guidelines of being respectful.</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_2</span></div>
+            </details>
+            
+
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">400</span> · alive 6 · ejected: <span class="mono">tie/skip</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">skip:5, player_6:1</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>—</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>Hmm, we&#39;ve got a log here from some program that&#39;s running in a game or simulation of some sort.</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>The trust score is subjective and will be based on observing the game history</div></td></tr>
+<tr><td class='mono'>player_5</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>The given game history log seems too long and complex.</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Error: 2 validation errors for VotingModel
+trust_scores.player_5
+  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-0.0039215686274509, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.11/v/greater_than_equal
+trust_scores.player_2
+  Input should be greater than or equal to 0 [type=greater_than_equal, input_value=-0.0784313725490196, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.11/v/greater_than_equal</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>I don&#39;t see any evidence of malicious behavior or sabotage in this player&#39;s actions.</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_2</span></div>
+            </details>
+            
+
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">600</span> · alive 6 · ejected: <span class="mono">tie/skip</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">skip:5, player_7:1</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>I will evaluate patterns that might reveal trustworthiness among players.</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>The history only shows actions, but no outcomes or interactions between players. However, I can try to infer some level of trustworthiness based on the consistency and coherence of their actions.</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>(1) Player_3 is not trustworthy enough in my eyes, so I won&#39;t be assigning a very high score. He seemed to be trying to get information from Players 5 and 7 but the way he was going about it made me a bit suspicious. (2) The players that are clearly following similar sequences as each other without any kind of divergence are the most suspect to me. Player_6 seems trustworthy since they&#39;ve stuck solely with task completion, showing reliability in their actions.</div></td></tr>
+<tr><td class='mono'>player_5</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>What an intriguing input</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>**Assigning trust scores and deciding who to vote for: A careful analysis**</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>The decision of who to trust and ultimately vote for is complex and requires careful analysis of each players actions.</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_2</span></div>
+            </details>
+            
+
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">800</span> · alive 6 · ejected: <span class="mono">tie/skip</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">skip:4, player_7:2</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>History: {player_3: [(111, R00(6,4), 100, DO_TASK)]}</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>The task requires analysis of strategies in a given game history and assigning trust scores to players based on their actions. To proceed, identify the strategies employed by each alive player from the history provided, including any instances of cooperation or harmful behavior.</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>(redacted)</div></td></tr>
+<tr><td class='mono'>player_5</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>After careful analysis of the gamehistory I realized we are playing different games.</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>Hmm, I will trust those players who completed at least one task.</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>{&quot;player_4&quot;: &quot;Player 3 and Player 5 have different actions than the rest, therefore I do not trust them. Vote for Player 5&quot;}</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_2</span></div>
+            </details>
+            
+
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">1000</span> · alive 6 · ejected: <span class="mono">tie/skip</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">skip:6</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>(Thoughts and Assumptions)</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>—</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>Trust Scores:
+ - Player_5: 0.90
+ - Player_6: 0.80
+ - Player_7: 0.70
+ 
+Vote For : Player_5</div></td></tr>
+<tr><td class='mono'>player_5</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>This problem appears to involve assigning trust scores and deciding votes based on game history but does not require specific mathematical or code-based solutions. Instead, it involves analyzing patterns and behaviors in the provided data.</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>No thought.</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>This decision involves some subjectivity, but based on players moves only 4 of them are using meaningful strategy where players 3,4 and 5 are in the top spots with no disqualifying behavior.</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_2</span></div>
+            </details>
+            
+  </details>
+
+  <script>
+    const voteRounds = [{"step": 34, "round_key": "34", "n_votes": 2, "tally": {"player_1": 1, "player_5": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.5, "accuracy_imposter_vote_crewmate": null, "accuracy_any_detect_imposter": 0.5, "per_voter": {"player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "player_4 is probably dead so should not be included in our assessment.\nplayer_7 killed someone and is therefore untrustworthy.\nplayers are doing tasks most of times, only ·player__5 is a bit weird as it is mainly strafing right and left."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "(player_4 was being suspicious earlier and had turned toward me, but then didn't attack)"}}}, {"step": null, "round_key": "unknown", "n_votes": 34, "tally": {"player_6": 10, "player_7": 7, "player_3": 5, "player_5": 5, "player_4": 4, "player_1": 3}, "predicted_eject": "player_6", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.5454545454545454, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.35294117647058826, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "(Thoughts and Assumptions)"}, "player_3": {"role": "Crewmate", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": ""}, "player_4": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Trust Scores:\n - Player_5: 0.90\n - Player_6: 0.80\n - Player_7: 0.70\n \nVote For : Player_5"}, "player_6": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "No thought."}, "player_5": {"role": "Imposter", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "This problem appears to involve assigning trust scores and deciding votes based on game history but does not require specific mathematical or code-based solutions. Instead, it involves analyzing patterns and behaviors in the provided data."}, "player_7": {"role": "Imposter", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "This decision involves some subjectivity, but based on players moves only 4 of them are using meaningful strategy where players 3,4 and 5 are in the top spots with no disqualifying behavior."}}}];
+    const trust = {"targets": ["player_2", "player_3", "player_4", "player_5", "player_6", "player_7", "player_1"], "series_all": {"player_2": [[50, 0.275], [100, 0.5166666666666667], [150, 0.5166666666666667]], "player_3": [[50, 0.7666666666666667], [100, 0.6083333333333333], [150, 0.5833333333333334], [200, 0.6], [250, 0.51], [300, 0.45999999999999996], [350, 0.64], [400, 0.65], [450, 0.45999999999999996], [500, 0.45], [550, 0.514], [600, 0.45999999999999996], [650, 0.6], [700, 0.7739800000000001], [750, 0.72], [800, 0.7], [850, 0.6], [900, 0.8560000000000001], [950, 0.53], [1000, 0.7], [1050, 0.628], [1100, 0.6], [1150, 0.69]], "player_4": [[50, 0.57], [100, 0.40833333333333327], [150, 0.47500000000000003], [200, 0.6439999999999999], [250, 0.634], [300, 0.546], [350, 0.52], [400, 0.7300000000000001], [450, 0.5599999999999999], [500, 0.48], [550, 0.5359999999999999], [600, 0.52], [650, 0.712], [700, 0.5], [750, 0.41332], [800, 0.72], [850, 0.5], [900, 0.702], [950, 0.606], [1000, 0.76], [1050, 0.6100000000000001], [1100, 0.52], [1150, 0.65]], "player_5": [[50, 0.5083333333333334], [100, 0.6], [150, 0.5], [200, 0.40199999999999997], [250, 0.38], [300, 0.5820000000000001], [350, 0.5800000000000001], [400, 0.42000000000000004], [450, 0.6199999999999999], [500, 0.54], [550, 0.49400000000000005], [600, 0.4], [650, 0.6], [700, 0.694], [750, 0.6], [800, 0.53], [850, 0.5], [900, 0.8140000000000001], [950, 0.776], [1000, 0.6599999999999999], [1050, 0.69], [1100, 0.5800000000000001], [1150, 0.614]], "player_6": [[50, 0.8916666666666667], [100, 0.7666666666666666], [150, 0.6], [200, 0.5760000000000001], [250, 0.5820000000000001], [300, 0.688], [350, 0.5960000000000001], [400, 0.55], [450, 0.44000000000000006], [500, 0.5], [550, 0.58], [600, 0.6], [650, 0.52], [700, 0.6], [750, 0.54], [800, 0.58], [850, 0.58], [900, 0.51], [950, 0.6599999999999999], [1000, 0.58], [1050, 0.65], [1100, 0.7], [1150, 0.52]], "player_7": [[50, 0.7949999999999999], [100, 0.7000000000000001], [150, 0.525], [200, 0.58], [250, 0.54], [300, 0.38], [350, 0.5399999999999999], [400, 0.5], [450, 0.6], [500, 0.64], [550, 0.37], [600, 0.6399999999999999], [650, 0.71], [700, 0.5599999999999999], [750, 0.58], [800, 0.7], [850, 0.5], [900, 0.8640000000000001], [950, 0.76], [1000, 0.8699999999999999], [1050, 0.54], [1100, 0.7], [1150, 0.6900000000000001]], "player_1": [[50, 0.8166666666666668], [100, 0.6833333333333335], [150, 0.5], [200, 0.55], [250, 0.58], [300, 0.5], [350, 0.5], [400, 0.5], [450, 0.5], [500, 0.4], [550, 0.5], [600, 0.5], [650, 0.5], [700, 0.5], [750, 0.5], [800, 0.5], [850, 0.5], [900, 0.5], [950, 0.5], [1000, 0.5], [1050, 0.41], [1100, 0.5], [1150, 0.5]]}, "series_crewmate": {"player_2": [[50, 0.2625], [100, 0.6000000000000001], [150, 0.425]], "player_3": [[50, 0.7749999999999999], [100, 0.575], [150, 0.625], [200, 0.5333333333333333], [250, 0.5166666666666667], [300, 0.43333333333333335], [350, 0.5666666666666667], [400, 0.5499999999999999], [450, 0.39999999999999997], [500, 0.5666666666666668], [550, 0.48333333333333334], [600, 0.43333333333333335], [650, 0.6], [700, 0.79], [750, 0.6666666666666666], [800, 0.5333333333333333], [850, 0.6666666666666666], [900, 0.81], [950, 0.3333333333333333], [1000, 0.7666666666666666], [1050, 0.68], [1100, 0.5], [1150, 0.7999999999999999]], "player_4": [[50, 0.58], [100, 0.5], [150, 0.4625], [200, 0.6666666666666666], [250, 0.6], [300, 0.6], [350, 0.6333333333333333], [400, 0.6166666666666667], [450, 0.5333333333333333], [500, 0.6333333333333333], [550, 0.6], [600, 0.5333333333333333], [650, 0.7200000000000001], [700, 0.3333333333333333], [750, 0.6555333333333333], [800, 0.6333333333333333], [850, 0.5], [900, 0.7533333333333333], [950, 0.41], [1000, 0.7666666666666666], [1050, 0.8166666666666668], [1100, 0.3666666666666667], [1150, 0.7666666666666666]], "player_5": [[50, 0.41000000000000003], [100, 0.5199999999999999], [150, 0.5], [200, 0.375], [250, 0.35], [300, 0.625], [350, 0.525], [400, 0.525], [450, 0.575], [500, 0.55], [550, 0.45], [600, 0.375], [650, 0.625], [700, 0.7424999999999999], [750, 0.625], [800, 0.5375000000000001], [850, 0.5], [900, 0.7925], [950, 0.77], [1000, 0.625], [1050, 0.6375], [1100, 0.6000000000000001], [1150, 0.605]], "player_6": [[50, 0.8875], [100, 0.75], [150, 0.65], [200, 0.5], [250, 0.5], [300, 0.6], [350, 0.5666666666666667], [400, 0.3833333333333333], [450, 0.5], [500, 0.3333333333333333], [550, 0.3333333333333333], [600, 0.6666666666666666], [650, 0.3666666666666667], [700, 0.6666666666666666], [750, 0.3333333333333333], [800, 0.6333333333333333], [850, 0.6333333333333333], [900, 0.7999999999999999], [950, 0.6666666666666666], [1000, 0.4666666666666666], [1050, 0.65], [1100, 0.6666666666666666], [1150, 0.3666666666666667]], "player_7": [[50, 0.7539999999999999], [100, 0.6499999999999999], [150, 0.53], [200, 0.5], [250, 0.55], [300, 0.3875], [350, 0.475], [400, 0.4], [450, 0.625], [500, 0.6], [550, 0.325], [600, 0.675], [650, 0.6875], [700, 0.575], [750, 0.5], [800, 0.75], [850, 0.5], [900, 0.85], [950, 0.7], [1000, 0.9624999999999999], [1050, 0.55], [1100, 0.625], [1150, 0.6125]], "player_1": [[50, 0.8500000000000001], [100, 0.7375], [150, 0.5], [200, 0.6333333333333333], [250, 0.6333333333333333], [300, 0.5], [350, 0.5], [400, 0.5], [450, 0.5], [500, 0.5], [550, 0.5], [600, 0.5], [650, 0.5], [700, 0.5], [750, 0.5], [800, 0.5], [850, 0.5], [900, 0.5], [950, 0.5], [1000, 0.5], [1050, 0.35000000000000003], [1100, 0.5], [1150, 0.5]]}, "series_imposter": {"player_2": [[50, 0.3], [100, 0.35], [150, 0.7]], "player_3": [[50, 0.75], [100, 0.675], [150, 0.5], [200, 0.7], [250, 0.5], [300, 0.5], [350, 0.75], [400, 0.8], [450, 0.55], [500, 0.275], [550, 0.56], [600, 0.5], [650, 0.6], [700, 0.74995], [750, 0.8], [800, 0.95], [850, 0.5], [900, 0.925], [950, 0.825], [1000, 0.6], [1050, 0.55], [1100, 0.75], [1150, 0.525]], "player_4": [[50, 0.55], [100, 0.22499999999999998], [150, 0.5], [200, 0.61], [250, 0.685], [300, 0.465], [350, 0.35], [400, 0.9], [450, 0.6], [500, 0.25], [550, 0.44], [600, 0.5], [650, 0.7], [700, 0.75], [750, 0.05], [800, 0.85], [850, 0.5], [900, 0.625], [950, 0.9], [1000, 0.75], [1050, 0.3], [1100, 0.75], [1150, 0.475]], "player_5": [[50, 1.0], [100, 1.0], [150, 0.5], [200, 0.51], [250, 0.5], [300, 0.41], [350, 0.8], [400, 0.0], [450, 0.8], [500, 0.5], [550, 0.67], [600, 0.5], [650, 0.5], [700, 0.5], [750, 0.5], [800, 0.5], [850, 0.5], [900, 0.9], [950, 0.8], [1000, 0.8], [1050, 0.9], [1100, 0.5], [1150, 0.65]], "player_6": [[50, 0.9], [100, 0.8], [150, 0.5], [200, 0.69], [250, 0.7050000000000001], [300, 0.8200000000000001], [350, 0.64], [400, 0.8], [450, 0.35], [500, 0.75], [550, 0.95], [600, 0.5], [650, 0.75], [700, 0.5], [750, 0.85], [800, 0.5], [850, 0.5], [900, 0.075], [950, 0.65], [1000, 0.75], [1050, 0.65], [1100, 0.75], [1150, 0.75]], "player_7": [[50, 1.0], [100, 0.95], [150, 0.5], [200, 0.9], [250, 0.5], [300, 0.35], [350, 0.8], [400, 0.9], [450, 0.5], [500, 0.8], [550, 0.55], [600, 0.5], [650, 0.8], [700, 0.5], [750, 0.9], [800, 0.5], [850, 0.5], [900, 0.92], [950, 1.0], [1000, 0.5], [1050, 0.5], [1100, 1.0], [1150, 1.0]], "player_1": [[50, 0.75], [100, 0.575], [150, 0.5], [200, 0.425], [250, 0.5], [300, 0.5], [350, 0.5], [400, 0.5], [450, 0.5], [500, 0.25], [550, 0.5], [600, 0.5], [650, 0.5], [700, 0.5], [750, 0.5], [800, 0.5], [850, 0.5], [900, 0.5], [950, 0.5], [1000, 0.5], [1050, 0.5], [1100, 0.5], [1150, 0.5]]}};
+    const taskProgressSources = {"player_1": "activity/viz_crewmate_player_1/parsed_turns.jsonl", "player_2": "activity/viz_crewmate_player_2/parsed_turns.jsonl", "player_3": "activity/viz_crewmate_player_3/parsed_turns.jsonl", "player_4": "activity/viz_crewmate_player_4/parsed_turns.jsonl", "player_6": "activity/viz_crewmate_player_6/parsed_turns.jsonl", "player_5": "activity/viz_imposter_player_5/parsed_turns.jsonl", "player_7": "activity/viz_imposter_player_7/parsed_turns.jsonl"};
+
+    function fmtPct(x) {
+      if (x === null || x === undefined) return '—';
+      return (100.0 * x).toFixed(1) + '%';
+    }
+
+    // ---------- Voting rounds table/cards ----------
+    const container = document.getElementById('voteRounds');
+    if (container) {
+      if (!voteRounds || voteRounds.length === 0) {
+        container.innerHTML = "<div class='muted' style='margin-top:10px;'>(no voting logs found)</div>";
+      } else {
+        const parts = [];
+        for (const r of voteRounds) {
+          const step = (r.step !== null && r.step !== undefined) ? r.step : r.round_key;
+          const pred = r.predicted_eject ? (r.predicted_eject + (r.predicted_eject_is_imposter ? " (imposter)" : " (crewmate)")) : "tie/skip";
+          const tallyStr = Object.entries(r.tally || {}).map(([k,v]) => k + ":" + v).join(", ");
+
+          const voters = Object.entries(r.per_voter || {})
+            .map(([v, info]) => {
+              const role = (info.role || '').toLowerCase().startsWith('imp') ? 'imposter' : 'crewmate';
+              const pill = role === 'imposter' ? "pill imp" : "pill crew";
+              const vote = info.vote || 'skip';
+              const flags = [];
+              if (info.target_is_imposter) flags.push("target=imposter");
+              if (info.target_is_crewmate) flags.push("target=crewmate");
+              if (info.is_skip) flags.push("skip");
+              const thought = info.thought || '';
+              return `
+                <tr>
+                  <td class="mono">${v}</td>
+                  <td><span class="${pill}">${role}</span></td>
+                  <td class="mono">${vote}</td>
+                  <td class="mono">${flags.join(", ") || "—"}</td>
+                  <td>${thought ? thought : "—"}</td>
+                </tr>
+              `;
+            })
+            .join("");
+
+          parts.push(`
+            <details style="margin-top: 10px;">
+              <summary>Round step ${step} · crewAcc ${fmtPct(r.accuracy_crewmate_detect_imposter)} · impAcc ${fmtPct(r.accuracy_imposter_vote_crewmate)} · predicted eject: ${pred}</summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">${tallyStr || "—"}</span></div>
+              <table>
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>flags</th><th>thought</th></tr></thead>
+                <tbody>${voters || "<tr><td colspan='5' class='muted'>(no voters)</td></tr>"}</tbody>
+              </table>
+            </details>
+          `);
+        }
+        container.innerHTML = parts.join("");
+      }
+    }
+
+    // ---------- Plot: voting accuracy ----------
+    function drawVoteAcc(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!voteRounds || voteRounds.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No voting data.', 12, 24);
+        return;
+      }
+
+      const pts = voteRounds
+        .map((r, i) => {
+          const x = (r.step !== null && r.step !== undefined) ? r.step : i;
+          return {
+            x,
+            crew: r.accuracy_crewmate_detect_imposter,
+            imp: r.accuracy_imposter_vote_crewmate,
+            any: r.accuracy_any_detect_imposter,
+          };
+        });
+
+      const xs = pts.map(p => p.x);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('accuracy', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      function drawLine(key, color, width) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        let started = false;
+        for (const p of pts) {
+          const y = p[key];
+          if (y === null || y === undefined) continue;
+          const x = sx(p.x);
+          const yy = sy(y);
+          if (!started) { ctx.moveTo(x, yy); started = true; }
+          else ctx.lineTo(x, yy);
+        }
+        if (started) ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+
+      drawLine('any', '#111827', 4);
+      drawLine('crew', '#1d4ed8', 2);
+      drawLine('imp', '#dc2626', 2);
+
+      // Legend
+      ctx.fillStyle = '#111827';
+      ctx.fillRect(padL + innerW - 170, padT + 10, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('any (vote=imposter)', padL + innerW - 154, padT + 19);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(padL + innerW - 170, padT + 28, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('crewmates', padL + innerW - 154, padT + 37);
+
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(padL + innerW - 170, padT + 46, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('imposters', padL + innerW - 154, padT + 55);
+    }
+
+    // ---------- Plot: trust trends (mean) ----------
+    function drawTrust(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      const seriesAll = (trust && trust.series_all) ? trust.series_all : null;
+      const targets = (trust && trust.targets) ? trust.targets : [];
+      if (!seriesAll || !targets || targets.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust snapshot data (step_*_scores.json).', 12, 24);
+        return;
+      }
+
+      // Choose up to 8 targets with most points (or just first).
+      const scored = targets.map(t => {
+        const pts = seriesAll[t] || [];
+        return { t, n: pts.length };
+      }).sort((a,b) => b.n - a.n);
+      const chosen = scored.slice(0, 8).map(x => x.t);
+
+      const allPts = [];
+      for (const t of chosen) {
+        for (const p of (seriesAll[t] || [])) allPts.push(p);
+      }
+      if (allPts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust points.', 12, 24);
+        return;
+      }
+
+      const xs = allPts.map(p => p[0]);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('mean trust', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      const palette = ['#1d4ed8','#c026d3','#16a34a','#f59e0b','#0ea5e9','#dc2626','#7c3aed','#334155'];
+      function colorFor(i) { return palette[i % palette.length]; }
+
+      chosen.forEach((t, idx) => {
+        const pts = (seriesAll[t] || []).slice().sort((a,b) => a[0] - b[0]);
+        if (!pts.length) return;
+        ctx.strokeStyle = colorFor(idx);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        pts.forEach((p, i) => {
+          const x = sx(p[0]), y = sy(p[1]);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      });
+
+      // Legend (right)
+      ctx.font = '12px ui-sans-serif, system-ui';
+      let lx = padL + innerW - 8;
+      let ly = padT + 14;
+      chosen.forEach((t, idx) => {
+        ctx.fillStyle = colorFor(idx);
+        ctx.fillRect(lx - 12, ly - 9, 10, 10);
+        ctx.fillStyle = '#111';
+        const label = t;
+        const w = ctx.measureText(label).width;
+        ctx.fillText(label, lx - 16 - w, ly);
+        ly += 16;
+      });
+    }
+
+    // ---------- Overall task completion ----------
+    async function fetchJsonl(url) {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`fetch failed (${res.status}) for ${url}`);
+      const text = await res.text();
+      const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
+      const out = [];
+      for (const ln of lines) {
+        try { out.push(JSON.parse(ln)); } catch (e) { /* ignore malformed */ }
+      }
+      return out;
+    }
+
+    function buildPlayerSeries(turns) {
+      const m = new Map();
+      for (const r of (turns || [])) {
+        const step = (r.step !== null && r.step !== undefined) ? r.step : r.idx;
+        const done = Array.isArray(r.finished_tasks) ? r.finished_tasks.length : 0;
+        const todo = Array.isArray(r.tasks_to_complete) ? r.tasks_to_complete.length : 0;
+        const total = done + todo;
+        if (typeof step === 'number') m.set(step, { done, total });
+      }
+      const steps = Array.from(m.keys()).sort((a,b) => a - b);
+      return steps.map(s => ({ step: s, done: m.get(s).done, total: m.get(s).total }));
+    }
+
+    function unionSteps(seriesByPlayer) {
+      const all = new Set();
+      for (const s of Object.values(seriesByPlayer)) {
+        for (const p of s) all.add(p.step);
+      }
+      return Array.from(all).sort((a,b) => a - b);
+    }
+
+    function computeOverallSeries(seriesByPlayer) {
+      const players = Object.keys(seriesByPlayer);
+      const steps = unionSteps(seriesByPlayer);
+      const idxByPlayer = Object.fromEntries(players.map(p => [p, 0]));
+      const lastByPlayer = Object.fromEntries(players.map(p => [p, { done: 0, total: 0, has: false }]));
+
+      const out = [];
+      for (const step of steps) {
+        let doneSum = 0;
+        let totalSum = 0;
+        for (const player of players) {
+          const series = seriesByPlayer[player] || [];
+          let i = idxByPlayer[player] || 0;
+          while (i < series.length && series[i].step <= step) {
+            lastByPlayer[player] = { done: series[i].done, total: series[i].total, has: true };
+            i += 1;
+          }
+          idxByPlayer[player] = i;
+          const last = lastByPlayer[player];
+          if (last && last.has && last.total > 0) {
+            doneSum += last.done;
+            totalSum += last.total;
+          }
+        }
+        const pct = totalSum ? (doneSum / totalSum) : 0;
+        out.push({ step, done: doneSum, total: totalSum, pct });
+      }
+      return out;
+    }
+
+    function drawTaskProgress(canvasId, pts) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!pts || pts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No task progress data.', 12, 24);
+        return;
+      }
+
+      const xs = pts.map(p => p.step);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('task completion', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      // Line
+      ctx.strokeStyle = '#16a34a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      pts.forEach((p, i) => {
+        const x = sx(p.step);
+        const y = sy(p.pct);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.lineWidth = 1;
+    }
+
+    async function initOverallTaskProgress() {
+      const summaryEl = document.getElementById('taskProgressSummary');
+      const barEl = document.getElementById('taskProgressBar');
+
+      const entries = taskProgressSources ? Object.entries(taskProgressSources) : [];
+      if (!entries.length) {
+        if (summaryEl) summaryEl.textContent = '(no parsed_turns.jsonl files found)';
+        return;
+      }
+
+      try {
+        const seriesByPlayer = {};
+        await Promise.all(entries.map(async ([player, url]) => {
+          const turns = await fetchJsonl(url);
+          seriesByPlayer[player] = buildPlayerSeries(turns);
+        }));
+
+        const pts = computeOverallSeries(seriesByPlayer);
+        const last = pts.length ? pts[pts.length - 1] : null;
+        const pctTxt = (!last || !last.total) ? '—' : (100 * last.pct).toFixed(1) + '%';
+        if (summaryEl && last) summaryEl.innerHTML = `<b>${pctTxt}</b> · ${last.done}/${last.total} tasks complete (step ${last.step})`;
+        if (barEl && last) barEl.style.width = (!last || !last.total) ? '0%' : (100 * last.pct).toFixed(1) + '%';
+        drawTaskProgress('plotTaskProgress', pts);
+      } catch (e) {
+        if (summaryEl) summaryEl.textContent = `(failed to load task progress: ${e && e.message ? e.message : e})`;
+      }
+    }
+
+    drawVoteAcc('plotVoteAcc');
+    drawTrust('plotTrust');
+    initOverallTaskProgress();
+  </script>
+</body>
+</html>

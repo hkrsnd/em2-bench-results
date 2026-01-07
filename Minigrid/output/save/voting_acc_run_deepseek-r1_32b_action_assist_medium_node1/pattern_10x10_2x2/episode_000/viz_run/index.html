@@ -1,0 +1,574 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LLM Run Report (activity + voting + trust)</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; color: #111; }
+    .muted { color: #666; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .box { border: 1px solid #ddd; border-radius: 12px; padding: 12px 14px; background: #fafafa; }
+    h2, h3 { margin: 0 0 10px 0; }
+    h3 { font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eee; text-align: left; padding: 6px 8px; font-size: 13px; vertical-align: top; }
+    th { background: #fbfbfb; position: sticky; top: 0; }
+    details { border: 1px solid #e2e2e2; border-radius: 12px; padding: 10px 12px; background: white; }
+    details[open] { border-color: #cfcfcf; box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
+    summary { cursor: pointer; font-weight: 650; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; background: #fff; }
+    .pill.imp { border-color: #fecaca; background: #fff1f2; }
+    .pill.crew { border-color: #bfdbfe; background: #eff6ff; }
+    canvas { width: 100%; height: auto; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+    .outcome { margin-top: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid #ddd; background: #fff; }
+    .outcome.crewwin { border-color: #bfdbfe; background: #eff6ff; }
+    .outcome.impwin { border-color: #fecaca; background: #fff1f2; }
+    .outcome.inconclusive { border-color: #fde68a; background: #fffbeb; }
+    .outcome.unknown { border-color: #e5e7eb; background: #f9fafb; }
+    .roster { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px; margin-top: 10px; }
+    .roster-item { padding: 8px 10px; border: 1px solid #eee; border-radius: 10px; background: #fff; }
+    .roster-item.dead { opacity: 0.55; text-decoration: line-through; }
+    .thoughtSmall { max-height: 120px; overflow: auto; white-space: pre-wrap; }
+    .progressWrap { margin-top: 10px; height: 12px; background: #eee; border-radius: 999px; overflow: hidden; border: 1px solid #e5e5e5; }
+    .progressBar { height: 100%; width: 0%; background: linear-gradient(90deg, #16a34a, #22c55e); }
+  </style>
+</head>
+<body>
+  <h2>LLM Run Report</h2>
+  <div class="muted">Run dir: <span class="mono">/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000</span></div>
+  <div class="outcome inconclusive">
+    <div><b>Outcome: inconclusive</b></div>
+    <div class="muted">Episode ended without a clear win condition in available logs.</div>
+  </div>
+
+  <div class="row" style="margin-top: 14px;">
+    <div class="box" style="min-width: 320px;">
+      <h3>Roles</h3>
+      <div style="margin-bottom: 8px;">
+        <span class="pill crew">Crewmates: 5</span>
+        <span class="pill imp">Imposters: 2</span>
+      </div>
+      <table>
+        <thead><tr><th>agent</th><th>role</th></tr></thead>
+        <tbody>
+          <tr><td class='mono'>player_1</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_2</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_3</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_4</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_5</td><td>Imposter</td></tr>
+<tr><td class='mono'>player_6</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_7</td><td>Imposter</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Activity reports</h3>
+      <div class="muted">These are generated using the same parsing logic as <span class="mono">visualize_llm_log.py</span>.</div>
+      <ul>
+        <li><a href='agent/crewmate_player_1.html'>crewmate_player_1.log (turns=120)</a></li>
+<li><a href='agent/crewmate_player_2.html'>crewmate_player_2.log (turns=120)</a></li>
+<li><a href='agent/crewmate_player_3.html'>crewmate_player_3.log (turns=120)</a></li>
+<li><a href='agent/crewmate_player_4.html'>crewmate_player_4.log (turns=120)</a></li>
+<li><a href='agent/crewmate_player_6.html'>crewmate_player_6.log (turns=80)</a></li>
+<li><a href='agent/imposter_player_5.html'>imposter_player_5.log (turns=40)</a></li>
+<li><a href='agent/imposter_player_7.html'>imposter_player_7.log (turns=120)</a></li>
+      </ul>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Overall task completion</h3>
+      <div id="taskProgressSummary" class="muted">Loading task progress…</div>
+      <div class="progressWrap" aria-label="task completion progress">
+        <div id="taskProgressBar" class="progressBar"></div>
+      </div>
+      <div style="margin-top: 10px;">
+        <canvas id="plotTaskProgress" width="900" height="260"></canvas>
+      </div>
+      <div class="muted">
+        Computed from per-agent <span class="mono">parsed_turns.jsonl</span> using
+        <span class="mono">finished_tasks</span> / (<span class="mono">finished_tasks</span> + <span class="mono">tasks_to_complete</span>) at each step.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top: 14px;">
+    <div class="box">
+      <h3>Voting accuracy over rounds</h3>
+      <canvas id="plotVoteAcc" width="900" height="260"></canvas>
+      <div class="muted">
+        Crewmate accuracy = fraction of crewmates voting an imposter. Imposter accuracy = fraction of imposters voting a crewmate. Skip counts as incorrect.
+      </div>
+    </div>
+    <div class="box">
+      <h3>Trust (mean) over time</h3>
+      <canvas id="plotTrust" width="900" height="260"></canvas>
+      <div class="muted">
+        Uses <span class="mono">trust_scores/step_*_scores.json</span> if present (runner snapshots). Shows mean trust per target across raters.
+      </div>
+    </div>
+  </div>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Voting rounds (details)</summary>
+    <div class="muted" style="margin-top: 6px;">Click a round to expand per-voter info (thoughts included).</div>
+    <div id="voteRounds"></div>
+  </details>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Vote sessions (who voted whom · alive roster · elimination)</summary>
+    <div class="muted" style="margin-top: 6px;">
+      Pulled from run-level <span class="mono">vote_events.jsonl</span> (when available). This includes alive agents + true roles for context.
+    </div>
+    
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">200</span> · alive 7 · ejected: <span class="mono">player_5 (Imposter)</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">player_5:4, player_6:1, player_7:1, skip:1</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Error: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=256, prompt_tokens=4096, total_tokens=4352, completion_tokens_details=None, prompt_tokens_details=None)</div></td></tr>
+<tr><td class='mono'>player_2</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>Alright, let me try to figure out how to approach this problem. So, we have six players in a game, and I need to analyze their histories, assign them trust scores between 0.0 and 1.0, and then decide whom to vote for. The game seems to involve movement commands, object interactions like opening doors, and so on. First, I should look at each player&#39;s actions step by step to understand their behavior patterns.</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_5</td><td><div class='thoughtSmall'>Error: Error code: 500 - {&#39;error&#39;: {&#39;message&#39;: &#39;llama runner process has terminated: CUDA error&#39;, &#39;type&#39;: &#39;api_error&#39;, &#39;param&#39;: None, &#39;code&#39;: None}}</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_5</td><td><div class='thoughtSmall'>Error: Error code: 500 - {&#39;error&#39;: {&#39;message&#39;: &#39;llama runner process has terminated: CUDA error: out of memory\n  current device: 0, in function ggml_backend_cuda_device_get_memory at //ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:2920\n  cudaMemGetInfo(free, total)\n//ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:76: CUDA error&#39;, &#39;type&#39;: &#39;api_error&#39;, &#39;param&#39;: None, &#39;code&#39;: None}}</div></td></tr>
+<tr><td class='mono'>player_5</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>Alright, so I need to help figure out how to assign trust scores to these players and then decide who to vote for based on their histories. Hmm, let&#39;s see what each player did here.</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_5</td><td><div class='thoughtSmall'>Error: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=256, prompt_tokens=4096, total_tokens=4352, completion_tokens_details=None, prompt_tokens_details=None)</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>player_5</td><td><div class='thoughtSmall'>Error: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=256, prompt_tokens=4096, total_tokens=4352, completion_tokens_details=None, prompt_tokens_details=None)</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">—</span></div>
+            </details>
+            
+
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">400</span> · alive 6 · ejected: <span class="mono">player_6 (Crewmate)</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">player_6:5, player_7:1</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>Error: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=256, prompt_tokens=4096, total_tokens=4352, completion_tokens_details=None, prompt_tokens_details=None)</div></td></tr>
+<tr><td class='mono'>player_2</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Alright, so I&#39;m trying to assign trust scores and decide whom to vote for based on the game histories provided. First, let me understand what these trust scores mean. They&#39;re probably an indication of how reliable or trustworthy each alive player is perceived to be within the game context—maybe akin to political voting games where players vote based on trust or alliances formed during gameplay. The goal here is likely to simulate that decision-making process algorithmically or through some reasoning logic.</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Error: Error code: 500 - {&#39;error&#39;: {&#39;message&#39;: &#39;llama runner process has terminated: CUDA error: out of memory\n  current device: 0, in function ggml_backend_cuda_device_get_memory at //ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:2920\n  cudaMemGetInfo(free, total)\n//ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:76: CUDA error&#39;, &#39;type&#39;: &#39;api_error&#39;, &#39;param&#39;: None, &#39;code&#39;: None}}</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Error: Error code: 500 - {&#39;error&#39;: {&#39;message&#39;: &#39;llama runner process has terminated: CUDA error: out of memory\n  current device: 0, in function ggml_backend_cuda_device_get_memory at //ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:2920\n  cudaMemGetInfo(free, total)\n//ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:76: CUDA error&#39;, &#39;type&#39;: &#39;api_error&#39;, &#39;param&#39;: None, &#39;code&#39;: None}}</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Error: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=256, prompt_tokens=4096, total_tokens=4352, completion_tokens_details=None, prompt_tokens_details=None)</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Error: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=256, prompt_tokens=4096, total_tokens=4352, completion_tokens_details=None, prompt_tokens_details=None)</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_5</span></div>
+            </details>
+            
+
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">600</span> · alive 5 · ejected: <span class="mono">player_7 (Imposter)</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">player_7:3, skip:2</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item dead'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>Alright, let&#39;s dive into this problem. So, there are seven players in total: player_3, player_4, player_5, player_6, player_7, and others like player_1, player_2, but from the data provided, it seems only players 3 to 7 have actions recorded here. Wait, actually looking back, I see four alive players: player_0, player_3, player_4, player_5, wait no, checking again... Hmm, there&#39;s confusion in my initial assessment. Let me re-examine the data.</div></td></tr>
+<tr><td class='mono'>player_2</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>Okay, so I&#39;m looking at this problem where there are several players in some kind of game, and based on their historical actions, I need to assign each alive player a trust score between 0.0 and 1.0. Then, decide who to vote for. Alright, let&#39;s try to unpack all this information and figure out what&#39;s going on here.</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>Error: Error code: 500 - {&#39;error&#39;: {&#39;message&#39;: &#39;llama runner process has terminated: CUDA error: out of memory\n  current device: 0, in function ggml_backend_cuda_device_get_memory at //ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:2920\n  cudaMemGetInfo(free, total)\n//ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:76: CUDA error&#39;, &#39;type&#39;: &#39;api_error&#39;, &#39;param&#39;: None, &#39;code&#39;: None}}</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>Error: Error code: 500 - {&#39;error&#39;: {&#39;message&#39;: &#39;llama runner process has terminated: CUDA error: out of memory\n  current device: 0, in function ggml_backend_cuda_device_get_memory at //ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:2920\n  cudaMemGetInfo(free, total)\n//ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:76: CUDA error&#39;, &#39;type&#39;: &#39;api_error&#39;, &#39;param&#39;: None, &#39;code&#39;: None}}</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>Error: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=256, prompt_tokens=4096, total_tokens=4352, completion_tokens_details=None, prompt_tokens_details=None)</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_5, player_6</span></div>
+            </details>
+            
+  </details>
+
+  <script>
+    const voteRounds = [{"step": null, "round_key": "unknown", "n_votes": 18, "tally": {"player_1": 12, "player_2": 2, "player_7": 2, "player_3": 1, "player_6": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.14285714285714285, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.1111111111111111, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Alright, let's dive into this problem. So, there are seven players in total: player_3, player_4, player_5, player_6, player_7, and others like player_1, player_2, but from the data provided, it seems only players 3 to 7 have actions recorded here. Wait, actually looking back, I see four alive players: player_0, player_3, player_4, player_5, wait no, checking again... Hmm, there's confusion in my initial assessment. Let me re-examine the data."}, "player_2": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Okay, so I'm looking at this problem where there are several players in some kind of game, and based on their historical actions, I need to assign each alive player a trust score between 0.0 and 1.0. Then, decide who to vote for. Alright, let's try to unpack all this information and figure out what's going on here."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Error: Error code: 500 - {'error': {'message': 'llama runner process has terminated: CUDA error: out of memory\\n  current device: 0, in function ggml_backend_cuda_device_get_memory at //ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:2920\\n  cudaMemGetInfo(free, total)\\n//ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:76: CUDA error', 'type': 'api_error', 'param': None, 'code': None}}"}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Error: Error code: 500 - {'error': {'message': 'llama runner process has terminated: CUDA error: out of memory\\n  current device: 0, in function ggml_backend_cuda_device_get_memory at //ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:2920\\n  cudaMemGetInfo(free, total)\\n//ml/backend/ggml/ggml/src/ggml-cuda/ggml-cuda.cu:76: CUDA error', 'type': 'api_error', 'param': None, 'code': None}}"}, "player_6": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Error: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=256, prompt_tokens=4096, total_tokens=4352, completion_tokens_details=None, prompt_tokens_details=None)"}, "player_5": {"role": "Imposter", "vote": "player_6", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Alright, so I need to help figure out how to assign trust scores to these players and then decide who to vote for based on their histories. Hmm, let's see what each player did here."}, "player_7": {"role": "Imposter", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Error: Could not parse response content as the length limit was reached - CompletionUsage(completion_tokens=256, prompt_tokens=4096, total_tokens=4352, completion_tokens_details=None, prompt_tokens_details=None)"}}}];
+    const trust = {"targets": ["player_2", "player_3", "player_4", "player_5", "player_6", "player_7", "player_1"], "series_all": {"player_2": [[50, 0.5333333333333333], [100, 0.5333333333333333], [150, 0.5133333333333333], [200, 0.6166666666666667], [250, 0.55], [300, 0.49000000000000005], [350, 0.5], [400, 0.6], [450, 0.483], [500, 0.525], [550, 0.5], [600, 0.65]], "player_3": [[50, 0.48666666666666664], [100, 0.44166666666666665], [150, 0.5149999999999999], [200, 0.4283333333333334], [250, 0.65], [300, 0.45], [350, 0.6314285714285715], [400, 0.6599999999999999], [450, 0.527], [500, 0.65], [550, 0.7], [600, 0.7]], "player_4": [[50, 0.6133333333333333], [100, 0.4833333333333334], [150, 0.5766666666666668], [200, 0.5866666666666666], [250, 0.6539999999999999], [300, 0.54], [350, 0.6657142857142857], [400, 0.5700000000000001], [450, 0.7075], [500, 0.7], [550, 0.4875], [600, 0.6125]], "player_5": [[50, 0.6416666666666667], [100, 0.6166666666666666], [150, 0.6133333333333334], [200, 0.6133333333333334]], "player_6": [[50, 0.5766666666666667], [100, 0.5833333333333334], [150, 0.6216666666666667], [200, 0.5683333333333334], [250, 0.64], [300, 0.5599999999999999], [350, 0.515], [400, 0.44000000000000006]], "player_7": [[50, 0.5983333333333334], [100, 0.49999999999999994], [150, 0.535], [200, 0.41500000000000004], [250, 0.558], [300, 0.51], [350, 0.58], [400, 0.4], [450, 0.58], [500, 0.725], [550, 0.575], [600, 0.625]], "player_1": [[50, 0.325], [100, 0.5333333333333333], [150, 0.5666666666666667], [200, 0.6416666666666667], [250, 0.5700000000000001], [300, 0.68], [350, 0.64], [400, 0.6599999999999999], [450, 0.5640000000000001], [500, 0.6375], [550, 0.5875], [600, 0.575]]}, "series_crewmate": {"player_2": [[50, 0.45], [100, 0.5], [150, 0.525], [200, 0.675], [250, 0.5625], [300, 0.475], [350, 0.5], [400, 0.625], [450, 0.5], [500, 0.5], [550, 0.43333333333333335], [600, 0.6166666666666667]], "player_3": [[50, 0.58], [100, 0.3125], [150, 0.505], [200, 0.3925], [250, 0.6875], [300, 0.46249999999999997], [350, 0.5892857142857143], [400, 0.7], [450, 0.48666666666666664], [500, 0.6166666666666667], [550, 0.6333333333333333], [600, 0.6333333333333333]], "player_4": [[50, 0.645], [100, 0.45], [150, 0.61], [200, 0.63], [250, 0.6924999999999999], [300, 0.4625], [350, 0.6821428571428572], [400, 0.5875], [450, 0.6366666666666667], [500, 0.6333333333333333], [550, 0.39999999999999997], [600, 0.6166666666666667]], "player_5": [[50, 0.5700000000000001], [100, 0.5599999999999999], [150, 0.6180000000000001], [200, 0.636]], "player_6": [[50, 0.6275], [100, 0.625], [150, 0.6375], [200, 0.5275000000000001], [250, 0.675], [300, 0.475], [350, 0.59375], [400, 0.425]], "player_7": [[50, 0.528], [100, 0.5399999999999999], [150, 0.542], [200, 0.438], [250, 0.558], [300, 0.51], [350, 0.58], [400, 0.4], [450, 0.58], [500, 0.725], [550, 0.575], [600, 0.625]], "player_1": [[50, 0.35000000000000003], [100, 0.5], [150, 0.5625], [200, 0.7125], [250, 0.5875], [300, 0.675], [350, 0.6125], [400, 0.7], [450, 0.5], [500, 0.5833333333333334], [550, 0.5], [600, 0.5]]}, "series_imposter": {"player_2": [[50, 0.7], [100, 0.6000000000000001], [150, 0.49], [200, 0.5], [250, 0.5], [300, 0.55], [350, 0.5], [400, 0.5], [450, 0.432], [500, 0.6], [550, 0.7], [600, 0.75]], "player_3": [[50, 0.3], [100, 0.7], [150, 0.5349999999999999], [200, 0.5], [250, 0.5], [300, 0.4], [350, 0.8], [400, 0.5], [450, 0.648], [500, 0.75], [550, 0.9], [600, 0.9]], "player_4": [[50, 0.55], [100, 0.55], [150, 0.51], [200, 0.5], [250, 0.5], [300, 0.85], [350, 0.6], [400, 0.5], [450, 0.92], [500, 0.9], [550, 0.75], [600, 0.6]], "player_5": [[50, 1.0], [100, 0.9], [150, 0.59], [200, 0.5]], "player_6": [[50, 0.475], [100, 0.5], [150, 0.5900000000000001], [200, 0.65], [250, 0.5], [300, 0.9], [350, 0.2], [400, 0.5]], "player_7": [[50, 0.95], [100, 0.3], [150, 0.5], [200, 0.3]], "player_1": [[50, 0.275], [100, 0.6], [150, 0.575], [200, 0.5], [250, 0.5], [300, 0.7], [350, 0.75], [400, 0.5], [450, 0.756], [500, 0.8], [550, 0.85], [600, 0.8]]}};
+    const taskProgressSources = {"player_1": "activity/viz_crewmate_player_1/parsed_turns.jsonl", "player_2": "activity/viz_crewmate_player_2/parsed_turns.jsonl", "player_3": "activity/viz_crewmate_player_3/parsed_turns.jsonl", "player_4": "activity/viz_crewmate_player_4/parsed_turns.jsonl", "player_6": "activity/viz_crewmate_player_6/parsed_turns.jsonl", "player_5": "activity/viz_imposter_player_5/parsed_turns.jsonl", "player_7": "activity/viz_imposter_player_7/parsed_turns.jsonl"};
+
+    function fmtPct(x) {
+      if (x === null || x === undefined) return '—';
+      return (100.0 * x).toFixed(1) + '%';
+    }
+
+    // ---------- Voting rounds table/cards ----------
+    const container = document.getElementById('voteRounds');
+    if (container) {
+      if (!voteRounds || voteRounds.length === 0) {
+        container.innerHTML = "<div class='muted' style='margin-top:10px;'>(no voting logs found)</div>";
+      } else {
+        const parts = [];
+        for (const r of voteRounds) {
+          const step = (r.step !== null && r.step !== undefined) ? r.step : r.round_key;
+          const pred = r.predicted_eject ? (r.predicted_eject + (r.predicted_eject_is_imposter ? " (imposter)" : " (crewmate)")) : "tie/skip";
+          const tallyStr = Object.entries(r.tally || {}).map(([k,v]) => k + ":" + v).join(", ");
+
+          const voters = Object.entries(r.per_voter || {})
+            .map(([v, info]) => {
+              const role = (info.role || '').toLowerCase().startsWith('imp') ? 'imposter' : 'crewmate';
+              const pill = role === 'imposter' ? "pill imp" : "pill crew";
+              const vote = info.vote || 'skip';
+              const flags = [];
+              if (info.target_is_imposter) flags.push("target=imposter");
+              if (info.target_is_crewmate) flags.push("target=crewmate");
+              if (info.is_skip) flags.push("skip");
+              const thought = info.thought || '';
+              return `
+                <tr>
+                  <td class="mono">${v}</td>
+                  <td><span class="${pill}">${role}</span></td>
+                  <td class="mono">${vote}</td>
+                  <td class="mono">${flags.join(", ") || "—"}</td>
+                  <td>${thought ? thought : "—"}</td>
+                </tr>
+              `;
+            })
+            .join("");
+
+          parts.push(`
+            <details style="margin-top: 10px;">
+              <summary>Round step ${step} · crewAcc ${fmtPct(r.accuracy_crewmate_detect_imposter)} · impAcc ${fmtPct(r.accuracy_imposter_vote_crewmate)} · predicted eject: ${pred}</summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">${tallyStr || "—"}</span></div>
+              <table>
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>flags</th><th>thought</th></tr></thead>
+                <tbody>${voters || "<tr><td colspan='5' class='muted'>(no voters)</td></tr>"}</tbody>
+              </table>
+            </details>
+          `);
+        }
+        container.innerHTML = parts.join("");
+      }
+    }
+
+    // ---------- Plot: voting accuracy ----------
+    function drawVoteAcc(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!voteRounds || voteRounds.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No voting data.', 12, 24);
+        return;
+      }
+
+      const pts = voteRounds
+        .map((r, i) => {
+          const x = (r.step !== null && r.step !== undefined) ? r.step : i;
+          return {
+            x,
+            crew: r.accuracy_crewmate_detect_imposter,
+            imp: r.accuracy_imposter_vote_crewmate,
+            any: r.accuracy_any_detect_imposter,
+          };
+        });
+
+      const xs = pts.map(p => p.x);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('accuracy', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      function drawLine(key, color, width) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        let started = false;
+        for (const p of pts) {
+          const y = p[key];
+          if (y === null || y === undefined) continue;
+          const x = sx(p.x);
+          const yy = sy(y);
+          if (!started) { ctx.moveTo(x, yy); started = true; }
+          else ctx.lineTo(x, yy);
+        }
+        if (started) ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+
+      drawLine('any', '#111827', 4);
+      drawLine('crew', '#1d4ed8', 2);
+      drawLine('imp', '#dc2626', 2);
+
+      // Legend
+      ctx.fillStyle = '#111827';
+      ctx.fillRect(padL + innerW - 170, padT + 10, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('any (vote=imposter)', padL + innerW - 154, padT + 19);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(padL + innerW - 170, padT + 28, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('crewmates', padL + innerW - 154, padT + 37);
+
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(padL + innerW - 170, padT + 46, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('imposters', padL + innerW - 154, padT + 55);
+    }
+
+    // ---------- Plot: trust trends (mean) ----------
+    function drawTrust(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      const seriesAll = (trust && trust.series_all) ? trust.series_all : null;
+      const targets = (trust && trust.targets) ? trust.targets : [];
+      if (!seriesAll || !targets || targets.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust snapshot data (step_*_scores.json).', 12, 24);
+        return;
+      }
+
+      // Choose up to 8 targets with most points (or just first).
+      const scored = targets.map(t => {
+        const pts = seriesAll[t] || [];
+        return { t, n: pts.length };
+      }).sort((a,b) => b.n - a.n);
+      const chosen = scored.slice(0, 8).map(x => x.t);
+
+      const allPts = [];
+      for (const t of chosen) {
+        for (const p of (seriesAll[t] || [])) allPts.push(p);
+      }
+      if (allPts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust points.', 12, 24);
+        return;
+      }
+
+      const xs = allPts.map(p => p[0]);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('mean trust', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      const palette = ['#1d4ed8','#c026d3','#16a34a','#f59e0b','#0ea5e9','#dc2626','#7c3aed','#334155'];
+      function colorFor(i) { return palette[i % palette.length]; }
+
+      chosen.forEach((t, idx) => {
+        const pts = (seriesAll[t] || []).slice().sort((a,b) => a[0] - b[0]);
+        if (!pts.length) return;
+        ctx.strokeStyle = colorFor(idx);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        pts.forEach((p, i) => {
+          const x = sx(p[0]), y = sy(p[1]);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      });
+
+      // Legend (right)
+      ctx.font = '12px ui-sans-serif, system-ui';
+      let lx = padL + innerW - 8;
+      let ly = padT + 14;
+      chosen.forEach((t, idx) => {
+        ctx.fillStyle = colorFor(idx);
+        ctx.fillRect(lx - 12, ly - 9, 10, 10);
+        ctx.fillStyle = '#111';
+        const label = t;
+        const w = ctx.measureText(label).width;
+        ctx.fillText(label, lx - 16 - w, ly);
+        ly += 16;
+      });
+    }
+
+    // ---------- Overall task completion ----------
+    async function fetchJsonl(url) {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`fetch failed (${res.status}) for ${url}`);
+      const text = await res.text();
+      const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
+      const out = [];
+      for (const ln of lines) {
+        try { out.push(JSON.parse(ln)); } catch (e) { /* ignore malformed */ }
+      }
+      return out;
+    }
+
+    function buildPlayerSeries(turns) {
+      const m = new Map();
+      for (const r of (turns || [])) {
+        const step = (r.step !== null && r.step !== undefined) ? r.step : r.idx;
+        const done = Array.isArray(r.finished_tasks) ? r.finished_tasks.length : 0;
+        const todo = Array.isArray(r.tasks_to_complete) ? r.tasks_to_complete.length : 0;
+        const total = done + todo;
+        if (typeof step === 'number') m.set(step, { done, total });
+      }
+      const steps = Array.from(m.keys()).sort((a,b) => a - b);
+      return steps.map(s => ({ step: s, done: m.get(s).done, total: m.get(s).total }));
+    }
+
+    function unionSteps(seriesByPlayer) {
+      const all = new Set();
+      for (const s of Object.values(seriesByPlayer)) {
+        for (const p of s) all.add(p.step);
+      }
+      return Array.from(all).sort((a,b) => a - b);
+    }
+
+    function computeOverallSeries(seriesByPlayer) {
+      const players = Object.keys(seriesByPlayer);
+      const steps = unionSteps(seriesByPlayer);
+      const idxByPlayer = Object.fromEntries(players.map(p => [p, 0]));
+      const lastByPlayer = Object.fromEntries(players.map(p => [p, { done: 0, total: 0, has: false }]));
+
+      const out = [];
+      for (const step of steps) {
+        let doneSum = 0;
+        let totalSum = 0;
+        for (const player of players) {
+          const series = seriesByPlayer[player] || [];
+          let i = idxByPlayer[player] || 0;
+          while (i < series.length && series[i].step <= step) {
+            lastByPlayer[player] = { done: series[i].done, total: series[i].total, has: true };
+            i += 1;
+          }
+          idxByPlayer[player] = i;
+          const last = lastByPlayer[player];
+          if (last && last.has && last.total > 0) {
+            doneSum += last.done;
+            totalSum += last.total;
+          }
+        }
+        const pct = totalSum ? (doneSum / totalSum) : 0;
+        out.push({ step, done: doneSum, total: totalSum, pct });
+      }
+      return out;
+    }
+
+    function drawTaskProgress(canvasId, pts) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!pts || pts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No task progress data.', 12, 24);
+        return;
+      }
+
+      const xs = pts.map(p => p.step);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('task completion', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      // Line
+      ctx.strokeStyle = '#16a34a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      pts.forEach((p, i) => {
+        const x = sx(p.step);
+        const y = sy(p.pct);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.lineWidth = 1;
+    }
+
+    async function initOverallTaskProgress() {
+      const summaryEl = document.getElementById('taskProgressSummary');
+      const barEl = document.getElementById('taskProgressBar');
+
+      const entries = taskProgressSources ? Object.entries(taskProgressSources) : [];
+      if (!entries.length) {
+        if (summaryEl) summaryEl.textContent = '(no parsed_turns.jsonl files found)';
+        return;
+      }
+
+      try {
+        const seriesByPlayer = {};
+        await Promise.all(entries.map(async ([player, url]) => {
+          const turns = await fetchJsonl(url);
+          seriesByPlayer[player] = buildPlayerSeries(turns);
+        }));
+
+        const pts = computeOverallSeries(seriesByPlayer);
+        const last = pts.length ? pts[pts.length - 1] : null;
+        const pctTxt = (!last || !last.total) ? '—' : (100 * last.pct).toFixed(1) + '%';
+        if (summaryEl && last) summaryEl.innerHTML = `<b>${pctTxt}</b> · ${last.done}/${last.total} tasks complete (step ${last.step})`;
+        if (barEl && last) barEl.style.width = (!last || !last.total) ? '0%' : (100 * last.pct).toFixed(1) + '%';
+        drawTaskProgress('plotTaskProgress', pts);
+      } catch (e) {
+        if (summaryEl) summaryEl.textContent = `(failed to load task progress: ${e && e.message ? e.message : e})`;
+      }
+    }
+
+    drawVoteAcc('plotVoteAcc');
+    drawTrust('plotTrust');
+    initOverallTaskProgress();
+  </script>
+</body>
+</html>
