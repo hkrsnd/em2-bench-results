@@ -1,0 +1,574 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LLM Run Report (activity + voting + trust)</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; color: #111; }
+    .muted { color: #666; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .box { border: 1px solid #ddd; border-radius: 12px; padding: 12px 14px; background: #fafafa; }
+    h2, h3 { margin: 0 0 10px 0; }
+    h3 { font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eee; text-align: left; padding: 6px 8px; font-size: 13px; vertical-align: top; }
+    th { background: #fbfbfb; position: sticky; top: 0; }
+    details { border: 1px solid #e2e2e2; border-radius: 12px; padding: 10px 12px; background: white; }
+    details[open] { border-color: #cfcfcf; box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
+    summary { cursor: pointer; font-weight: 650; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; background: #fff; }
+    .pill.imp { border-color: #fecaca; background: #fff1f2; }
+    .pill.crew { border-color: #bfdbfe; background: #eff6ff; }
+    canvas { width: 100%; height: auto; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+    .outcome { margin-top: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid #ddd; background: #fff; }
+    .outcome.crewwin { border-color: #bfdbfe; background: #eff6ff; }
+    .outcome.impwin { border-color: #fecaca; background: #fff1f2; }
+    .outcome.inconclusive { border-color: #fde68a; background: #fffbeb; }
+    .outcome.unknown { border-color: #e5e7eb; background: #f9fafb; }
+    .roster { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 6px; margin-top: 10px; }
+    .roster-item { padding: 8px 10px; border: 1px solid #eee; border-radius: 10px; background: #fff; }
+    .roster-item.dead { opacity: 0.55; text-decoration: line-through; }
+    .thoughtSmall { max-height: 120px; overflow: auto; white-space: pre-wrap; }
+    .progressWrap { margin-top: 10px; height: 12px; background: #eee; border-radius: 999px; overflow: hidden; border: 1px solid #e5e5e5; }
+    .progressBar { height: 100%; width: 0%; background: linear-gradient(90deg, #16a34a, #22c55e); }
+  </style>
+</head>
+<body>
+  <h2>LLM Run Report</h2>
+  <div class="muted">Run dir: <span class="mono">/mnt/vast/home/hs40vahe/AmongUs/Minigrid/output/voting_acc_run_gpt-oss_120b_action_assist_medium/pattern_10x10_2x2/episode_000</span></div>
+  <div class="outcome impwin">
+    <div><b>Outcome: imposters won</b></div>
+    <div class="muted">Recorded by runner (reason=victory).</div>
+  </div>
+
+  <div class="row" style="margin-top: 14px;">
+    <div class="box" style="min-width: 320px;">
+      <h3>Roles</h3>
+      <div style="margin-bottom: 8px;">
+        <span class="pill crew">Crewmates: 5</span>
+        <span class="pill imp">Imposters: 2</span>
+      </div>
+      <table>
+        <thead><tr><th>agent</th><th>role</th></tr></thead>
+        <tbody>
+          <tr><td class='mono'>player_1</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_2</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_3</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_4</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_5</td><td>Imposter</td></tr>
+<tr><td class='mono'>player_6</td><td>Crewmate</td></tr>
+<tr><td class='mono'>player_7</td><td>Imposter</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Activity reports</h3>
+      <div class="muted">These are generated using the same parsing logic as <span class="mono">visualize_llm_log.py</span>.</div>
+      <ul>
+        <li><a href='agent/crewmate_player_1.html'>crewmate_player_1.log (turns=96)</a></li>
+<li><a href='agent/crewmate_player_2.html'>crewmate_player_2.log (turns=16)</a></li>
+<li><a href='agent/crewmate_player_3.html'>crewmate_player_3.log (turns=96)</a></li>
+<li><a href='agent/crewmate_player_4.html'>crewmate_player_4.log (turns=96)</a></li>
+<li><a href='agent/crewmate_player_6.html'>crewmate_player_6.log (turns=81)</a></li>
+<li><a href='agent/imposter_player_5.html'>imposter_player_5.log (turns=96)</a></li>
+<li><a href='agent/imposter_player_7.html'>imposter_player_7.log (turns=96)</a></li>
+      </ul>
+    </div>
+
+    <div class="box" style="min-width: 320px; flex: 1;">
+      <h3>Overall task completion</h3>
+      <div id="taskProgressSummary" class="muted">Loading task progress…</div>
+      <div class="progressWrap" aria-label="task completion progress">
+        <div id="taskProgressBar" class="progressBar"></div>
+      </div>
+      <div style="margin-top: 10px;">
+        <canvas id="plotTaskProgress" width="900" height="260"></canvas>
+      </div>
+      <div class="muted">
+        Computed from per-agent <span class="mono">parsed_turns.jsonl</span> using
+        <span class="mono">finished_tasks</span> / (<span class="mono">finished_tasks</span> + <span class="mono">tasks_to_complete</span>) at each step.
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top: 14px;">
+    <div class="box">
+      <h3>Voting accuracy over rounds</h3>
+      <canvas id="plotVoteAcc" width="900" height="260"></canvas>
+      <div class="muted">
+        Crewmate accuracy = fraction of crewmates voting an imposter. Imposter accuracy = fraction of imposters voting a crewmate. Skip counts as incorrect.
+      </div>
+    </div>
+    <div class="box">
+      <h3>Trust (mean) over time</h3>
+      <canvas id="plotTrust" width="900" height="260"></canvas>
+      <div class="muted">
+        Uses <span class="mono">trust_scores/step_*_scores.json</span> if present (runner snapshots). Shows mean trust per target across raters.
+      </div>
+    </div>
+  </div>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Voting rounds (details)</summary>
+    <div class="muted" style="margin-top: 6px;">Click a round to expand per-voter info (thoughts included).</div>
+    <div id="voteRounds"></div>
+  </details>
+
+  <details style="margin-top: 14px;" open>
+    <summary>Vote sessions (who voted whom · alive roster · elimination)</summary>
+    <div class="muted" style="margin-top: 6px;">
+      Pulled from run-level <span class="mono">vote_events.jsonl</span> (when available). This includes alive agents + true roles for context.
+    </div>
+    
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">200</span> · alive 6 · ejected: <span class="mono">tie/skip</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">skip:5, player_7:1</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>Player_7 was observed performing a KILL at step 15, a clear impostor action, giving them a very low trust score. No suspicious behavior or kills were seen from players 3,4,5,6, who mainly performed movement and tasks, so they receive high trust. The lowest trust is player_7, so I vote for them.</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>Player_7 was seen performing a KILL at step 15, indicating impostor behavior, so they get the lowest trust. All other alive players (1,4,5,6) show only task or movement actions with no sabotage, giving them high trust. Vote for the most suspicious player.</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>player_7 performed a KILL at step15, the clearest sign of an imposter. No other player was seen near a dead body or acted suspiciously; they mostly moved and performed tasks. So I give player_7 the lowest trust and vote them out.</div></td></tr>
+<tr><td class='mono'>player_5</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>I’m the imposter with player_7 as my ally, so I protect them with high trust. I lower trust on the other crewmates to frame them. Player_3 was the closest to recent activity and seems suspicious, so I’ll vote for them.</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>player_7 performed a clear KILL at step15, indicating impostor behavior, so assign lowest trust. Others show normal task or movement patterns with no kills or suspicious actions, granting high trust. Vote for the most suspicious, player_7.</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>Player_5 has been seen doing tasks together with me, so I give them high trust. Player_4 stayed in the low‑risk area doing solo tasks and never interacted, making them a good scapegoat. The others have mixed activity, so I keep them neutral. I will vote to eject player_4 to remove a crewmate and stay hidden.</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_2</span></div>
+            </details>
+            
+
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">217</span> · alive 6 · ejected: <span class="mono">tie/skip</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">player_6:2, player_7:2, skip:2</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>All players have been moving and performing tasks without any suspicious behavior like lingering near bodies or erratic moves. Player_4 even reported a dead body, which is a positive sign. No clear evidence points to any impostor, so I assign medium‑low trust to everyone and pick the lowest as my vote.</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Player_4 reported a dead body, showing clear crewmate behavior, so high trust. Others mostly performed tasks without suspicious movement or sabotage. No one was seen near a dead body without reporting, nor acted erratically. Thus all are relatively trustworthy, with player_1 showing the least clear positive actions, giving them the lowest score. I vote for player_1 as the most suspicious.</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>I reported the dead body while others stayed near it without reporting (player_7 lingered at R00(5,7)). That passive behavior suggests they might be the impostor. The rest were elsewhere or doing tasks. So I vote the lowest‑trust player, player_7.</div></td></tr>
+<tr><td class='mono'>player_5</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>I’ll target player_4 because they reported a body, drawing attention and seeming guilty. I give them low trust to push others to vote them out. I keep player_1,3,6 at medium to blend, and protect teammate player_7 with high trust. Vote is for player_4.</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>All alive players performed regular tasks and movements with no suspicious behavior. player_4 even reported a dead body, indicating honesty. No one was seen near a body without reporting or acting erratically. Therefore I assign high trust to everyone and choose to skip voting.</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>I want to protect my teammate player_5, so I give them high trust. The others have been roaming solo and showing little useful interaction, making them good scapegoats. I’ll vote for player_3, who has the lowest trust and is least defended by others.</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_2</span></div>
+            </details>
+            
+
+            <details class="voteSession" style="margin-top: 10px;" >
+              <summary>Vote @ env_step <span class="mono">400</span> · alive 6 · ejected: <span class="mono">player_6 (Crewmate)</span></summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">player_6:4, player_7:1, skip:1</span></div>
+              <div class="roster"><div class='roster-item'><span class='mono'>player_1</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item dead'><span class='mono'>player_2</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_3</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_4</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_5</span> <span class='pill imp'>Imposter</span></div><div class='roster-item'><span class='mono'>player_6</span> <span class='pill crew'>Crewmate</span></div><div class='roster-item'><span class='mono'>player_7</span> <span class='pill imp'>Imposter</span></div></div>
+              <table style="margin-top: 10px;">
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>thought</th></tr></thead>
+                <tbody><tr><td class='mono'>player_1</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_7</td><td><div class='thoughtSmall'>All observed players are consistently performing movement and task actions with no evidence of sabotaging, standing near bodies, or erratic behavior. Their patterns look like regular crewmates, so I assign them medium‑high trust. With no clear suspect, I pick the lowest (all equal) and vote for player_3.</div></td></tr>
+<tr><td class='mono'>player_3</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>All alive players (1,4,5,6,7) show consistent task behavior with no evidence of sabotage, proximity to bodies, or erratic moves. With no clear impostor actions, I assign medium trust to everyone and choose to skip voting.</div></td></tr>
+<tr><td class='mono'>player_4</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>All observed players are performing normal navigation or tasks with no reports of bodies, sabotage, or erratic behavior. Player_1 has the least task activity visible, making them slightly more suspicious. Others show consistent task actions, so they receive higher trust. I vote for the lowest trust player, player_1.</div></td></tr>
+<tr><td class='mono'>player_5</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>Player_7 is my teammate, so I give them high trust to keep them safe. The other survivors have been roaming far from bodies and showing no clear evidence, making them easy scapegoats. I assign low trust to player_1, player_3 and player_4 to frame them, and medium trust to player_6 to blend in. I will vote for player_1, the lowest‑trust suspect, hoping the crew will eject an innocent crewmate.</div></td></tr>
+<tr><td class='mono'>player_6</td><td><span class='pill crew'>Crewmate</span></td><td class='mono'>skip</td><td><div class='thoughtSmall'>All alive players displayed routine task movements with no clear sabotage or proximity to bodies. No one was near a dead body or acted erratically. I assign high trust (0.8‑1.0) to most, but player_5’s path stays on the map edge and shows less interaction with others, giving a slightly lower trust (0.4). I vote for the lowest‑trust player.</div></td></tr>
+<tr><td class='mono'>player_7</td><td><span class='pill imp'>Imposter</span></td><td class='mono'>player_6</td><td><div class='thoughtSmall'>I’m the imposter and my only ally is player_5, so I give them full trust. The others have shown independent movement and no suspicious behavior that helps me, so I rate them low to push the crew to eject an innocent. I’ll vote for player_1, a legal target with a low trust score, hoping the crew follows suit.</div></td></tr></tbody>
+              </table>
+              <div class="muted" style="margin-top: 8px;">Dead (inferred from alive list): <span class="mono">player_2</span></div>
+            </details>
+            
+  </details>
+
+  <script>
+    const voteRounds = [{"step": 40, "round_key": "40", "n_votes": 6, "tally": {"player_7": 4, "player_3": 1, "player_4": 1}, "predicted_eject": "player_7", "predicted_eject_is_imposter": true, "accuracy_crewmate_detect_imposter": 1.0, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.6666666666666666, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player_7 was observed performing a KILL at step 15, a clear impostor action, giving them a very low trust score. No suspicious behavior or kills were seen from players 3,4,5,6, who mainly performed movement and tasks, so they receive high trust. The lowest trust is player_7, so I vote for them."}, "player_3": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "Player_7 was seen performing a KILL at step 15, indicating impostor behavior, so they get the lowest trust. All other alive players (1,4,5,6) show only task or movement actions with no sabotage, giving them high trust. Vote for the most suspicious player."}, "player_4": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "player_7 performed a KILL at step15, the clearest sign of an imposter. No other player was seen near a dead body or acted suspiciously; they mostly moved and performed tasks. So I give player_7 the lowest trust and vote them out."}, "player_6": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "player_7 performed a clear KILL at step15, indicating impostor behavior, so assign lowest trust. Others show normal task or movement patterns with no kills or suspicious actions, granting high trust. Vote for the most suspicious, player_7."}, "player_5": {"role": "Imposter", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "I’m the imposter with player_7 as my ally, so I protect them with high trust. I lower trust on the other crewmates to frame them. Player_3 was the closest to recent activity and seems suspicious, so I’ll vote for them."}, "player_7": {"role": "Imposter", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_5 has been seen doing tasks together with me, so I give them high trust. Player_4 stayed in the low‑risk area doing solo tasks and never interacted, making them a good scapegoat. The others have mixed activity, so I keep them neutral. I will vote to eject player_4 to remove a crewmate and stay hidden."}}}, {"step": 44, "round_key": "44", "n_votes": 6, "tally": {"player_1": 2, "player_3": 2, "player_4": 1, "player_7": 1}, "predicted_eject": null, "predicted_eject_is_imposter": null, "accuracy_crewmate_detect_imposter": 0.25, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.16666666666666666, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "All players have been moving and performing tasks without any suspicious behavior like lingering near bodies or erratic moves. Player_4 even reported a dead body, which is a positive sign. No clear evidence points to any impostor, so I assign medium‑low trust to everyone and pick the lowest as my vote."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_4 reported a dead body, showing clear crewmate behavior, so high trust. Others mostly performed tasks without suspicious movement or sabotage. No one was seen near a dead body without reporting, nor acted erratically. Thus all are relatively trustworthy, with player_1 showing the least clear positive actions, giving them the lowest score. I vote for player_1 as the most suspicious."}, "player_4": {"role": "Crewmate", "vote": "player_7", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "I reported the dead body while others stayed near it without reporting (player_7 lingered at R00(5,7)). That passive behavior suggests they might be the impostor. The rest were elsewhere or doing tasks. So I vote the lowest‑trust player, player_7."}, "player_6": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "All alive players performed regular tasks and movements with no suspicious behavior. player_4 even reported a dead body, indicating honesty. No one was seen near a body without reporting or acting erratically. Therefore I assign high trust to everyone and choose to skip voting."}, "player_5": {"role": "Imposter", "vote": "player_4", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "I’ll target player_4 because they reported a body, drawing attention and seeming guilty. I give them low trust to push others to vote them out. I keep player_1,3,6 at medium to blend, and protect teammate player_7 with high trust. Vote is for player_4."}, "player_7": {"role": "Imposter", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "I want to protect my teammate player_5, so I give them high trust. The others have been roaming solo and showing little useful interaction, making them good scapegoats. I’ll vote for player_3, who has the lowest trust and is least defended by others."}}}, {"step": 81, "round_key": "81", "n_votes": 6, "tally": {"player_1": 4, "player_3": 1, "player_5": 1}, "predicted_eject": "player_1", "predicted_eject_is_imposter": false, "accuracy_crewmate_detect_imposter": 0.25, "accuracy_imposter_vote_crewmate": 1.0, "accuracy_any_detect_imposter": 0.16666666666666666, "per_voter": {"player_1": {"role": "Crewmate", "vote": "player_3", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "All observed players are consistently performing movement and task actions with no evidence of sabotaging, standing near bodies, or erratic behavior. Their patterns look like regular crewmates, so I assign them medium‑high trust. With no clear suspect, I pick the lowest (all equal) and vote for player_3."}, "player_3": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "All alive players (1,4,5,6,7) show consistent task behavior with no evidence of sabotage, proximity to bodies, or erratic moves. With no clear impostor actions, I assign medium trust to everyone and choose to skip voting."}, "player_4": {"role": "Crewmate", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "All observed players are performing normal navigation or tasks with no reports of bodies, sabotage, or erratic behavior. Player_1 has the least task activity visible, making them slightly more suspicious. Others show consistent task actions, so they receive higher trust. I vote for the lowest trust player, player_1."}, "player_6": {"role": "Crewmate", "vote": "player_5", "is_skip": false, "target_is_imposter": true, "target_is_crewmate": false, "thought": "All alive players displayed routine task movements with no clear sabotage or proximity to bodies. No one was near a dead body or acted erratically. I assign high trust (0.8‑1.0) to most, but player_5’s path stays on the map edge and shows less interaction with others, giving a slightly lower trust (0.4). I vote for the lowest‑trust player."}, "player_5": {"role": "Imposter", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "Player_7 is my teammate, so I give them high trust to keep them safe. The other survivors have been roaming far from bodies and showing no clear evidence, making them easy scapegoats. I assign low trust to player_1, player_3 and player_4 to frame them, and medium trust to player_6 to blend in. I will vote for player_1, the lowest‑trust suspect, hoping the crew will eject an innocent crewmate."}, "player_7": {"role": "Imposter", "vote": "player_1", "is_skip": false, "target_is_imposter": false, "target_is_crewmate": true, "thought": "I’m the imposter and my only ally is player_5, so I give them full trust. The others have shown independent movement and no suspicious behavior that helps me, so I rate them low to push the crew to eject an innocent. I’ll vote for player_1, a legal target with a low trust score, hoping the crew follows suit."}}}];
+    const trust = {"targets": ["player_2", "player_3", "player_4", "player_5", "player_6", "player_7", "player_1"], "series_all": {"player_2": [[50, 0.5833333333333334]], "player_3": [[50, 0.5700000000000001], [100, 0.5900000000000001], [150, 0.576], [200, 0.6160000000000001], [250, 0.608], [300, 0.5740000000000001], [350, 0.454], [400, 0.5660000000000001], [450, 0.4075]], "player_4": [[50, 0.5766666666666668], [100, 0.61], [150, 0.6060000000000001], [200, 0.628], [250, 0.548], [300, 0.548], [350, 0.47199999999999986], [400, 0.496], [450, 0.48250000000000004]], "player_5": [[50, 0.8450000000000001], [100, 0.9219999999999999], [150, 0.764], [200, 0.914], [250, 0.8779999999999999], [300, 0.884], [350, 0.7620000000000001], [400, 0.72], [450, 0.5925]], "player_6": [[50, 0.625], [100, 0.6160000000000001], [150, 0.5780000000000001], [200, 0.6100000000000001], [250, 0.5880000000000001], [300, 0.666], [350, 0.492], [400, 0.41000000000000003]], "player_7": [[50, 0.835], [100, 0.20400000000000001], [150, 0.8099999999999999], [200, 0.22000000000000003], [250, 0.20800000000000002], [300, 0.8700000000000001], [350, 0.7619999999999999], [400, 0.692], [450, 0.6825]], "player_1": [[50, 0.5583333333333333], [100, 0.6300000000000001], [150, 0.4800000000000001], [200, 0.6100000000000001], [250, 0.5780000000000001], [300, 0.6], [350, 0.43400000000000005], [400, 0.5800000000000001], [450, 0.45]]}, "series_crewmate": {"player_2": [[50, 0.8125]], "player_3": [[50, 0.805], [100, 0.9], [150, 0.8099999999999999], [200, 0.9266666666666667], [250, 0.93], [300, 0.8733333333333334], [350, 0.6566666666666666], [400, 0.8266666666666668], [450, 0.715]], "player_4": [[50, 0.79], [100, 0.9333333333333332], [150, 0.86], [200, 0.9466666666666667], [250, 0.8466666666666667], [300, 0.8466666666666667], [350, 0.73], [400, 0.6933333333333334], [450, 0.8400000000000001]], "player_5": [[50, 0.8240000000000001], [100, 0.9025], [150, 0.7175], [200, 0.9175], [250, 0.86], [300, 0.8675], [350, 0.7150000000000001], [400, 0.675], [450, 0.4733333333333334]], "player_6": [[50, 0.8624999999999999], [100, 0.9266666666666667], [150, 0.79], [200, 0.9166666666666666], [250, 0.88], [300, 0.86], [350, 0.77], [400, 0.5333333333333333]], "player_7": [[50, 0.8119999999999999], [100, 0.030000000000000002], [150, 0.7999999999999999], [200, 0.037500000000000006], [250, 0.0225], [300, 0.8625], [350, 0.7150000000000001], [400, 0.64], [450, 0.5933333333333334]], "player_1": [[50, 0.7875], [100, 0.9166666666666666], [150, 0.65], [200, 0.9166666666666666], [250, 0.88], [300, 0.8666666666666667], [350, 0.6566666666666666], [400, 0.8666666666666667], [450, 0.825]]}, "series_imposter": {"player_2": [[50, 0.125]], "player_3": [[50, 0.1], [100, 0.125], [150, 0.22499999999999998], [200, 0.15000000000000002], [250, 0.125], [300, 0.125], [350, 0.15], [400, 0.175], [450, 0.1]], "player_4": [[50, 0.15000000000000002], [100, 0.125], [150, 0.225], [200, 0.15000000000000002], [250, 0.1], [300, 0.1], [350, 0.08499999999999999], [400, 0.2], [450, 0.125]], "player_5": [[50, 0.95], [100, 1.0], [150, 0.95], [200, 0.9], [250, 0.95], [300, 0.95], [350, 0.95], [400, 0.9], [450, 0.95]], "player_6": [[50, 0.15000000000000002], [100, 0.15000000000000002], [150, 0.26], [200, 0.15000000000000002], [250, 0.15000000000000002], [300, 0.375], [350, 0.07500000000000001], [400, 0.225]], "player_7": [[50, 0.95], [100, 0.9], [150, 0.85], [200, 0.95], [250, 0.95], [300, 0.9], [350, 0.95], [400, 0.9], [450, 0.95]], "player_1": [[50, 0.1], [100, 0.2], [150, 0.22499999999999998], [200, 0.15000000000000002], [250, 0.125], [300, 0.2], [350, 0.1], [400, 0.15000000000000002], [450, 0.07500000000000001]]}};
+    const taskProgressSources = {"player_1": "activity/viz_crewmate_player_1/parsed_turns.jsonl", "player_2": "activity/viz_crewmate_player_2/parsed_turns.jsonl", "player_3": "activity/viz_crewmate_player_3/parsed_turns.jsonl", "player_4": "activity/viz_crewmate_player_4/parsed_turns.jsonl", "player_6": "activity/viz_crewmate_player_6/parsed_turns.jsonl", "player_5": "activity/viz_imposter_player_5/parsed_turns.jsonl", "player_7": "activity/viz_imposter_player_7/parsed_turns.jsonl"};
+
+    function fmtPct(x) {
+      if (x === null || x === undefined) return '—';
+      return (100.0 * x).toFixed(1) + '%';
+    }
+
+    // ---------- Voting rounds table/cards ----------
+    const container = document.getElementById('voteRounds');
+    if (container) {
+      if (!voteRounds || voteRounds.length === 0) {
+        container.innerHTML = "<div class='muted' style='margin-top:10px;'>(no voting logs found)</div>";
+      } else {
+        const parts = [];
+        for (const r of voteRounds) {
+          const step = (r.step !== null && r.step !== undefined) ? r.step : r.round_key;
+          const pred = r.predicted_eject ? (r.predicted_eject + (r.predicted_eject_is_imposter ? " (imposter)" : " (crewmate)")) : "tie/skip";
+          const tallyStr = Object.entries(r.tally || {}).map(([k,v]) => k + ":" + v).join(", ");
+
+          const voters = Object.entries(r.per_voter || {})
+            .map(([v, info]) => {
+              const role = (info.role || '').toLowerCase().startsWith('imp') ? 'imposter' : 'crewmate';
+              const pill = role === 'imposter' ? "pill imp" : "pill crew";
+              const vote = info.vote || 'skip';
+              const flags = [];
+              if (info.target_is_imposter) flags.push("target=imposter");
+              if (info.target_is_crewmate) flags.push("target=crewmate");
+              if (info.is_skip) flags.push("skip");
+              const thought = info.thought || '';
+              return `
+                <tr>
+                  <td class="mono">${v}</td>
+                  <td><span class="${pill}">${role}</span></td>
+                  <td class="mono">${vote}</td>
+                  <td class="mono">${flags.join(", ") || "—"}</td>
+                  <td>${thought ? thought : "—"}</td>
+                </tr>
+              `;
+            })
+            .join("");
+
+          parts.push(`
+            <details style="margin-top: 10px;">
+              <summary>Round step ${step} · crewAcc ${fmtPct(r.accuracy_crewmate_detect_imposter)} · impAcc ${fmtPct(r.accuracy_imposter_vote_crewmate)} · predicted eject: ${pred}</summary>
+              <div class="muted" style="margin-top: 8px;">Tally: <span class="mono">${tallyStr || "—"}</span></div>
+              <table>
+                <thead><tr><th>voter</th><th>role</th><th>vote</th><th>flags</th><th>thought</th></tr></thead>
+                <tbody>${voters || "<tr><td colspan='5' class='muted'>(no voters)</td></tr>"}</tbody>
+              </table>
+            </details>
+          `);
+        }
+        container.innerHTML = parts.join("");
+      }
+    }
+
+    // ---------- Plot: voting accuracy ----------
+    function drawVoteAcc(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!voteRounds || voteRounds.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No voting data.', 12, 24);
+        return;
+      }
+
+      const pts = voteRounds
+        .map((r, i) => {
+          const x = (r.step !== null && r.step !== undefined) ? r.step : i;
+          return {
+            x,
+            crew: r.accuracy_crewmate_detect_imposter,
+            imp: r.accuracy_imposter_vote_crewmate,
+            any: r.accuracy_any_detect_imposter,
+          };
+        });
+
+      const xs = pts.map(p => p.x);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('accuracy', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      function drawLine(key, color, width) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        let started = false;
+        for (const p of pts) {
+          const y = p[key];
+          if (y === null || y === undefined) continue;
+          const x = sx(p.x);
+          const yy = sy(y);
+          if (!started) { ctx.moveTo(x, yy); started = true; }
+          else ctx.lineTo(x, yy);
+        }
+        if (started) ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+
+      drawLine('any', '#111827', 4);
+      drawLine('crew', '#1d4ed8', 2);
+      drawLine('imp', '#dc2626', 2);
+
+      // Legend
+      ctx.fillStyle = '#111827';
+      ctx.fillRect(padL + innerW - 170, padT + 10, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('any (vote=imposter)', padL + innerW - 154, padT + 19);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillRect(padL + innerW - 170, padT + 28, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('crewmates', padL + innerW - 154, padT + 37);
+
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(padL + innerW - 170, padT + 46, 10, 10);
+      ctx.fillStyle = '#111';
+      ctx.fillText('imposters', padL + innerW - 154, padT + 55);
+    }
+
+    // ---------- Plot: trust trends (mean) ----------
+    function drawTrust(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      const seriesAll = (trust && trust.series_all) ? trust.series_all : null;
+      const targets = (trust && trust.targets) ? trust.targets : [];
+      if (!seriesAll || !targets || targets.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust snapshot data (step_*_scores.json).', 12, 24);
+        return;
+      }
+
+      // Choose up to 8 targets with most points (or just first).
+      const scored = targets.map(t => {
+        const pts = seriesAll[t] || [];
+        return { t, n: pts.length };
+      }).sort((a,b) => b.n - a.n);
+      const chosen = scored.slice(0, 8).map(x => x.t);
+
+      const allPts = [];
+      for (const t of chosen) {
+        for (const p of (seriesAll[t] || [])) allPts.push(p);
+      }
+      if (allPts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No trust points.', 12, 24);
+        return;
+      }
+
+      const xs = allPts.map(p => p[0]);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('mean trust', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      const palette = ['#1d4ed8','#c026d3','#16a34a','#f59e0b','#0ea5e9','#dc2626','#7c3aed','#334155'];
+      function colorFor(i) { return palette[i % palette.length]; }
+
+      chosen.forEach((t, idx) => {
+        const pts = (seriesAll[t] || []).slice().sort((a,b) => a[0] - b[0]);
+        if (!pts.length) return;
+        ctx.strokeStyle = colorFor(idx);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        pts.forEach((p, i) => {
+          const x = sx(p[0]), y = sy(p[1]);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      });
+
+      // Legend (right)
+      ctx.font = '12px ui-sans-serif, system-ui';
+      let lx = padL + innerW - 8;
+      let ly = padT + 14;
+      chosen.forEach((t, idx) => {
+        ctx.fillStyle = colorFor(idx);
+        ctx.fillRect(lx - 12, ly - 9, 10, 10);
+        ctx.fillStyle = '#111';
+        const label = t;
+        const w = ctx.measureText(label).width;
+        ctx.fillText(label, lx - 16 - w, ly);
+        ly += 16;
+      });
+    }
+
+    // ---------- Overall task completion ----------
+    async function fetchJsonl(url) {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`fetch failed (${res.status}) for ${url}`);
+      const text = await res.text();
+      const lines = text.split('\n').map(s => s.trim()).filter(Boolean);
+      const out = [];
+      for (const ln of lines) {
+        try { out.push(JSON.parse(ln)); } catch (e) { /* ignore malformed */ }
+      }
+      return out;
+    }
+
+    function buildPlayerSeries(turns) {
+      const m = new Map();
+      for (const r of (turns || [])) {
+        const step = (r.step !== null && r.step !== undefined) ? r.step : r.idx;
+        const done = Array.isArray(r.finished_tasks) ? r.finished_tasks.length : 0;
+        const todo = Array.isArray(r.tasks_to_complete) ? r.tasks_to_complete.length : 0;
+        const total = done + todo;
+        if (typeof step === 'number') m.set(step, { done, total });
+      }
+      const steps = Array.from(m.keys()).sort((a,b) => a - b);
+      return steps.map(s => ({ step: s, done: m.get(s).done, total: m.get(s).total }));
+    }
+
+    function unionSteps(seriesByPlayer) {
+      const all = new Set();
+      for (const s of Object.values(seriesByPlayer)) {
+        for (const p of s) all.add(p.step);
+      }
+      return Array.from(all).sort((a,b) => a - b);
+    }
+
+    function computeOverallSeries(seriesByPlayer) {
+      const players = Object.keys(seriesByPlayer);
+      const steps = unionSteps(seriesByPlayer);
+      const idxByPlayer = Object.fromEntries(players.map(p => [p, 0]));
+      const lastByPlayer = Object.fromEntries(players.map(p => [p, { done: 0, total: 0, has: false }]));
+
+      const out = [];
+      for (const step of steps) {
+        let doneSum = 0;
+        let totalSum = 0;
+        for (const player of players) {
+          const series = seriesByPlayer[player] || [];
+          let i = idxByPlayer[player] || 0;
+          while (i < series.length && series[i].step <= step) {
+            lastByPlayer[player] = { done: series[i].done, total: series[i].total, has: true };
+            i += 1;
+          }
+          idxByPlayer[player] = i;
+          const last = lastByPlayer[player];
+          if (last && last.has && last.total > 0) {
+            doneSum += last.done;
+            totalSum += last.total;
+          }
+        }
+        const pct = totalSum ? (doneSum / totalSum) : 0;
+        out.push({ step, done: doneSum, total: totalSum, pct });
+      }
+      return out;
+    }
+
+    function drawTaskProgress(canvasId, pts) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0,0,W,H);
+
+      if (!pts || pts.length === 0) {
+        ctx.fillStyle = '#666';
+        ctx.font = '14px ui-sans-serif, system-ui';
+        ctx.fillText('No task progress data.', 12, 24);
+        return;
+      }
+
+      const xs = pts.map(p => p.step);
+      const xMin = Math.min(...xs), xMax = Math.max(...xs);
+      const yMin = 0, yMax = 1;
+
+      const padL = 44, padR = 12, padT = 10, padB = 28;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const sx = (x) => padL + (innerW * (x - xMin) / Math.max(1e-9, (xMax - xMin)));
+      const sy = (y) => padT + innerH - (innerH * (y - yMin) / (yMax - yMin));
+
+      // Grid
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padT + innerH * (i/4);
+        ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + innerW, y); ctx.stroke();
+      }
+
+      // Labels
+      ctx.fillStyle = '#444';
+      ctx.font = '12px ui-sans-serif, system-ui';
+      ctx.fillText('task completion', 8, 14);
+      ctx.fillText('1.0', 8, padT + 10);
+      ctx.fillText('0.0', 8, padT + innerH);
+
+      // Line
+      ctx.strokeStyle = '#16a34a';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      pts.forEach((p, i) => {
+        const x = sx(p.step);
+        const y = sy(p.pct);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.lineWidth = 1;
+    }
+
+    async function initOverallTaskProgress() {
+      const summaryEl = document.getElementById('taskProgressSummary');
+      const barEl = document.getElementById('taskProgressBar');
+
+      const entries = taskProgressSources ? Object.entries(taskProgressSources) : [];
+      if (!entries.length) {
+        if (summaryEl) summaryEl.textContent = '(no parsed_turns.jsonl files found)';
+        return;
+      }
+
+      try {
+        const seriesByPlayer = {};
+        await Promise.all(entries.map(async ([player, url]) => {
+          const turns = await fetchJsonl(url);
+          seriesByPlayer[player] = buildPlayerSeries(turns);
+        }));
+
+        const pts = computeOverallSeries(seriesByPlayer);
+        const last = pts.length ? pts[pts.length - 1] : null;
+        const pctTxt = (!last || !last.total) ? '—' : (100 * last.pct).toFixed(1) + '%';
+        if (summaryEl && last) summaryEl.innerHTML = `<b>${pctTxt}</b> · ${last.done}/${last.total} tasks complete (step ${last.step})`;
+        if (barEl && last) barEl.style.width = (!last || !last.total) ? '0%' : (100 * last.pct).toFixed(1) + '%';
+        drawTaskProgress('plotTaskProgress', pts);
+      } catch (e) {
+        if (summaryEl) summaryEl.textContent = `(failed to load task progress: ${e && e.message ? e.message : e})`;
+      }
+    }
+
+    drawVoteAcc('plotVoteAcc');
+    drawTrust('plotTrust');
+    initOverallTaskProgress();
+  </script>
+</body>
+</html>
