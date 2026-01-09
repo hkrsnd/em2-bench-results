@@ -585,10 +585,11 @@
                 inference.
             </p>
             <div class="meta-info">
-                <span>📅 January 7, 2026</span>
-                <span>🔬 7 Models Evaluated</span>
+                <span>📅 January 10, 2026</span>
+                <span>🔬 8 Models Evaluated</span>
                 <span>🎮 600+ Episodes</span>
                 <span>📊 10×10 2×2 Configuration</span>
+                <span>🎓 RL Fine-tuning Analysis</span>
             </div>
         </div>
     </header>
@@ -737,6 +738,7 @@
                         <tr>
                             <th>Rank</th>
                             <th>Model</th>
+                            <th>Elo</th>
                             <th>Composite</th>
                             <th>Crew WR</th>
                             <th>Crew W-L</th>
@@ -750,6 +752,7 @@
                         <tr>
                             <td class="mono">1</td>
                             <td class="mono">GPT-OSS-120B</td>
+                            <td class="mono" style="color: var(--accent-yellow);">1612</td>
                             <td class="mono">0.585</td>
                             <td class="mono" style="color: var(--accent-green);">19.4%</td>
                             <td class="mono">19-79</td>
@@ -761,6 +764,7 @@
                         <tr>
                             <td class="mono">2</td>
                             <td class="mono">Llama3.1-70B</td>
+                            <td class="mono">1528</td>
                             <td class="mono">0.544</td>
                             <td class="mono">5.5%</td>
                             <td class="mono">4-69</td>
@@ -772,6 +776,7 @@
                         <tr>
                             <td class="mono">3</td>
                             <td class="mono">Qwen3-30B</td>
+                            <td class="mono">1502</td>
                             <td class="mono">0.531</td>
                             <td class="mono">7.7%</td>
                             <td class="mono">6-72</td>
@@ -783,6 +788,7 @@
                         <tr>
                             <td class="mono">4</td>
                             <td class="mono">DeepSeek-R1-70B</td>
+                            <td class="mono">1476</td>
                             <td class="mono">0.518</td>
                             <td class="mono">5.5%</td>
                             <td class="mono">4-69</td>
@@ -794,6 +800,7 @@
                         <tr>
                             <td class="mono">5</td>
                             <td class="mono">Phi4-R-14B</td>
+                            <td class="mono">1440</td>
                             <td class="mono">0.500</td>
                             <td class="mono">2.6%</td>
                             <td class="mono">2-74</td>
@@ -805,6 +812,7 @@
                         <tr>
                             <td class="mono">6</td>
                             <td class="mono">Gemma3-27B</td>
+                            <td class="mono">1438</td>
                             <td class="mono">0.499</td>
                             <td class="mono">1.1%</td>
                             <td class="mono">1-87</td>
@@ -819,23 +827,22 @@
             <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">
                 <strong>Table 1:</strong> League Rankings: Overall Performance. Models ranked by composite score
                 combining win rate (70%) with role-specific metrics: detection accuracy for crewmates and objective
-                accuracy for impostors (30% each). W-L indicates wins-losses.
+                accuracy for impostors (30% each). Elo ratings computed from head-to-head matchup results using standard Elo formula (K=32, base 1500). W-L indicates wins-losses.
             </p>
 
             <div class="figure-full" style="margin-top: 40px;">
                 <div class="fig-header">
-                    <h4>Figure 7: Model Scaling Analysis</h4>
+                    <h4>Figure 8: Model Scaling Analysis</h4>
                     <span class="fig-tag">Parameter Count vs Performance</span>
                 </div>
                 <img src="sharelatex/figures/league_params_correlation_pattern_10x10_2x2.png"
                     alt="Model Scaling Analysis" />
                 <div class="fig-caption">
-                    <strong>Model Scaling Analysis: Parameter Count vs Performance.</strong>
-                    (A) Strong positive correlation between parameters and composite score.
-                    (B) Larger models achieve higher crewmate win rates, though all remain below 20%.
-                    (C) Impostor performance is consistently high across all model sizes.
-                    (D) Detection accuracy has weak correlation with parameters, remaining below the 50% random baseline
-                    for all models.
+                    <strong>Model Scaling Analysis: Performance Scales, Voting Does Not.</strong>
+                    (A) Strong positive correlation between parameters and overall composite score (r &gt; 0.8), indicating larger models perform better in multi-agent reasoning tasks—larger models win more games as both crewmates and impostors.
+                    (B) Detection accuracy shows minimal correlation with model scale, with all models performing near the 33% random baseline. This suggests that while task completion and strategic play scale with model size, the ability to identify impostors through social reasoning does not.
+                    <br><br>
+                    <strong>Key insight:</strong> Social inference and theory-of-mind capabilities do not scale as effectively as other reasoning skills—even 120B-parameter models fail to reliably detect deceptive agents.
                 </div>
             </div>
         </div>
@@ -869,29 +876,59 @@
         </div>
     </section>
 
-    <!-- Q4: Error Analysis (Figure 6) -->
+    <!-- Q5: RL Training (NEW) -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <div class="question-tag">(Q5) Reinforcement Learning</div>
+                <h2>Can RL improve agent performance overcoming their inherent bottlenecks?</h2>
+                <p>We investigate whether reinforcement learning can help LLM agents overcome their fundamental limitations in planning and reasoning by fine-tuning Qwen3-4B on EM²-Bench.</p>
+            </div>
+
+            <div class="figure-full">
+                <div class="fig-header">
+                    <h4>Figure 6: RL Training Progression</h4>
+                    <span class="fig-tag">Task & Planning Performance</span>
+                </div>
+                <img src="sharelatex/figures/rl_training_progression_merged.png" alt="RL Training Progression" />
+                <div class="fig-caption">
+                    <strong>RL training progression.</strong>
+                    Task performance (TP) and planning performance (PP) across RL training stages (baseline, checkpoint-1200, final), comparing with and without the planning assistant.
+                    With the planning assistant enabled, RL training improves PP from 0.16 to 0.27. Without the assistant, baseline performance is extremely low (TP ≈ 2%), and while RL shows modest improvement (TP ≈ 5%), overall performance remains poor.
+                    The stark contrast between assisted and unassisted conditions persists even after RL training, with the planning assistant providing approximately 5–10× improvement in task performance.
+                    <strong>Key finding:</strong> RL can improve agent behavior within the action space, but cannot compensate for fundamental spatial reasoning limitations—path planning remains a bottleneck that RL alone cannot overcome without external guidance.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Q4: Error Analysis (Figure 7) -->
     <section>
         <div class="container">
             <div class="section-header">
                 <div class="question-tag">(Q4) Error Analysis</div>
                 <h2>What typical failures do the agents make in the environment?</h2>
-                <p>LLM agents make systematic failures including door spam, stalling, and backtracking loops—behaviors
-                    rarely seen in human players.</p>
+                <p>LLM agents make systematic failures including door spam, stalling, and backtracking loops—we identify distinct passive and active failure modes across models.</p>
             </div>
 
             <div class="figure-full">
                 <div class="fig-header">
-                    <h4>Figure 6: Failure Leaderboard</h4>
-                    <span class="fig-tag">Systematic Failure Modes</span>
+                    <h4>Figure 7: Failure Analysis</h4>
+                    <span class="fig-tag">Model-Specific Patterns</span>
                 </div>
-                <img src="sharelatex/figures/failure_leaderboard.png" alt="Failure Leaderboard" />
+                <img src="sharelatex/figures/failure_combined_summary.png" alt="Failure Analysis" />
                 <div class="fig-caption">
-                    <strong>LLM agents make systematic failures in the embodied setting.</strong>
-                    Top-k models shown with the covered fraction of failures out of the entire episode.
-                    Door spam (repeatedly opening/closing doors) affects even large models like Qwen3-next-80B and
-                    GPT-OSS-120B.
-                    The navigation assistant reduces do-task stall failures but not door spam, revealing a critical gap
-                    between LLM agents and human players.
+                    <strong>Failure analysis reveals model-specific patterns and the effectiveness of the planning assistant.</strong>
+                    (A) Total failure coverage by model, comparing no-assist (solid) vs. with-assist (hatched) conditions. Green percentages indicate reduction achieved by the planning assistant.
+                    (B) Normalized failure profiles for each model, where solid lines show no-assist and dashed lines with hollow markers show with-assist.
+                    <br><br>
+                    <strong>Key findings:</strong>
+                    <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
+                        <li><em>Passive failures</em> (NOOP deadlock, task-fixation) dominate in smaller models—they "freeze" when uncertain.</li>
+                        <li><em>Active failures</em> (door spam, position ping-pong, backtracking) appear in larger models that attempt navigation but make suboptimal choices.</li>
+                        <li>The planning assistant dramatically reduces failures (90–97% reduction for models prone to passive failures).</li>
+                        <li>Remarkably, Phi4-Reasoning-14B <em>with</em> the assistant (0.27% total failures) outperforms GPT-OSS-120B <em>with</em> the assistant (0.50%), suggesting reasoning models execute effectively when given clear guidance.</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -979,6 +1016,18 @@
                 <div class="agent-card">
                     <div class="model-header">
                         <span class="indicator"></span>
+                        <h4>DeepSeek-R1-70B</h4>
+                    </div>
+                    <div class="links">
+                        <a class="link"
+                            href="Minigrid/output/save10/voting_acc_run_deepseek-r1_70b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/episode_000/viz_run/index.html"
+                            target="_blank">Ep 0</a>
+                    </div>
+                </div>
+
+                <div class="agent-card">
+                    <div class="model-header">
+                        <span class="indicator"></span>
                         <h4>Qwen3-Next-80B</h4>
                     </div>
                     <div class="links">
@@ -1012,9 +1061,9 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>EM²-Bench Results Summary — Generated from <code>/mnt/vast/home/hs40vahe/AmongUs</code></p>
-            <p style="margin-top: 8px; opacity: 0.7;">Multi-Agent, Multi-Objective Reasoning Benchmark for LLM Agents
-            </p>
+            <p>EM²-Bench Results Summary — Updated January 10, 2026</p>
+            <p style="margin-top: 8px; opacity: 0.7;">Embodied Evaluation of Multi-Agent, Multi-Objective Reasoning for LLM Agents</p>
+            <p style="margin-top: 8px; opacity: 0.5; font-size: 0.8rem;">Includes: 8 models evaluated • League matching • RL fine-tuning • Failure analysis</p>
         </div>
     </footer>
 
