@@ -873,6 +873,99 @@
                     affects PP (β=-0.22).
                 </div>
             </div>
+
+            <!-- Factor Importance Table -->
+            <div class="table-container" style="margin-top: 30px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Condition</th>
+                            <th>Metric</th>
+                            <th colspan="2" style="text-align: center;">Map Area</th>
+                            <th colspan="2" style="text-align: center;">Room Count</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>β</th>
+                            <th>R²<sub>p</sub></th>
+                            <th>β</th>
+                            <th>R²<sub>p</sub></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="mono">No-Assist</td>
+                            <td class="mono">TP</td>
+                            <td class="mono" style="color: var(--accent-red); font-weight: bold;">−0.12</td>
+                            <td class="mono" style="font-weight: bold;">0.9%</td>
+                            <td class="mono">+0.03</td>
+                            <td class="mono">0.1%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">No-Assist</td>
+                            <td class="mono">PP</td>
+                            <td class="mono">−0.05</td>
+                            <td class="mono">0.1%</td>
+                            <td class="mono" style="color: var(--accent-red); font-weight: bold;">−0.22</td>
+                            <td class="mono" style="font-weight: bold;">2.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">No-Assist</td>
+                            <td class="mono">Voting</td>
+                            <td class="mono">+0.04</td>
+                            <td class="mono">0.1%</td>
+                            <td class="mono">−0.01</td>
+                            <td class="mono">0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">No-Assist</td>
+                            <td class="mono">Trust BS</td>
+                            <td class="mono">−0.07</td>
+                            <td class="mono">0.3%</td>
+                            <td class="mono">−0.02</td>
+                            <td class="mono">0.0%</td>
+                        </tr>
+                        <tr style="border-top: 2px solid var(--border);">
+                            <td class="mono">With Assist</td>
+                            <td class="mono">TP</td>
+                            <td class="mono" style="color: var(--accent-red); font-weight: bold;">−0.12</td>
+                            <td class="mono" style="font-weight: bold;">0.8%</td>
+                            <td class="mono">−0.00</td>
+                            <td class="mono">0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">With Assist</td>
+                            <td class="mono">PP</td>
+                            <td class="mono" style="color: var(--accent-red); font-weight: bold;">−0.13</td>
+                            <td class="mono" style="font-weight: bold;">0.8%</td>
+                            <td class="mono">−0.05</td>
+                            <td class="mono">0.1%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">With Assist</td>
+                            <td class="mono">Voting</td>
+                            <td class="mono">−0.02</td>
+                            <td class="mono">0.0%</td>
+                            <td class="mono">−0.01</td>
+                            <td class="mono">0.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="mono">With Assist</td>
+                            <td class="mono">Trust BS</td>
+                            <td class="mono">+0.02</td>
+                            <td class="mono">0.0%</td>
+                            <td class="mono">−0.03</td>
+                            <td class="mono">0.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">
+                <strong>Table 2:</strong> Factor importance analysis. Standardized β indicates effect direction/magnitude; R²<sub>p</sub> is unique variance explained. Bold shows dominant factor per metric.
+                <br><br>
+                <strong>Key insights:</strong> Map area dominates task performance (TP) in both conditions. Without assistance, room count strongly affects planning performance (PP) as agents struggle with doorways. Voting accuracy and trust Brier score show minimal sensitivity to environmental complexity, suggesting social reasoning is orthogonal to spatial complexity.
+            </p>
         </div>
     </section>
 
