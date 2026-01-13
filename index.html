@@ -827,7 +827,8 @@
             <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">
                 <strong>Table 1:</strong> League Rankings: Overall Performance. Models ranked by composite score
                 combining win rate (70%) with role-specific metrics: detection accuracy for crewmates and objective
-                accuracy for impostors (30% each). Elo ratings computed from head-to-head matchup results using standard Elo formula (K=32, base 1500). W-L indicates wins-losses.
+                accuracy for impostors (30% each). Elo ratings computed from head-to-head matchup results using standard
+                Elo formula (K=32, base 1500). W-L indicates wins-losses.
             </p>
 
             <div class="figure-full" style="margin-top: 40px;">
@@ -838,11 +839,52 @@
                 <img src="sharelatex/figures/league_params_correlation_pattern_10x10_2x2.png"
                     alt="Model Scaling Analysis" />
                 <div class="fig-caption">
-                    <strong>Model Scaling Analysis: Performance Scales, Voting Does Not.</strong>
-                    (A) Strong positive correlation between parameters and overall composite score (r &gt; 0.8), indicating larger models perform better in multi-agent reasoning tasks—larger models win more games as both crewmates and impostors.
-                    (B) Detection accuracy shows minimal correlation with model scale, with all models performing near the 33% random baseline. This suggests that while task completion and strategic play scale with model size, the ability to identify impostors through social reasoning does not.
+                    <strong>Model Scaling Analysis (10×10 room pattern): Performance Scales, Voting Does Not.</strong>
+                    (A) Strong positive correlation between parameters and overall composite score (r &gt; 0.8),
+                    indicating larger models perform better in multi-agent reasoning tasks—larger models win more games
+                    as both crewmates and impostors.
+                    (B) Detection accuracy shows minimal correlation with model scale, with all models performing near
+                    the 33% random baseline. This suggests that while task completion and strategic play scale with
+                    model size, the ability to identify impostors through social reasoning does not.
                     <br><br>
-                    <strong>Key insight:</strong> Social inference and theory-of-mind capabilities do not scale as effectively as other reasoning skills—even 120B-parameter models fail to reliably detect deceptive agents.
+                    <strong>Key insight:</strong> Social inference and theory-of-mind capabilities do not scale as
+                    effectively as other reasoning skills—even 120B-parameter models fail to reliably detect deceptive
+                    agents.
+                </div>
+            </div>
+
+            <div class="figure-full" style="margin-top: 40px;">
+                <div class="fig-header">
+                    <h4>Figure 9: League Matching Results (10×10)</h4>
+                    <span class="fig-tag">10×10 Room Pattern</span>
+                </div>
+                <img src="sharelatex/league_summary_10x10_2x2/league_heatmap_pattern_10x10_2x2.png"
+                    alt="League Matching Heatmap 10x10" />
+                <div class="fig-caption">
+                    <strong>Crewmate Win Rates by Matchup (10×10 room pattern).</strong>
+                    Rows show crewmate models, columns show impostor models. Across 486 scored episodes from 30 unique matchups, impostors
+                    win 92.6% of games while crewmates win only 7.4%.
+                    <br><br>
+                    <strong>Rankings:</strong> GPT-OSS-120B leads (19.4% crew WR, 98.5% imp WR), followed by Llama3.1-70B (5.5% crew WR) 
+                    and Qwen3-30B (7.7% crew WR). Model scale correlates with performance on this smaller map.
+                </div>
+            </div>
+
+            <div class="figure-full" style="margin-top: 40px;">
+                <div class="fig-header">
+                    <h4>Figure 10: League Matching Results (14×14)</h4>
+                    <span class="fig-tag">14×14 Room Pattern</span>
+                </div>
+                <img src="sharelatex/league_summary_14x14_2x2/league_heatmap_pattern_14x14_2x2.png"
+                    alt="League Matching Heatmap 14x14" />
+                <div class="fig-caption">
+                    <strong>Crewmate Win Rates by Matchup (14×14 room pattern).</strong>
+                    Rows show crewmate models, columns show impostor models. Across 466 scored episodes from 30 unique matchups, impostors
+                    win 92.7% of games while crewmates win only 7.3%.
+                    <br><br>
+                    <strong>Rankings shift on larger map:</strong> GPT-OSS-120B still leads (17% crew WR), but Qwen3-30B (7.6% crew WR) 
+                    and Phi4-R-14B (6.5% crew WR) now outperform larger 70B models. This suggests model scale advantage weakens 
+                    on larger, more complex maps.
                 </div>
             </div>
         </div>
@@ -962,9 +1004,13 @@
                 </table>
             </div>
             <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">
-                <strong>Table 2:</strong> Factor importance analysis. Standardized β indicates effect direction/magnitude; R²<sub>p</sub> is unique variance explained. Bold shows dominant factor per metric.
+                <strong>Table 2:</strong> Factor importance analysis. Standardized β indicates effect
+                direction/magnitude; R²<sub>p</sub> is unique variance explained. Bold shows dominant factor per metric.
                 <br><br>
-                <strong>Key insights:</strong> Map area dominates task performance (TP) in both conditions. Without assistance, room count strongly affects planning performance (PP) as agents struggle with doorways. Voting accuracy and trust Brier score show minimal sensitivity to environmental complexity, suggesting social reasoning is orthogonal to spatial complexity.
+                <strong>Key insights:</strong> Map area dominates task performance (TP) in both conditions. Without
+                assistance, room count strongly affects planning performance (PP) as agents struggle with doorways.
+                Voting accuracy and trust Brier score show minimal sensitivity to environmental complexity, suggesting
+                social reasoning is orthogonal to spatial complexity.
             </p>
         </div>
     </section>
@@ -975,7 +1021,8 @@
             <div class="section-header">
                 <div class="question-tag">(Q5) Reinforcement Learning</div>
                 <h2>Can RL improve agent performance overcoming their inherent bottlenecks?</h2>
-                <p>We investigate whether reinforcement learning can help LLM agents overcome their fundamental limitations in planning and reasoning by fine-tuning Qwen3-4B on EM²-Bench.</p>
+                <p>We investigate whether reinforcement learning can help LLM agents overcome their fundamental
+                    limitations in planning and reasoning by fine-tuning Qwen3-4B on EM²-Bench.</p>
             </div>
 
             <div class="figure-full">
@@ -986,10 +1033,16 @@
                 <img src="sharelatex/figures/rl_training_progression_merged.png" alt="RL Training Progression" />
                 <div class="fig-caption">
                     <strong>RL training progression.</strong>
-                    Task performance (TP) and planning performance (PP) across RL training stages (baseline, checkpoint-1200, final), comparing with and without the planning assistant.
-                    With the planning assistant enabled, RL training improves PP from 0.16 to 0.27. Without the assistant, baseline performance is extremely low (TP ≈ 2%), and while RL shows modest improvement (TP ≈ 5%), overall performance remains poor.
-                    The stark contrast between assisted and unassisted conditions persists even after RL training, with the planning assistant providing approximately 5–10× improvement in task performance.
-                    <strong>Key finding:</strong> RL can improve agent behavior within the action space, but cannot compensate for fundamental spatial reasoning limitations—path planning remains a bottleneck that RL alone cannot overcome without external guidance.
+                    Task performance (TP) and planning performance (PP) across RL training stages (baseline,
+                    checkpoint-1200, final), comparing with and without the planning assistant.
+                    With the planning assistant enabled, RL training improves PP from 0.16 to 0.27. Without the
+                    assistant, baseline performance is extremely low (TP ≈ 2%), and while RL shows modest improvement
+                    (TP ≈ 5%), overall performance remains poor.
+                    The stark contrast between assisted and unassisted conditions persists even after RL training, with
+                    the planning assistant providing approximately 5–10× improvement in task performance.
+                    <strong>Key finding:</strong> RL can improve agent behavior within the action space, but cannot
+                    compensate for fundamental spatial reasoning limitations—path planning remains a bottleneck that RL
+                    alone cannot overcome without external guidance.
                 </div>
             </div>
         </div>
@@ -1001,7 +1054,8 @@
             <div class="section-header">
                 <div class="question-tag">(Q4) Error Analysis</div>
                 <h2>What typical failures do the agents make in the environment?</h2>
-                <p>LLM agents make systematic failures including door spam, stalling, and backtracking loops—we identify distinct passive and active failure modes across models.</p>
+                <p>LLM agents make systematic failures including door spam, stalling, and backtracking loops—we identify
+                    distinct passive and active failure modes across models.</p>
             </div>
 
             <div class="figure-full">
@@ -1011,16 +1065,24 @@
                 </div>
                 <img src="sharelatex/figures/failure_combined_summary.png" alt="Failure Analysis" />
                 <div class="fig-caption">
-                    <strong>Failure analysis reveals model-specific patterns and the effectiveness of the planning assistant.</strong>
-                    (A) Total failure coverage by model, comparing no-assist (solid) vs. with-assist (hatched) conditions. Green percentages indicate reduction achieved by the planning assistant.
-                    (B) Normalized failure profiles for each model, where solid lines show no-assist and dashed lines with hollow markers show with-assist.
+                    <strong>Failure analysis reveals model-specific patterns and the effectiveness of the planning
+                        assistant.</strong>
+                    (A) Total failure coverage by model, comparing no-assist (solid) vs. with-assist (hatched)
+                    conditions. Green percentages indicate reduction achieved by the planning assistant.
+                    (B) Normalized failure profiles for each model, where solid lines show no-assist and dashed lines
+                    with hollow markers show with-assist.
                     <br><br>
                     <strong>Key findings:</strong>
                     <ul style="margin-top: 8px; margin-left: 20px; color: var(--text-muted);">
-                        <li><em>Passive failures</em> (NOOP deadlock, task-fixation) dominate in smaller models—they "freeze" when uncertain.</li>
-                        <li><em>Active failures</em> (door spam, position ping-pong, backtracking) appear in larger models that attempt navigation but make suboptimal choices.</li>
-                        <li>The planning assistant dramatically reduces failures (90–97% reduction for models prone to passive failures).</li>
-                        <li>Remarkably, Phi4-Reasoning-14B <em>with</em> the assistant (0.27% total failures) outperforms GPT-OSS-120B <em>with</em> the assistant (0.50%), suggesting reasoning models execute effectively when given clear guidance.</li>
+                        <li><em>Passive failures</em> (NOOP deadlock, task-fixation) dominate in smaller models—they
+                            "freeze" when uncertain.</li>
+                        <li><em>Active failures</em> (door spam, position ping-pong, backtracking) appear in larger
+                            models that attempt navigation but make suboptimal choices.</li>
+                        <li>The planning assistant dramatically reduces failures (90–97% reduction for models prone to
+                            passive failures).</li>
+                        <li>Remarkably, Phi4-Reasoning-14B <em>with</em> the assistant (0.27% total failures)
+                            outperforms GPT-OSS-120B <em>with</em> the assistant (0.50%), suggesting reasoning models
+                            execute effectively when given clear guidance.</li>
                     </ul>
                 </div>
             </div>
@@ -1155,8 +1217,10 @@
     <footer>
         <div class="container">
             <p>EM²-Bench Results Summary — Updated January 10, 2026</p>
-            <p style="margin-top: 8px; opacity: 0.7;">Embodied Evaluation of Multi-Agent, Multi-Objective Reasoning for LLM Agents</p>
-            <p style="margin-top: 8px; opacity: 0.5; font-size: 0.8rem;">Includes: 8 models evaluated • League matching • RL fine-tuning • Failure analysis</p>
+            <p style="margin-top: 8px; opacity: 0.7;">Embodied Evaluation of Multi-Agent, Multi-Objective Reasoning for
+                LLM Agents</p>
+            <p style="margin-top: 8px; opacity: 0.5; font-size: 0.8rem;">Includes: 8 models evaluated • League matching
+                • RL fine-tuning • Failure analysis</p>
         </div>
     </footer>
 

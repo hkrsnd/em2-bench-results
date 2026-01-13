@@ -25,5 +25,5 @@ python -m http.server 8080
 - 🎬 Interactive agent log visualizations with animated minimap
 - 📊 Paper figures for Q1-Q4 research questions
 - 🏆 League matching results table
-- 🤖 Model comparison across 7 LLMs
+- 🤖 Model comparison across 8 LLMs
 
