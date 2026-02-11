@@ -678,13 +678,13 @@
             <div class="key-finding">
                 <div class="label">Key Finding 1</div>
                 <h3>LLMs Struggle with Spatial Planning</h3>
-                <p>Even the largest models achieve below 60% task completion without assistance, often getting stuck in repetitive behaviors.</p>
+                <p>Even the strongest model achieves below 60% task completion without assistance, with agents getting stuck in repetitive behaviors or failing to navigate basic obstacles.</p>
             </div>
 
             <div class="key-finding">
                 <div class="label">Key Finding 2</div>
-                <h3>Social Reasoning Fails at Scale</h3>
-                <p>Deception detection remains near random chance (~33%) regardless of model size. Theory-of-mind doesn't scale.</p>
+                <h3>Social Reasoning at Random Chance</h3>
+                <p>Even with planning assistance lifting the navigation burden, agents fail to detect deception at near-random chance (~33%) regardless of model scale.</p>
             </div>
 
             <div class="stat-row">
@@ -726,15 +726,15 @@
             <div class="section-header">
                 <div class="tag">Framework</div>
                 <h2>How SocialGrid Works</h2>
-                <p>Agents navigate gridworld environments, complete tasks, and participate in voting phases while building mental models of other agents.</p>
+                <p>Inspired by <em>Among Us</em>, SocialGrid evaluates LLM agents in multi-agent, multi-objective environments across spatial planning, task execution, and adversarial social reasoning.</p>
             </div>
 
             <div class="overview-figure">
                 <img src="sharelatex/figures/overview.png" alt="SocialGrid Overview">
                 <div class="caption">
-                    <strong>SocialGrid Overview.</strong> Users specify environment parameters (map size, room layout) and agent configurations.
-                    Agents operate under physical constraints with an optional Planning Oracle to isolate social reasoning from navigation deficits.
-                    The system provides multi-dimensional metrics across spatial, task, and social axes.
+                    <strong>SocialGrid Overview.</strong> <strong>(Left)</strong> Users specify environment parameters (map size, room layout) and agent configurations.
+                    <strong>(Center)</strong> Agents operate under physical constraints; an optional <em>Planning Oracle</em> isolates social reasoning from navigation deficits.
+                    <strong>(Right)</strong> Multi-dimensional metrics across spatial, task, and social axes, with automated failure analysis and Elo-based rankings.
                 </div>
             </div>
         </div>
@@ -745,19 +745,19 @@
         <div class="container">
             <div class="section-header">
                 <div class="tag">Results</div>
-                <h2>What We Discovered</h2>
-                <p>Our evaluation reveals fundamental limitations in current LLM agents' embodied reasoning capabilities.</p>
+                <h2>Key Findings</h2>
+                <p>Experiments across eight models (14B&ndash;120B) reveal fundamental limitations in spatial planning and social reasoning for embodied LLM agents.</p>
             </div>
 
             <div class="findings-grid">
                 <div class="finding-card">
                     <div class="icon">&#128506;</div>
                     <h3>Planning Bottleneck</h3>
-                    <p>Without the planning assistant, models fail basic navigation - even struggling to reach assigned tasks. GPT-OSS-120B was the only model to achieve near-perfect task completion with assistance.</p>
+                    <p>Without assistance, most models struggle to even reach assigned tasks. GPT-OSS-120B, the strongest model, completes only ~50% of tasks unassisted. Planning efficiency rarely exceeds 0.5 even with the Planning Oracle.</p>
                     <div class="metric">
                         <div>
                             <div class="value">&lt;60%</div>
-                            <div class="label">Task completion without assist</div>
+                            <div class="label">Best model task completion without assist</div>
                         </div>
                     </div>
                 </div>
@@ -765,23 +765,23 @@
                 <div class="finding-card">
                     <div class="icon">&#129504;</div>
                     <h3>Social Reasoning Fails</h3>
-                    <p>Agents consistently fail to detect deceptive behavior. Even with navigation burden lifted, impostor detection remains at random chance levels across all model sizes.</p>
+                    <p>Even with the Planning Oracle lifting the navigation burden, agents fail to detect deception. Detection accuracy averages 29.9% across all league matchups&mdash;near or below the 33% random baseline.</p>
                     <div class="metric">
                         <div>
-                            <div class="value">~33%</div>
-                            <div class="label">Detection accuracy (random = 33%)</div>
+                            <div class="value">29.9%</div>
+                            <div class="label">Avg detection accuracy (random = 33%)</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="finding-card">
-                    <div class="icon">&#128200;</div>
-                    <h3>Scale Doesn't Help</h3>
-                    <p>Rankings do not follow model scale: Qwen3-30B (30B) outperforms both 70B models in league play. Detection accuracy remains near random chance (29.9%) across all models from 14B to 120B.</p>
+                    <div class="icon">&#128269;</div>
+                    <h3>Shallow Heuristics, Not Evidence</h3>
+                    <p>Analysis of 64,184 crewmate votes reveals agents rely on shallow cues ("erratic movement") rather than accumulating behavioral evidence. Over-trust affects 46.7% of votes, while weak heuristics dominate at 62.8%.</p>
                     <div class="metric">
                         <div>
-                            <div class="value">29.9%</div>
-                            <div class="label">Avg detection accuracy (14B-120B)</div>
+                            <div class="value">62.8%</div>
+                            <div class="label">Votes using weak heuristics</div>
                         </div>
                     </div>
                 </div>
@@ -789,11 +789,11 @@
                 <div class="finding-card">
                     <div class="icon">&#127918;</div>
                     <h3>Impostors Dominate</h3>
-                    <p>In league play across 486 episodes, impostors won ~92.7% of games while crewmates managed only ~7.3%. This asymmetry persists regardless of model matchup.</p>
+                    <p>Across league play, impostors win ~92.7% of matches, reflecting weak crewmate navigation: agents struggle to complete tasks before time runs out, giving impostors ample opportunity.</p>
                     <div class="metric">
                         <div>
-                            <div class="value">~92.7%</div>
-                            <div class="label">Impostor win rate</div>
+                            <div class="value">&gt;92%</div>
+                            <div class="label">Impostor win rate across all matchups</div>
                         </div>
                     </div>
                 </div>
@@ -817,8 +817,8 @@
                     </div>
                     <img src="sharelatex/figures/assist_vs_noassist_tp_psr_pp.png" alt="Task Performance">
                     <div class="caption">
-                        Without the planning assistant, most models struggle to even reach assigned tasks.
-                        Planning efficiency rarely exceeds 0.5 even with assistance.
+                        Without assistance, most models struggle to even reach assigned tasks&mdash;GPT-OSS-120B completes only ~50% unassisted.
+                        With the Planning Oracle, all models improve, yet planning efficiency still falls short of 0.5 for most models.
                     </div>
                 </div>
 
@@ -841,8 +841,8 @@
                     </div>
                     <img src="sharelatex/figures/trust_metrics_vs_gptoss_impostor.png" alt="Trust Metrics">
                     <div class="caption">
-                        Trust Brier Scores hover near the random baseline (0.33) for all crewmate models facing
-                        GPT-OSS-120B as impostor. Trust volatility indicates unstable, poorly-calibrated beliefs.
+                        Trust metrics for crewmate models facing GPT-OSS-120B as impostor. Brier Scores hover near the random baseline (0.33),
+                        and trust volatility indicates unstable, poorly-calibrated beliefs barely distinguishable from random guessing.
                     </div>
                 </div>
 
@@ -865,8 +865,8 @@
                     </div>
                     <img src="sharelatex/figures/failure_analysis_1row.png" alt="Failure Analysis">
                     <div class="caption">
-                        Radar charts of six failure modes per model. Smaller models show passive failures
-                        (NOOP stall, task-fixation); larger models show active failures. Planning assistant reduces failures by 90-97%.
+                        Radar charts showing six failure modes per model: passive failures (NOOP stall, task-fixation) dominate smaller models,
+                        while larger models exhibit active failures (door spam, backtracking). The Planning Oracle reduces failures by 90&ndash;97% for most models.
                     </div>
                 </div>
 
@@ -877,8 +877,8 @@
                     </div>
                     <img src="sharelatex/figures/rl_training_progression_merged.png" alt="RL Training">
                     <div class="caption">
-                        RL fine-tuning of Qwen3-4B via PPO yields minimal gains even after 2,500 updates,
-                        confirming spatial reasoning as a fundamental bottleneck that basic RL cannot overcome.
+                        RL fine-tuning of Qwen3-4B via PPO yields minimal gains even after 2,500 updates in a simplified single-agent setup.
+                        This serves as a lower-bound feasibility check, suggesting spatial reasoning is a fundamental bottleneck that basic RL cannot easily overcome.
                     </div>
                 </div>
             </div>
@@ -891,7 +891,7 @@
             <div class="section-header">
                 <div class="tag">Competition</div>
                 <h2>League Leaderboard</h2>
-                <p>Crew Elo ratings from 30 unique matchups across 486 scored episodes (K=64, base 1500). 10x10 grid pattern.</p>
+                <p>Crew Elo ratings from 30 unique matchups (6 models, 5 crewmates vs 2 impostors per match) with planning assistance enabled to isolate social reasoning. K=64, base 1500.</p>
             </div>
 
             <div class="table-wrapper">
@@ -960,7 +960,7 @@
                 <img src="sharelatex/league_summary_10x10_2x2/league_heatmap_pattern_10x10_2x2.png" alt="League Heatmap">
                 <div class="caption">
                     Crewmate win rates by matchup. Rows show crewmate models, columns show impostor models.
-                    Impostors dominate across all matchups with ~92.7% overall win rate.
+                    Impostors dominate across all matchups (~92.7% overall win rate), reflecting the current ceiling for LLM-based navigation and planning.
                 </div>
             </div>
         </div>
@@ -1067,7 +1067,7 @@
     <footer>
         <div class="container">
             <p><strong>SocialGrid</strong>: A Benchmark for Planning and Social Reasoning in Embodied Multi-Agent Systems</p>
-            <p class="note">Anonymous submission for ICML 2025</p>
+            <p class="note">Under review at ICML 2025</p>
         </div>
     </footer>
 
