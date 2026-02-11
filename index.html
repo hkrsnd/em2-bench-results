@@ -885,6 +885,37 @@
         </div>
     </section>
 
+    <!-- ============ VOTING DEMO ============ -->
+    <section id="voting-demo">
+        <div class="container">
+            <div class="section-header">
+                <div class="tag">Social Reasoning</div>
+                <h2>Voting & Trust in Action</h2>
+                <p>Watch how agents reason about trust and vote during emergency meetings. Despite identifying suspicious behavior, crewmates frequently skip votes or target fellow crewmates.</p>
+            </div>
+
+            <div class="figure-card">
+                <div class="header">
+                    <h4>Voting Round Replay</h4>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span class="control-label">Model:</span>
+                        <button class="model-btn active" onclick="loadVotingModel('voting-gpt-oss-120b', this)">GPT-OSS-120B</button>
+                        <button class="model-btn" onclick="loadVotingModel('voting-deepseek-70b', this)">DeepSeek-70B</button>
+                        <button class="model-btn" onclick="loadVotingModel('voting-qwen3-30b', this)">Qwen3-30B</button>
+                    </div>
+                </div>
+                <video id="votingVideo" autoplay loop muted playsinline style="width:100%; background: #0a0f1a;">
+                    <source id="votingSourceWebm" src="videos/voting-gpt-oss-120b.webm" type="video/webm">
+                    <source id="votingSourceMp4" src="videos/voting-gpt-oss-120b.mp4" type="video/mp4">
+                </video>
+                <div class="caption">
+                    Each voting round shows the emergency meeting overview, individual voter reasoning with trust scores, and the final tally.
+                    Crewmates average only 29.9% detection accuracy&mdash;near the 33% random baseline&mdash;with 62.8% of votes relying on shallow heuristics.
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- ============ LEADERBOARD ============ -->
     <section id="leaderboard">
         <div class="container">
@@ -1067,7 +1098,17 @@
             document.getElementById('videoSourceMp4').src = 'videos/' + videoId + '.mp4';
             video.load();
             video.play();
-            document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.hero-animation .model-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function loadVotingModel(videoId, btn) {
+            const video = document.getElementById('votingVideo');
+            document.getElementById('votingSourceWebm').src = 'videos/' + videoId + '.webm';
+            document.getElementById('votingSourceMp4').src = 'videos/' + videoId + '.mp4';
+            video.load();
+            video.play();
+            btn.parentElement.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
 
