@@ -113,11 +113,11 @@
             50% { opacity: 0.5; transform: scale(1.3); }
         }
 
-        .hero-animation iframe {
+        .hero-animation video {
             flex: 1;
             width: 100%;
-            border: none;
             background: #070710;
+            display: block;
         }
 
         .animation-controls {
@@ -651,20 +651,20 @@
         <div class="hero-animation">
             <div class="badge-row">
                 <span class="badge">ICML 2025</span>
-                <span class="badge live">Interactive Demo</span>
+                <span class="badge live">Video Demo</span>
             </div>
-            <iframe
-                id="demoFrame"
-                src="Minigrid/output/save11/voting_acc_run_gpt-oss_120b_action_assist_medium/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html"
-                loading="eager">
-            </iframe>
+            <video id="demoVideo" autoplay loop muted playsinline>
+                <source id="videoSourceWebm" src="videos/gpt-oss-120b.webm" type="video/webm">
+                <source id="videoSourceMp4" src="videos/gpt-oss-120b.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
             <div class="animation-controls">
                 <span class="control-label">Switch Model:</span>
-                <button class="model-btn active" onclick="loadModel('Minigrid/output/save11/voting_acc_run_gpt-oss_120b_action_assist_medium/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html', this)">GPT-OSS-120B</button>
-                <button class="model-btn" onclick="loadModel('Minigrid/output/save/voting_acc_run_llama3.1_70b_action_assist_medium_node2/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html', this)">LLaMA-70B</button>
-                <button class="model-btn" onclick="loadModel('Minigrid/output/save10/voting_acc_run_deepseek-r1_70b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html', this)">DeepSeek-70B</button>
-                <button class="model-btn" onclick="loadModel('Minigrid/output/save/voting_acc_run_deepseek-r1_32b_action_assist_medium_node1/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html', this)">DeepSeek-32B</button>
-                <button class="model-btn" onclick="loadModel('Minigrid/output/save10/voting_acc_run_qwen3_30b_action_assist_medium__only_crewmate_imp0/pattern_10x10_2x2/episode_000/viz_run/agent/crewmate_player_1.html', this)">Qwen3-30B</button>
+                <button class="model-btn active" onclick="loadModel('gpt-oss-120b', this)">GPT-OSS-120B</button>
+                <button class="model-btn" onclick="loadModel('llama-70b', this)">LLaMA-70B</button>
+                <button class="model-btn" onclick="loadModel('deepseek-70b', this)">DeepSeek-70B</button>
+                <button class="model-btn" onclick="loadModel('deepseek-32b', this)">DeepSeek-32B</button>
+                <button class="model-btn" onclick="loadModel('qwen3-30b', this)">Qwen3-30B</button>
             </div>
         </div>
 
@@ -1062,8 +1062,12 @@
     </footer>
 
     <script>
-        function loadModel(url, btn) {
-            document.getElementById('demoFrame').src = url;
+        function loadModel(videoId, btn) {
+            const video = document.getElementById('demoVideo');
+            document.getElementById('videoSourceWebm').src = 'videos/' + videoId + '.webm';
+            document.getElementById('videoSourceMp4').src = 'videos/' + videoId + '.mp4';
+            video.load();
+            video.play();
             document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
