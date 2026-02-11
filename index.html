@@ -693,15 +693,15 @@
                     <div class="desc">Models Evaluated</div>
                 </div>
                 <div class="stat-box">
-                    <div class="value">600+</div>
-                    <div class="desc">Episodes</div>
+                    <div class="value">486</div>
+                    <div class="desc">League Episodes</div>
                 </div>
                 <div class="stat-box">
-                    <div class="value">~33%</div>
-                    <div class="desc">Detection Accuracy</div>
+                    <div class="value">29.9%</div>
+                    <div class="desc">Avg Detection Accuracy</div>
                 </div>
                 <div class="stat-box">
-                    <div class="value">92.6%</div>
+                    <div class="value">~92.7%</div>
                     <div class="desc">Impostor Win Rate</div>
                 </div>
             </div>
@@ -777,11 +777,11 @@
                 <div class="finding-card">
                     <div class="icon">&#128200;</div>
                     <h3>Scale Doesn't Help</h3>
-                    <p>While task performance correlates with model size, social inference does not. Theory-of-mind capabilities cannot be achieved through scaling alone.</p>
+                    <p>Rankings do not follow model scale: Qwen3-30B (30B) outperforms both 70B models in league play. Detection accuracy remains near random chance (29.9%) across all models from 14B to 120B.</p>
                     <div class="metric">
                         <div>
-                            <div class="value">r &lt; 0.1</div>
-                            <div class="label">Correlation: params vs detection</div>
+                            <div class="value">29.9%</div>
+                            <div class="label">Avg detection accuracy (14B-120B)</div>
                         </div>
                     </div>
                 </div>
@@ -789,10 +789,10 @@
                 <div class="finding-card">
                     <div class="icon">&#127918;</div>
                     <h3>Impostors Dominate</h3>
-                    <p>In league play across 486 episodes, impostors won 92.6% of games while crewmates managed only 7.4%. This asymmetry persists regardless of model matchup.</p>
+                    <p>In league play across 486 episodes, impostors won ~92.7% of games while crewmates managed only ~7.3%. This asymmetry persists regardless of model matchup.</p>
                     <div class="metric">
                         <div>
-                            <div class="value">92.6%</div>
+                            <div class="value">~92.7%</div>
                             <div class="label">Impostor win rate</div>
                         </div>
                     </div>
@@ -824,25 +824,37 @@
 
                 <div class="figure-card">
                     <div class="header">
-                        <h4>Voting Accuracy & Trust</h4>
+                        <h4>Detection Accuracy Heatmap</h4>
                         <span class="tag">Social Reasoning</span>
                     </div>
-                    <img src="sharelatex/figures/assist_vs_noassist_vacc_bs_tv.png" alt="Voting and Trust">
+                    <img src="sharelatex/figures/detection_accuracy_heatmap_enhanced.png" alt="Detection Accuracy Heatmap">
                     <div class="caption">
-                        Without assistance, voting accuracy never exceeds 60%. Trust Brier scores show agents
-                        frequently misjudge trustworthiness. Smaller models sometimes outperform larger ones.
+                        Detection accuracy across 36 league matchups (30 cross-model + 6 self-play).
+                        All models perform near or below the random baseline (33%), averaging 29.9%.
                     </div>
                 </div>
 
                 <div class="figure-card">
                     <div class="header">
-                        <h4>Model Scaling Analysis</h4>
-                        <span class="tag">Parameters vs Performance</span>
+                        <h4>Trust Calibration</h4>
+                        <span class="tag">Trust Metrics</span>
                     </div>
-                    <img src="sharelatex/figures/league_params_correlation_pattern_10x10_2x2.png" alt="Scaling Analysis">
+                    <img src="sharelatex/figures/trust_metrics_vs_gptoss_impostor.png" alt="Trust Metrics">
                     <div class="caption">
-                        Strong positive correlation between parameters and composite score (r > 0.8), but detection
-                        accuracy shows minimal correlation with scale - all models perform near the 33% baseline.
+                        Trust Brier Scores hover near the random baseline (0.33) for all crewmate models facing
+                        GPT-OSS-120B as impostor. Trust volatility indicates unstable, poorly-calibrated beliefs.
+                    </div>
+                </div>
+
+                <div class="figure-card">
+                    <div class="header">
+                        <h4>Complexity Analysis</h4>
+                        <span class="tag">Room Count vs Performance</span>
+                    </div>
+                    <img src="sharelatex/figures/complexity_2panel_barplot.png" alt="Complexity Analysis">
+                    <div class="caption">
+                        Task and planning performance degrade linearly with room count (0.46 to 0.30), but
+                        voting accuracy hovers at ~33% regardless of complexity, confirming social reasoning failures are orthogonal to navigation difficulty.
                     </div>
                 </div>
 
@@ -851,10 +863,22 @@
                         <h4>Failure Analysis</h4>
                         <span class="tag">Model-Specific Patterns</span>
                     </div>
-                    <img src="sharelatex/figures/failure_combined_summary.png" alt="Failure Analysis">
+                    <img src="sharelatex/figures/failure_analysis_1row.png" alt="Failure Analysis">
                     <div class="caption">
-                        Passive failures (NOOP, task-fixation) dominate smaller models. Active failures (door spam,
-                        backtracking) appear in larger models. Planning assistant reduces failures by 90-97%.
+                        Radar charts of six failure modes per model. Smaller models show passive failures
+                        (NOOP stall, task-fixation); larger models show active failures. Planning assistant reduces failures by 90-97%.
+                    </div>
+                </div>
+
+                <div class="figure-card">
+                    <div class="header">
+                        <h4>RL Training Progression</h4>
+                        <span class="tag">Reinforcement Learning</span>
+                    </div>
+                    <img src="sharelatex/figures/rl_training_progression_merged.png" alt="RL Training">
+                    <div class="caption">
+                        RL fine-tuning of Qwen3-4B via PPO yields minimal gains even after 2,500 updates,
+                        confirming spatial reasoning as a fundamental bottleneck that basic RL cannot overcome.
                     </div>
                 </div>
             </div>
@@ -867,7 +891,7 @@
             <div class="section-header">
                 <div class="tag">Competition</div>
                 <h2>League Leaderboard</h2>
-                <p>ELO ratings from 30 unique matchups across 486 scored episodes.</p>
+                <p>Crew Elo ratings from 30 unique matchups across 486 scored episodes (K=64, base 1500). 10x10 grid pattern.</p>
             </div>
 
             <div class="table-wrapper">
@@ -876,66 +900,52 @@
                         <tr>
                             <th>Rank</th>
                             <th>Model</th>
-                            <th>ELO</th>
-                            <th>Composite</th>
+                            <th>Crew Elo</th>
                             <th>Crew WR</th>
-                            <th>Crew Detect</th>
                             <th>Imp WR</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td class="mono">1</td>
-                            <td class="mono">GPT-OSS-120B</td>
-                            <td class="mono highlight">1612</td>
-                            <td class="mono">0.585</td>
+                            <td class="mono">GPT-OSS (120B)</td>
+                            <td class="mono highlight">1441</td>
                             <td class="mono good">19.4%</td>
-                            <td class="mono">30.0%</td>
                             <td class="mono bad">98.5%</td>
                         </tr>
                         <tr>
                             <td class="mono">2</td>
-                            <td class="mono">Llama3.1-70B</td>
-                            <td class="mono">1528</td>
-                            <td class="mono">0.544</td>
-                            <td class="mono">5.5%</td>
-                            <td class="mono">33.6%</td>
-                            <td class="mono bad">97.6%</td>
-                        </tr>
-                        <tr>
-                            <td class="mono">3</td>
-                            <td class="mono">Qwen3-30B</td>
-                            <td class="mono">1502</td>
-                            <td class="mono">0.531</td>
+                            <td class="mono">Qwen3 (30B)</td>
+                            <td class="mono">1281</td>
                             <td class="mono">7.7%</td>
-                            <td class="mono">32.7%</td>
                             <td class="mono">88.5%</td>
                         </tr>
                         <tr>
-                            <td class="mono">4</td>
-                            <td class="mono">DeepSeek-R1-70B</td>
-                            <td class="mono">1476</td>
-                            <td class="mono">0.518</td>
+                            <td class="mono">3</td>
+                            <td class="mono">DeepSeek (70B)</td>
+                            <td class="mono">1246</td>
                             <td class="mono">5.5%</td>
-                            <td class="mono">29.8%</td>
                             <td class="mono">92.7%</td>
                         </tr>
                         <tr>
+                            <td class="mono">4</td>
+                            <td class="mono">Llama3.1 (70B)</td>
+                            <td class="mono">1238</td>
+                            <td class="mono">5.5%</td>
+                            <td class="mono bad">97.6%</td>
+                        </tr>
+                        <tr>
                             <td class="mono">5</td>
-                            <td class="mono">Phi4-R-14B</td>
-                            <td class="mono">1440</td>
-                            <td class="mono">0.500</td>
+                            <td class="mono">Phi4-R (14B)</td>
+                            <td class="mono">1218</td>
                             <td class="mono">2.6%</td>
-                            <td class="mono">30.5%</td>
                             <td class="mono">86.2%</td>
                         </tr>
                         <tr>
                             <td class="mono">6</td>
-                            <td class="mono">Gemma3-27B</td>
-                            <td class="mono">1438</td>
-                            <td class="mono">0.499</td>
+                            <td class="mono">Gemma3 (27B)</td>
+                            <td class="mono">1168</td>
                             <td class="mono">1.1%</td>
-                            <td class="mono">25.2%</td>
                             <td class="mono">93.3%</td>
                         </tr>
                     </tbody>
@@ -950,7 +960,7 @@
                 <img src="sharelatex/league_summary_10x10_2x2/league_heatmap_pattern_10x10_2x2.png" alt="League Heatmap">
                 <div class="caption">
                     Crewmate win rates by matchup. Rows show crewmate models, columns show impostor models.
-                    Impostors dominate across all matchups with 92.6% overall win rate.
+                    Impostors dominate across all matchups with ~92.7% overall win rate.
                 </div>
             </div>
         </div>
