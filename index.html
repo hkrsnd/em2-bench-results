@@ -58,7 +58,7 @@
         .hero {
             min-height: 100vh;
             display: grid;
-            grid-template-columns: 1fr 420px;
+            grid-template-columns: 420px 1fr;
             gap: 0;
             position: relative;
         }
@@ -160,10 +160,10 @@
             color: var(--accent-primary);
         }
 
-        /* Right panel - Project info */
+        /* Left panel - Project info */
         .hero-info {
             background: var(--bg-card);
-            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
             padding: 40px 32px;
             display: flex;
             flex-direction: column;
@@ -675,12 +675,12 @@
         @media (max-width: 1024px) {
             .hero {
                 grid-template-columns: 1fr;
-                grid-template-rows: 60vh auto;
+                grid-template-rows: auto 60vh;
             }
 
             .hero-info {
-                border-left: none;
-                border-top: 1px solid var(--border);
+                border-right: none;
+                border-bottom: 1px solid var(--border);
             }
 
             .scroll-indicator {
@@ -710,26 +710,6 @@
 <body>
     <!-- ============ HERO: ANIMATION FRONT AND CENTER ============ -->
     <section class="hero">
-        <div class="hero-animation">
-            <div class="badge-row">
-                <span class="badge">Under Review</span>
-                <span class="badge live">Video Demo</span>
-            </div>
-            <video id="demoVideo" autoplay loop muted playsinline>
-                <source id="videoSourceWebm" src="videos/gpt-oss-120b.webm" type="video/webm">
-                <source id="videoSourceMp4" src="videos/gpt-oss-120b.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="animation-controls">
-                <span class="control-label">Switch Model:</span>
-                <button class="model-btn active" onclick="loadModel('gpt-oss-120b', this)">GPT-OSS-120B</button>
-                <button class="model-btn" onclick="loadModel('llama-70b', this)">LLaMA-70B</button>
-                <button class="model-btn" onclick="loadModel('deepseek-70b', this)">DeepSeek-70B</button>
-                <button class="model-btn" onclick="loadModel('deepseek-32b', this)">DeepSeek-32B</button>
-                <button class="model-btn" onclick="loadModel('qwen3-30b', this)">Qwen3-30B</button>
-            </div>
-        </div>
-
         <div class="hero-info">
             <h1>SocialGrid</h1>
             <p class="subtitle">
@@ -771,6 +751,26 @@
             <div class="cta-row">
                 <a href="#findings" class="cta-btn primary">View Results</a>
                 <a href="#demos" class="cta-btn secondary">All Demos</a>
+            </div>
+        </div>
+
+        <div class="hero-animation">
+            <div class="badge-row">
+                <span class="badge">Under Review</span>
+                <span class="badge live">Video Demo</span>
+            </div>
+            <video id="demoVideo" autoplay loop muted playsinline>
+                <source id="videoSourceWebm" src="videos/gpt-oss-120b.webm" type="video/webm">
+                <source id="videoSourceMp4" src="videos/gpt-oss-120b.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="animation-controls">
+                <span class="control-label">Switch Model:</span>
+                <button class="model-btn active" onclick="loadModel('gpt-oss-120b', this)">GPT-OSS-120B</button>
+                <button class="model-btn" onclick="loadModel('llama-70b', this)">LLaMA-70B</button>
+                <button class="model-btn" onclick="loadModel('deepseek-70b', this)">DeepSeek-70B</button>
+                <button class="model-btn" onclick="loadModel('deepseek-32b', this)">DeepSeek-32B</button>
+                <button class="model-btn" onclick="loadModel('qwen3-30b', this)">Qwen3-30B</button>
             </div>
         </div>
 
