@@ -595,6 +595,68 @@
             border-color: var(--accent-cyan);
         }
 
+        /* Slideshow controls */
+        .slideshow-container {
+            user-select: none;
+        }
+
+        .slide-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            font-size: 2.5rem;
+            line-height: 1;
+            padding: 12px 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 2;
+        }
+
+        .slideshow-container:hover .slide-btn {
+            opacity: 0.7;
+        }
+
+        .slide-btn:hover {
+            opacity: 1 !important;
+            background: rgba(99, 102, 241, 0.7);
+        }
+
+        .slide-prev { left: 12px; }
+        .slide-next { right: 12px; }
+
+        .slide-nav-btn {
+            font-family: inherit;
+            font-size: 1.1rem;
+            width: 32px;
+            height: 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .slide-nav-btn:hover {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .slide-nav-btn.active-autoplay {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
         /* Footer */
         footer {
             padding: 40px 0;
@@ -726,7 +788,7 @@
             <div class="section-header">
                 <div class="tag">Social Reasoning</div>
                 <h2>Voting & Trust in Action</h2>
-                <p>Watch how agents reason about trust and vote during emergency meetings. Despite identifying suspicious behavior, crewmates frequently skip votes or target fellow crewmates.</p>
+                <p>Browse how agents reason about trust and vote during emergency meetings. Despite identifying suspicious behavior, crewmates frequently skip votes or target fellow crewmates.</p>
             </div>
 
             <div class="figure-card">
@@ -734,15 +796,27 @@
                     <h4>Voting Round Replay</h4>
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <span class="control-label">Model:</span>
-                        <button class="model-btn active" onclick="loadVotingModel('voting-gpt-oss-120b', this)">GPT-OSS-120B</button>
-                        <button class="model-btn" onclick="loadVotingModel('voting-deepseek-70b', this)">DeepSeek-70B</button>
-                        <button class="model-btn" onclick="loadVotingModel('voting-qwen3-30b', this)">Qwen3-30B</button>
+                        <button class="model-btn active" onclick="loadVotingSlides('gpt-oss-120b', 24, this)">GPT-OSS-120B</button>
+                        <button class="model-btn" onclick="loadVotingSlides('deepseek-70b', 27, this)">DeepSeek-70B</button>
+                        <button class="model-btn" onclick="loadVotingSlides('qwen3-30b', 27, this)">Qwen3-30B</button>
                     </div>
                 </div>
-                <video id="votingVideo" autoplay loop muted playsinline style="width:100%; background: #0a0f1a;">
-                    <source id="votingSourceWebm" src="videos/voting-gpt-oss-120b.webm" type="video/webm">
-                    <source id="votingSourceMp4" src="videos/voting-gpt-oss-120b.mp4" type="video/mp4">
-                </video>
+                <div class="slideshow-container" style="position: relative; background: #0a0f1a;">
+                    <img id="votingSlide" src="videos/voting-slides/gpt-oss-120b/slide_000.png" alt="Voting round slide" style="width: 100%; display: block;">
+                    <button class="slide-btn slide-prev" onclick="changeSlide(-1)" aria-label="Previous slide">&lsaquo;</button>
+                    <button class="slide-btn slide-next" onclick="changeSlide(1)" aria-label="Next slide">&rsaquo;</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-top: 1px solid var(--border); background: var(--bg-elevated);">
+                    <span id="slideCounter" style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-muted);">1 / 24</span>
+                    <div style="flex: 1; margin: 0 16px; height: 4px; background: rgba(148,163,184,0.15); border-radius: 2px; cursor: pointer;" onclick="seekSlide(event)" id="slideProgressBar">
+                        <div id="slideProgress" style="height: 100%; background: var(--accent-primary); border-radius: 2px; transition: width 0.15s ease; width: 4.2%;"></div>
+                    </div>
+                    <div style="display: flex; gap: 6px;">
+                        <button class="slide-nav-btn" onclick="changeSlide(-1)" title="Previous">&lsaquo;</button>
+                        <button class="slide-nav-btn" id="autoplayBtn" onclick="toggleAutoplay()" title="Auto-play">&#9654;</button>
+                        <button class="slide-nav-btn" onclick="changeSlide(1)" title="Next">&rsaquo;</button>
+                    </div>
+                </div>
                 <div class="caption">
                     Each voting round shows the emergency meeting overview, individual voter reasoning with trust scores, and the final tally.
                     Crewmates average only 29.9% detection accuracy&mdash;near the 33% random baseline&mdash;with 62.8% of votes relying on shallow heuristics.
@@ -1102,15 +1176,69 @@
             btn.classList.add('active');
         }
 
-        function loadVotingModel(videoId, btn) {
-            const video = document.getElementById('votingVideo');
-            document.getElementById('votingSourceWebm').src = 'videos/' + videoId + '.webm';
-            document.getElementById('votingSourceMp4').src = 'videos/' + videoId + '.mp4';
-            video.load();
-            video.play();
-            btn.parentElement.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+        // ── Voting slideshow ──
+        var slideModel = 'gpt-oss-120b';
+        var slideTotal = 24;
+        var slideIdx = 0;
+        var autoplayTimer = null;
+
+        function slidePath(idx) {
+            return 'videos/voting-slides/' + slideModel + '/slide_' + String(idx).padStart(3, '0') + '.png';
+        }
+
+        function updateSlideUI() {
+            document.getElementById('votingSlide').src = slidePath(slideIdx);
+            document.getElementById('slideCounter').textContent = (slideIdx + 1) + ' / ' + slideTotal;
+            document.getElementById('slideProgress').style.width = ((slideIdx + 1) / slideTotal * 100) + '%';
+        }
+
+        function changeSlide(delta) {
+            slideIdx = (slideIdx + delta + slideTotal) % slideTotal;
+            updateSlideUI();
+        }
+
+        function seekSlide(e) {
+            var bar = document.getElementById('slideProgressBar');
+            var rect = bar.getBoundingClientRect();
+            var pct = (e.clientX - rect.left) / rect.width;
+            slideIdx = Math.min(Math.max(Math.floor(pct * slideTotal), 0), slideTotal - 1);
+            updateSlideUI();
+        }
+
+        function loadVotingSlides(model, count, btn) {
+            stopAutoplay();
+            slideModel = model;
+            slideTotal = count;
+            slideIdx = 0;
+            updateSlideUI();
+            btn.parentElement.querySelectorAll('.model-btn').forEach(function(b) { b.classList.remove('active'); });
             btn.classList.add('active');
         }
+
+        function toggleAutoplay() {
+            if (autoplayTimer) {
+                stopAutoplay();
+            } else {
+                autoplayTimer = setInterval(function() { changeSlide(1); }, 3000);
+                document.getElementById('autoplayBtn').classList.add('active-autoplay');
+                document.getElementById('autoplayBtn').innerHTML = '&#9646;&#9646;';
+            }
+        }
+
+        function stopAutoplay() {
+            if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+            document.getElementById('autoplayBtn').classList.remove('active-autoplay');
+            document.getElementById('autoplayBtn').innerHTML = '&#9654;';
+        }
+
+        // Keyboard navigation for slides
+        document.addEventListener('keydown', function(e) {
+            var section = document.getElementById('voting-demo');
+            var rect = section.getBoundingClientRect();
+            if (rect.top > window.innerHeight || rect.bottom < 0) return;
+            if (e.key === 'ArrowRight') { changeSlide(1); e.preventDefault(); }
+            else if (e.key === 'ArrowLeft') { changeSlide(-1); e.preventDefault(); }
+        });
 
         // Smooth reveal on scroll
         const observer = new IntersectionObserver((entries) => {
